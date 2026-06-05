@@ -60,7 +60,7 @@ export function ConstruindoSection() {
         curve="bezier"
       />
 
-      <div className="relative mx-auto max-w-7xl">
+      <div className="relative mx-auto max-w-7xl min-h-screen">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -86,15 +86,17 @@ export function ConstruindoSection() {
                 delay: index * 0.06,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="overflow-hidden rounded-[1.75rem] border border-black/8 bg-white/72 text-[#0b1020] shadow-[0_18px_50px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-shadow hover:shadow-[0_24px_60px_rgba(0,0,0,0.14)] dark:border-white/8 dark:bg-white/[0.06] dark:text-white dark:shadow-[0_18px_50px_rgba(0,0,0,0.22)]"
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
+              className="group relative overflow-hidden rounded-[1.75rem] border border-black/8 bg-white/72 text-[#0b1020] backdrop-blur-xl transition-all duration-300 hover:border-violet-500/22 hover:shadow-[0_20px_60px_rgba(139,92,246,0.14),0_0_0_1px_rgba(139,92,246,0.07)] dark:border-white/8 dark:bg-white/[0.06] dark:text-white dark:hover:border-violet-400/28 dark:hover:shadow-[0_20px_60px_rgba(139,92,246,0.22)]"
             >
+              <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] opacity-0 transition-opacity duration-300 group-hover:opacity-100 [background:radial-gradient(circle_at_50%_0%,rgba(139,92,246,0.06),transparent_60%)]" />
               <div className="overflow-hidden border-b border-black/8 dark:border-white/8">
                 <Image
                   src={project.image}
                   alt={project.title}
                   width={1200}
                   height={900}
-                  className="h-56 w-full object-cover object-top"
+                  className="h-56 w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
                 />
               </div>
 

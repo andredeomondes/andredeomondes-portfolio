@@ -233,13 +233,14 @@ export function HeroSection() {
                 <div className="grid gap-[3px] px-5 py-5 font-mono text-[13px]">
                   {codeLines.map((tokens, index) => (
                     <div
-                      key={index}
+                      key={`${terminalCycle}-${index}`}
                       className="grid grid-cols-[1.75rem_1fr] items-start gap-3"
                     >
                       <span className="select-none pt-[1px] text-right text-white/26">
                         {index + 1}
                       </span>
                       <AnimatedSpan
+                        key={`${terminalCycle}-${index}`}
                         delay={index * 90}
                         startOnView
                         className="flex flex-row flex-wrap items-baseline font-mono text-[13px] leading-[1.6]"
