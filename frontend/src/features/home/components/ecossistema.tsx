@@ -4,13 +4,15 @@ import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { TextAnimate } from "@/shared/components/ui/text-animate";
 import { OrbitingCircles } from "@/shared/components/ui/orbiting-circles";
+import { NoiseTexture } from "@/shared/components/ui/noise-texture";
+import { ProgressiveBlur } from "@/shared/components/ui/progressive-blur";
 import { SiTypescript, SiSpringboot, SiReact, SiDocker, SiPostgresql, SiRedis } from "react-icons/si";
 import { FaAws } from "react-icons/fa";
 import { DiJava } from "react-icons/di";
 
 const techIcons = [
   { icon: SiTypescript, label: "TypeScript", color: "#3178C6" },
-  { icon: DiJava, label: "Java", color: "#007396" },
+  { icon: DiJava, label: "Java", color: "#EA8220" },
   { icon: SiSpringboot, label: "Spring Boot", color: "#6DB33F" },
   { icon: SiReact, label: "React", color: "#61DAFB" },
   { icon: FaAws, label: "AWS", color: "#FF9900" },
@@ -28,7 +30,6 @@ export function EcossistemaSection() {
   });
 
   const textY = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [80, 0, 0, -80]);
-  const orbitScale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.85, 1, 1, 0.85]);
 
   const fadeUpVariant = (delay: number) =>
     ({
@@ -40,32 +41,45 @@ export function EcossistemaSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[#f0ebe2] px-6 text-[#0b1020] dark:bg-[#060917] dark:text-white"
     >
+      <NoiseTexture
+        noiseOpacity={0.1}
+        frequency={0.6}
+        octaves={3}
+        slope={0.6}
+        className="opacity-30 mix-blend-soft-light"
+      />
+      <ProgressiveBlur
+        position="both"
+        className="opacity-60"
+        blurLevels={[0.5, 1, 2, 4, 8, 12, 20, 28]}
+      />
+
       <motion.div
         style={{ y: textY }}
         className="relative z-10 flex w-full max-w-6xl flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-24"
       >
         <div className="order-2 flex-1 lg:order-1">
-          <div className="relative flex h-72 w-72 items-center justify-center sm:h-96 sm:w-96 mx-auto lg:mx-0">
+          <div className="relative mx-auto flex h-72 w-72 items-center justify-center sm:h-96 sm:w-96 lg:mx-0">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex flex-col items-center gap-1">
                 <motion.span
-                  className="text-xs font-medium uppercase tracking-[0.2em] text-[#8B5CF6]"
+                  className="text-xs font-medium uppercase tracking-[0.2em] text-violet-600 dark:text-violet-400"
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 >
                   Building
                 </motion.span>
                 <motion.span
-                  className="text-lg font-semibold text-[#F8FAFC]"
+                  className="text-lg font-semibold text-[#0b1020] dark:text-white"
                   animate={{ opacity: [0.6, 1, 0.6] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
                 >
                   Digital
                 </motion.span>
                 <motion.span
-                  className="text-lg font-semibold text-[#F8FAFC]"
+                  className="text-lg font-semibold text-[#0b1020] dark:text-white"
                   animate={{ opacity: [0.7, 1, 0.7] }}
                   transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                 >
@@ -82,7 +96,7 @@ export function EcossistemaSection() {
                   r={50 + ring * 40}
                   fill="none"
                   stroke="#8B5CF6"
-                  strokeOpacity={0.08 + ring * 0.03}
+                  strokeOpacity={0.12 + ring * 0.04}
                   strokeWidth={0.5 + ring * 0.2}
                   strokeDasharray={`${30 + ring * 20} ${10 + ring * 10}`}
                   initial={{ pathLength: 0, opacity: 0 }}
@@ -108,7 +122,7 @@ export function EcossistemaSection() {
                   iconSize={32}
                 >
                   <motion.div
-                    className="flex items-center justify-center rounded-full border border-white/[0.1] bg-white/[0.04] p-1.5 backdrop-blur-xl"
+                    className="flex items-center justify-center rounded-full border border-black/10 bg-white/60 p-1.5 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.06]"
                     whileHover={{ scale: 1.3 }}
                     animate={{ y: [0, 3, 0] }}
                     transition={{ y: { duration: 4 + i * 0.3, repeat: Infinity, ease: "easeInOut" } }}
@@ -126,7 +140,7 @@ export function EcossistemaSection() {
             variants={fadeUpVariant(0.1)}
             initial="hidden"
             animate={isInView ? "visible" : "exit"}
-            className="mb-3 text-sm font-medium text-[#8B5CF6]"
+            className="mb-3 text-sm font-medium text-violet-600 dark:text-violet-400"
           >
             Ecossistema Técnico
           </motion.p>
@@ -135,7 +149,7 @@ export function EcossistemaSection() {
             variants={fadeUpVariant(0.2)}
             initial="hidden"
             animate={isInView ? "visible" : "exit"}
-            className="text-4xl font-semibold leading-[1.1] tracking-tight text-[#F8FAFC] sm:text-5xl"
+            className="text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl"
           >
             Meu Ecossistema
             <br />
@@ -147,7 +161,7 @@ export function EcossistemaSection() {
             by="line"
             duration={0.5}
             delay={0.35}
-            className="mt-6 max-w-md text-lg leading-relaxed text-[#94A3B8]"
+            className="mt-6 max-w-md text-lg leading-relaxed text-[#0b1020]/64 dark:text-white/64"
           >
             Tecnologias são ferramentas.
             O que importa é como elas se conectam

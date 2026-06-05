@@ -1,42 +1,81 @@
 "use client";
 
-import { Marquee } from "@/shared/components/ui/marquee";
-import {
-  SiTypescript, SiSpringboot, SiNestjs, SiReact,
-  SiDocker, SiPostgresql, SiGit, SiTailwindcss, SiNextdotjs,
-} from "react-icons/si";
+import { FaAws } from "react-icons/fa";
 import { DiJava } from "react-icons/di";
+import {
+  SiDocker,
+  SiMongodb,
+  SiNestjs,
+  SiNextdotjs,
+  SiPostgresql,
+  SiReact,
+  SiRedis,
+  SiSpringboot,
+  SiTailwindcss,
+  SiTypescript,
+} from "react-icons/si";
+import {
+  ScrollVelocityContainer,
+  ScrollVelocityRow,
+} from "@/shared/components/ui/scroll-based-velocity";
+import { GradualBlur } from "@/shared/components/ui/gradual-blur";
 
-const stackItems = [
-  { icon: SiTypescript, label: "TypeScript", color: "#3178C6" },
-  { icon: DiJava, label: "Java", color: "#B07219" },
-  { icon: SiNestjs, label: "NestJS", color: "#E0234E" },
-  { icon: SiSpringboot, label: "Spring Boot", color: "#6DB33F" },
-  { icon: SiReact, label: "React", color: "#61DAFB" },
-  { icon: SiNextdotjs, label: "Next.js", color: "#FFFFFF" },
-  { icon: SiDocker, label: "Docker", color: "#2496ED" },
-  { icon: SiPostgresql, label: "PostgreSQL", color: "#4169E1" },
-  { icon: SiGit, label: "Git", color: "#F05032" },
-  { icon: SiTailwindcss, label: "Tailwind CSS", color: "#06B6D4" },
+const rowOne = [
+  { label: "Next.js", icon: SiNextdotjs, color: "#111111" },
+  { label: "React", icon: SiReact, color: "#61DAFB" },
+  { label: "TypeScript", icon: SiTypescript, color: "#3178C6" },
+  { label: "Spring", icon: SiSpringboot, color: "#6DB33F" },
+  { label: "NestJS", icon: SiNestjs, color: "#E0234E" },
 ];
+
+const rowTwo = [
+  { label: "Java", icon: DiJava, color: "#d97706" },
+  { label: "Postgres", icon: SiPostgresql, color: "#4169E1" },
+  { label: "Docker", icon: SiDocker, color: "#2496ED" },
+  { label: "AWS", icon: FaAws, color: "#FF9900" },
+  { label: "Redis", icon: SiRedis, color: "#DC382D" },
+  { label: "MongoDB", icon: SiMongodb, color: "#47A248" },
+  { label: "Tailwind", icon: SiTailwindcss, color: "#06B6D4" },
+];
+
+function VelocityPill({
+  label,
+  icon: Icon,
+  color,
+}: {
+  label: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  color: string;
+}) {
+  return (
+    <span className="mx-2 inline-flex items-center gap-2 rounded-full border border-black/8 bg-white/56 px-4 py-2 text-sm font-medium tracking-[0.18em] text-[#0b1020]/72 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.05] dark:text-white/68">
+      <Icon className="size-4" style={{ color }} />
+      {label}
+    </span>
+  );
+}
 
 export function StackSection() {
   return (
-    <div className="relative border-t border-white/[0.04] py-14">
-      <p className="mb-6 text-center text-xs font-medium uppercase tracking-[0.25em] text-[#64748B]">
-        Tecnologias que utilizo
-      </p>
-      <Marquee pauseOnHover repeat={3} className="[--duration:50s]">
-        {stackItems.map((item) => (
-          <div
-            key={item.label}
-            className="mx-3 flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-2.5"
-          >
-            <item.icon className="h-5 w-5" style={{ color: item.color }} />
-            <span className="text-xs font-medium text-[#94A3B8]">{item.label}</span>
+    <section className="relative overflow-hidden border-y border-black/6 bg-[#f5f0e8] py-10 dark:border-white/6 dark:bg-[#040713]">
+      <GradualBlur position="left" height="10rem" strength={3} divCount={8} curve="bezier" />
+      <GradualBlur position="right" height="10rem" strength={3} divCount={8} curve="bezier" />
+      <ScrollVelocityContainer>
+        <ScrollVelocityRow baseVelocity={6} className="py-2">
+          <div className="flex items-center">
+            {rowOne.map((item) => (
+              <VelocityPill key={item.label} {...item} />
+            ))}
           </div>
-        ))}
-      </Marquee>
-    </div>
+        </ScrollVelocityRow>
+        <ScrollVelocityRow baseVelocity={-7} className="py-2">
+          <div className="flex items-center">
+            {rowTwo.map((item) => (
+              <VelocityPill key={item.label} {...item} />
+            ))}
+          </div>
+        </ScrollVelocityRow>
+      </ScrollVelocityContainer>
+    </section>
   );
 }

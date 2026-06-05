@@ -1,278 +1,266 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform } from "motion/react";
-import { ChevronDown, ArrowUpRight } from "lucide-react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { BorderBeam } from "@/shared/components/ui/border-beam";
+import Link from "next/link";
+import { motion } from "motion/react";
+import { ArrowUpRight, Download } from "lucide-react";
 import {
-  SiTypescript, SiSpringboot, SiNestjs, SiReact,
-  SiDocker, SiPostgresql, SiTailwindcss, SiNextdotjs, SiGit,
+  SiDocker,
+  SiNestjs,
+  SiNextdotjs,
+  SiOpenjdk,
+  SiPostgresql,
+  SiReact,
+  SiSpringboot,
+  SiTypescript,
 } from "react-icons/si";
-import { DiJava } from "react-icons/di";
+import { AnimatedSpan } from "@/shared/components/ui/terminal";
+import { NoiseTexture } from "@/shared/components/ui/noise-texture";
+import { GradualBlur } from "@/shared/components/ui/gradual-blur";
+import { TextAnimate } from "@/shared/components/ui/text-animate";
+import { ShimmerLink } from "@/shared/components/ui/shimmer-button";
+import LiquidEther from "@/shared/components/ui/liquid-ether";
 
-const techIcons = [
-  { icon: SiTypescript, color: "#3178C6", label: "TypeScript" },
-  { icon: SiReact, color: "#61DAFB", label: "React" },
-  { icon: SiNextdotjs, color: "#FFFFFF", label: "Next.js" },
-  { icon: SiTailwindcss, color: "#06B6D4", label: "Tailwind" },
-  { icon: DiJava, color: "#B07219", label: "Java" },
-  { icon: SiSpringboot, color: "#6DB33F", label: "Spring Boot" },
-  { icon: SiNestjs, color: "#E0234E", label: "NestJS" },
-  { icon: SiDocker, color: "#2496ED", label: "Docker" },
-  { icon: SiPostgresql, color: "#4169E1", label: "PostgreSQL" },
-  { icon: SiGit, color: "#F05032", label: "Git" },
+const stackIcons = [
+  { label: "TypeScript", icon: SiTypescript, className: "text-[#3178C6]" },
+  { label: "React", icon: SiReact, className: "text-[#61DAFB]" },
+  { label: "Next.js", icon: SiNextdotjs, className: "text-[#0b1020] dark:text-white" },
+  { label: "NestJS", icon: SiNestjs, className: "text-[#E0234E]" },
+  { label: "Java", icon: SiOpenjdk, className: "text-[#EA8220]" },
+  { label: "Spring", icon: SiSpringboot, className: "text-[#6DB33F]" },
+  { label: "PostgreSQL", icon: SiPostgresql, className: "text-[#4169E1]" },
+  { label: "Docker", icon: SiDocker, className: "text-[#2496ED]" },
 ];
 
-const heroName = "Andre Deomondes";
+// IDE token colors — project palette: violet keywords, cyan ids, sky keys, orange strings, green values
+const KW  = "text-[#c084fc]"; // keyword
+const ID  = "text-[#67e8f9]"; // identifier
+const KEY = "text-[#7dd3fc]"; // object key
+const STR = "text-[#fb923c]"; // string value
+const VAL = "text-[#86efac]"; // array string value
+const PUN = "text-[#94a3b8]"; // punctuation / brackets
 
-function useTypingLoop() {
-  const [displayed, setDisplayed] = useState("");
-  const [charIdx, setCharIdx] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
+type Token = { t: string; c: string };
+const codeLines: Token[][] = [
+  [{ t: "export ", c: KW }, { t: "const ", c: KW }, { t: "developer", c: ID }, { t: " = {", c: PUN }],
+  [{ t: "  name", c: KEY }, { t: ": ", c: PUN }, { t: '"André Deomondes"', c: STR }, { t: ",", c: PUN }],
+  [{ t: "  role", c: KEY }, { t: ": ", c: PUN }, { t: '"Full-Stack & Mobile Developer"', c: STR }, { t: ",", c: PUN }],
+  [{ t: "  company", c: KEY }, { t: ": ", c: PUN }, { t: '"Caji Solutions"', c: STR }, { t: ",", c: PUN }],
+  [{ t: "  location", c: KEY }, { t: ": ", c: PUN }, { t: '"Salvador, BA"', c: STR }, { t: ",", c: PUN }],
+  [{ t: "  stack", c: KEY }, { t: ": {", c: PUN }],
+  [{ t: "    frontend", c: KEY }, { t: ": [", c: PUN }, { t: '"React"', c: VAL }, { t: ",", c: PUN }, { t: '"Next.js"', c: VAL }, { t: ",", c: PUN }, { t: '"Tailwind CSS"', c: VAL }, { t: "],", c: PUN }],
+  [{ t: "    mobile", c: KEY }, { t: ": [", c: PUN }, { t: '"React Native"', c: VAL }, { t: ",", c: PUN }, { t: '"Expo"', c: VAL }, { t: "],", c: PUN }],
+  [{ t: "    backend", c: KEY }, { t: ": [", c: PUN }, { t: '"Java"', c: VAL }, { t: ",", c: PUN }, { t: '"Spring Boot"', c: VAL }, { t: ",", c: PUN }, { t: '"Node.js"', c: VAL }, { t: "],", c: PUN }],
+  [{ t: "    database", c: KEY }, { t: ": [", c: PUN }, { t: '"PostgreSQL"', c: VAL }, { t: ",", c: PUN }, { t: '"MongoDB"', c: VAL }, { t: "],", c: PUN }],
+  [{ t: "    tools", c: KEY }, { t: ": [", c: PUN }, { t: '"Docker"', c: VAL }, { t: ",", c: PUN }, { t: '"AWS"', c: VAL }, { t: ",", c: PUN }, { t: '"Git"', c: VAL }, { t: "]", c: PUN }],
+  [{ t: "  }", c: PUN }],
+  [{ t: "}", c: PUN }, { t: ";", c: KW }],
+];
 
-  useEffect(() => {
-    const timeout = setTimeout(
-      () => {
-        if (!isDeleting) {
-          if (charIdx < heroName.length) {
-            setDisplayed(heroName.slice(0, charIdx + 1));
-            setCharIdx((c) => c + 1);
-          } else {
-            setTimeout(() => setIsDeleting(true), 3000);
-          }
-        } else {
-          if (charIdx > 0) {
-            setDisplayed(heroName.slice(0, charIdx - 1));
-            setCharIdx((c) => c - 1);
-          } else {
-            setIsDeleting(false);
-          }
-        }
-      },
-      isDeleting ? 50 : 150
-    );
-    return () => clearTimeout(timeout);
-  }, [charIdx, isDeleting]);
-
-  return displayed;
-}
+// Last line delay = 12 * 90ms = 1080ms + ~300ms anim = ~1400ms → loop at 5s
+const TERMINAL_LOOP_MS = 5000;
 
 export function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const centerRef = useRef<HTMLDivElement>(null);
+  const [titleCycle, setTitleCycle] = useState(0);
+  const [terminalCycle, setTerminalCycle] = useState(0);
 
-  const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-
-  const textY = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [80, 0, 0, -80]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
-
-  const typed = useTypingLoop();
-
-  const variants = (delay: number) =>
-    ({
-      hidden: { opacity: 0, y: 30 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] } },
-      exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "easeIn" } },
-    }) as const;
-
-  const orbitRadius = 125;
+  useEffect(() => {
+    const i1 = window.setInterval(() => setTitleCycle((c) => c + 1), 6200);
+    const i2 = window.setInterval(() => setTerminalCycle((c) => c + 1), TERMINAL_LOOP_MS);
+    return () => { window.clearInterval(i1); window.clearInterval(i2); };
+  }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6"
-    >
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJmIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc0IiBudW1PY3RhdmVzPSIzIiAvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNmKSIgb3BhY2l0eT0iMC4wNCIgLz48L3N2Zz4=')] opacity-20" />
+    <section className="relative isolate overflow-hidden bg-[#f6f2ea] text-[#0b1020] dark:bg-[#050714] dark:text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.94),transparent_28%),radial-gradient(circle_at_24%_62%,rgba(180,143,255,0.14),transparent_22%),linear-gradient(145deg,#f6f2ea_0%,#ede7dd_44%,#e3dcf1_100%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(120,142,255,0.12),transparent_24%),radial-gradient(circle_at_24%_62%,rgba(180,143,255,0.16),transparent_22%),linear-gradient(145deg,#050714_0%,#0a0d1f_42%,#11091f_100%)]" />
+      <NoiseTexture
+        noiseOpacity={0.14}
+        frequency={0.72}
+        octaves={4}
+        slope={0.42}
+        className="opacity-40 mix-blend-soft-light"
+      />
+      <LiquidEther
+        colors={["#8b5cf6", "#7c3aed", "#6d28d9", "#0891b2", "#a78bfa"]}
+        mouseForce={18}
+        cursorSize={120}
+        resolution={0.45}
+        autoDemo
+        autoSpeed={0.4}
+        autoIntensity={2}
+        autoResumeDelay={2000}
+        className="opacity-60 dark:opacity-75 mix-blend-screen"
+      />
+      <GradualBlur position="top" height="12rem" strength={2.5} divCount={8} curve="bezier" />
+      <GradualBlur position="bottom" height="14rem" strength={3} divCount={8} curve="bezier" />
+      <div className="absolute left-[16%] top-[42%] h-[18rem] w-[38rem] rounded-full bg-white/18 blur-[90px] dark:bg-[#a26dff]/10" />
+      <div className="absolute left-1/2 top-1/2 h-[42rem] w-[22rem] -translate-x-[-5%] -translate-y-1/2 rotate-[18deg] rounded-full bg-[linear-gradient(180deg,rgba(142,96,255,0.02),rgba(167,129,255,0.28)_26%,rgba(94,217,255,0.18)_74%,rgba(255,255,255,0.02))] blur-[48px] dark:bg-[linear-gradient(180deg,rgba(142,96,255,0.06),rgba(167,129,255,0.44)_26%,rgba(94,217,255,0.24)_74%,rgba(255,255,255,0.03))]" />
 
-      <motion.div
-        style={{ y: textY, opacity: textOpacity }}
-        className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-16 lg:flex-row lg:gap-24"
-      >
-        <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
-          <motion.p
-            variants={variants(0.1)}
-            initial="hidden"
-            animate={isInView ? "visible" : "exit"}
-            className="mb-4 text-sm font-medium text-[#8B5CF6]"
-          >
-            Software Engineer
-          </motion.p>
+      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-6 py-28 sm:px-8 lg:px-12">
+        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div className="max-w-xl">
+            <TextAnimate
+              key={titleCycle}
+              as="h1"
+              by="character"
+              animation="blurIn"
+              duration={0.5}
+              className="text-[2.25rem] font-semibold leading-[0.92] tracking-[-0.08em] sm:whitespace-nowrap sm:text-[3.15rem] lg:text-[3.7rem]"
+            >
+              ANDRE DEOMONDES.
+            </TextAnimate>
 
-          <motion.h1
-            variants={variants(0.15)}
-            initial="hidden"
-            animate={isInView ? "visible" : "exit"}
-            className="mb-6 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-7xl"
-          >
-            <span className="text-[#F8FAFC]">
-              {typed || heroName}
-              <motion.span
-                animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.6, repeat: Infinity, ease: "linear" }}
-                className="text-[#8B5CF6] font-light"
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.78,
+                delay: 0.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="mt-6 text-lg leading-8 text-[#0b1020]/66 dark:text-white/62"
+            >
+              Eu sou Full Stack na{" "}
+              <span className="rounded-md bg-white/70 px-2 py-1 font-medium text-[#0b1020] dark:bg-white/[0.08] dark:text-white">
+                Caji Solutions
+              </span>
+            </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.78,
+                delay: 0.28,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="mt-6 max-w-lg text-sm leading-7 text-[#0b1020]/56 dark:text-white/54"
+            >
+              Desenvolvo aplicativos mobile, sistemas web e soluções completas
+              de software que unem design, performance e escalabilidade.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.34,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="mt-8 flex flex-wrap items-center gap-6"
+            >
+              <ShimmerLink
+                href="/projects"
+                shimmerColor="#a78bfa"
+                background="rgba(109,40,217,0.85)"
+                className="h-12 gap-2 px-5 text-sm font-medium shadow-[0_0_28px_rgba(139,92,246,0.45)] dark:shadow-[0_0_32px_rgba(139,92,246,0.55)]"
               >
-                |
-              </motion.span>
-            </span>
-          </motion.h1>
+                <ArrowUpRight className="size-4" />
+                Ver Projetos
+              </ShimmerLink>
+              <a
+                href="/andre-deomondes-cv.txt"
+                download
+                className="inline-flex h-12 items-center gap-2 text-sm font-medium text-[#0b1020]/82 transition-colors hover:text-[#0b1020] dark:text-white/82 dark:hover:text-white"
+              >
+                <Download className="size-4" />
+                Baixar CV
+              </a>
+              <Link
+                href="/about"
+                className="inline-flex h-12 items-center gap-3 text-sm font-medium text-[#0b1020]/82 transition-colors hover:text-[#0b1020] dark:text-white/82 dark:hover:text-white"
+              >
+                <Image
+                  src="/andre.jpg"
+                  alt="Andre Deomondes"
+                  width={32}
+                  height={32}
+                  className="size-8 rounded-full border border-black/10 object-cover dark:border-white/10"
+                />
+                Sobre mim
+              </Link>
+            </motion.div>
 
-          <motion.p
-            variants={variants(0.3)}
-            initial="hidden"
-            animate={isInView ? "visible" : "exit"}
-            className="mb-8 max-w-md text-lg leading-relaxed text-[#94A3B8]"
-          >
-            Construindo produtos com foco em{" "}
-            <span className="aurora bg-gradient-to-r from-[#8B5CF6] via-[#60A5FA] via-[#38BDF8] via-[#818CF8] to-[#8B5CF6] bg-clip-text text-transparent bg-[length:200%_auto] font-bold">
-              EXPERIENCIA
-            </span>{" "}
-            <span className="aurora bg-gradient-to-r from-[#8B5CF6] via-[#60A5FA] via-[#38BDF8] via-[#818CF8] to-[#8B5CF6] bg-clip-text text-transparent bg-[length:200%_auto] font-bold">
-              PERFORMANCE
-            </span>{" "}
-            <span className="aurora bg-gradient-to-r from-[#8B5CF6] via-[#60A5FA] via-[#38BDF8] via-[#818CF8] to-[#8B5CF6] bg-clip-text text-transparent bg-[length:200%_auto] font-bold">
-              ARQUITETURA
-            </span>
-            <style>{`@keyframes aurora{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}.aurora{animation:aurora 6s ease infinite}`}</style>
-          </motion.p>
-
-          <motion.div
-            variants={variants(0.45)}
-            initial="hidden"
-            animate={isInView ? "visible" : "exit"}
-            className="flex flex-wrap items-center gap-4"
-          >
-            <Link
-              href="/about"
-              className="group relative inline-flex h-11 items-center gap-2 rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#60A5FA] px-6 text-sm font-medium text-white shadow-lg shadow-[#8B5CF6]/20 transition-all hover:shadow-xl hover:shadow-[#8B5CF6]/30 hover:scale-[1.02]"
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.42,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="mt-10 flex flex-wrap gap-2.5"
             >
-              VER CURRÍCULO
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
-            <Link
-              href="/projects"
-              className="group relative inline-flex h-11 items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-6 text-sm font-medium text-[#94A3B8] backdrop-blur-xl transition-all hover:border-[#8B5CF6]/40 hover:text-[#F8FAFC] hover:bg-[#8B5CF6]/10"
-            >
-              VER PROJETOS
-            </Link>
-          </motion.div>
-        </div>
-
-        <div className="relative flex h-[320px] w-[320px] shrink-0 items-center justify-center">
-          <motion.div
-            className="absolute inset-0"
-            style={{ transformOrigin: "center center" }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          >
-            <svg viewBox="0 0 320 320" className="h-full w-full">
-              <defs>
-                <radialGradient id="flowGradient" cx="160" cy="160" r="125" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0" />
-                  <stop offset="75%" stopColor="#8B5CF6" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="#60A5FA" stopOpacity="0.9" />
-                </radialGradient>
-              </defs>
-
-              <circle cx={160} cy={160} r={orbitRadius} fill="none" stroke="rgba(139,92,246,0.08)" strokeWidth="0.5" />
-
-              {techIcons.map((_, i) => {
-                const angle = (2 * Math.PI * i) / techIcons.length;
-                const cosA = Math.cos(angle);
-                const sinA = Math.sin(angle);
-                return (
-                  <line key={i} x1={160 + cosA * orbitRadius} y1={160 + sinA * orbitRadius} x2={160 + cosA * 24} y2={160 + sinA * 24} stroke="rgba(139,92,246,0.06)" strokeWidth="0.5" />
-                );
-              })}
-
-              {techIcons.map((_, i) => {
-                const angle = (2 * Math.PI * i) / techIcons.length;
-                const cosA = Math.cos(angle);
-                const sinA = Math.sin(angle);
-                const outerX = 160 + cosA * orbitRadius;
-                const outerY = 160 + sinA * orbitRadius;
-                const innerX = 160 + cosA * 24;
-                const innerY = 160 + sinA * 24;
-                return (
-                  <motion.line
-                    key={`flow-${i}`}
-                    x1={outerX}
-                    y1={outerY}
-                    x2={innerX}
-                    y2={innerY}
-                    stroke="url(#flowGradient)"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeDasharray="4 28"
-                    animate={{ strokeDashoffset: [0, -96] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear", delay: i * 0.12 }}
-                  />
-                );
-              })}
-            </svg>
-
-            {techIcons.map((tech, i) => {
-              const angle = (2 * Math.PI * i) / techIcons.length;
-              const x = Math.cos(angle) * orbitRadius;
-              const y = Math.sin(angle) * orbitRadius;
-              return (
+              {stackIcons.map((item) => (
                 <div
-                  key={tech.label}
-                  className="absolute"
-                  style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)`, transform: "translate(-50%, -50%)" }}
+                  key={item.label}
+                  className="flex items-center gap-2 rounded-full border border-black/10 bg-white/58 px-3.5 py-2 backdrop-blur-sm transition-colors hover:bg-white/80 dark:border-white/12 dark:bg-white/[0.07] dark:hover:bg-white/[0.12]"
+                  title={item.label}
                 >
-                  <motion.div
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03]"
-                  >
-                    <tech.icon className="h-5 w-5" style={{ color: tech.color }} />
-                  </motion.div>
+                  <item.icon className={`size-4 shrink-0 ${item.className}`} />
+                  <span className="text-xs font-medium text-[#0b1020]/72 dark:text-white/72">
+                    {item.label}
+                  </span>
                 </div>
-              );
-            })}
-          </motion.div>
-
-          <div
-            ref={centerRef}
-            className="relative z-10 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-xl"
-          >
-            <BorderBeam size={64} duration={8} delay={0} colorFrom="#8B5CF6" colorTo="#60A5FA" borderWidth={1.5} />
-            <Image
-              src="/logo.svg"
-              alt="André Deomondes"
-              width={40}
-              height={27}
-              className="h-7 w-auto"
-              priority
-            />
+              ))}
+            </motion.div>
           </div>
-        </div>
-      </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 0.5 }}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
-      >
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-[#64748B]">
-            Scroll
-          </span>
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            initial={{ opacity: 0, scale: 0.97, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{
+              duration: 0.9,
+              delay: 0.12,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="relative mx-auto w-full max-w-[39rem]"
           >
-            <ChevronDown className="h-4 w-4 text-[#64748B]" />
+            <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/72 via-transparent to-[#cfbaff]/28 blur-3xl dark:from-[#8f66ff]/16 dark:to-[#4fd6ff]/12" />
+            <div className="relative max-w-none overflow-hidden rounded-[1.8rem] border border-white/10 bg-[#181a2e]/95 text-white shadow-[0_32px_90px_rgba(10,12,22,0.28)]">
+              <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.04] px-5 py-4 text-xs text-white/46">
+                <div className="flex items-center gap-2">
+                  <span className="size-2.5 rounded-full bg-[#ff5f57]" />
+                  <span className="size-2.5 rounded-full bg-[#febc2e]" />
+                  <span className="size-2.5 rounded-full bg-[#28c840]" />
+                </div>
+                <span className="font-mono">developer.ts</span>
+                <span>TypeScript</span>
+              </div>
+              <div className="overflow-x-auto">
+                <div className="grid gap-[3px] px-5 py-5 font-mono text-[13px]">
+                  {codeLines.map((tokens, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-[1.75rem_1fr] items-start gap-3"
+                    >
+                      <span className="select-none pt-[1px] text-right text-white/26">
+                        {index + 1}
+                      </span>
+                      <AnimatedSpan
+                        delay={index * 90}
+                        startOnView
+                        className="flex flex-row flex-wrap items-baseline font-mono text-[13px] leading-[1.6]"
+                      >
+                        {tokens.map((tok, i) => (
+                          <span key={i} className={`whitespace-pre ${tok.c}`}>{tok.t}</span>
+                        ))}
+                      </AnimatedSpan>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex items-center justify-between border-t border-white/10 bg-white/[0.04] px-5 py-3 text-xs text-white/42">
+                <span>TypeScript</span>
+                <span>UTF-8</span>
+                <span>Ln 13, Col 2</span>
+              </div>
+            </div>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

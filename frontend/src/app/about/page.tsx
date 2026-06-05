@@ -1,96 +1,100 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "motion/react";
+import Image from "next/image";
+import { motion } from "motion/react";
 import {
+  BriefcaseBusiness,
+  Calendar,
+  Code2,
+  GraduationCap,
   MapPin,
-  Globe,
-  BookOpen,
-  ExternalLink,
-  Mail,
+  NotebookPen,
 } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { Badge } from "@/shared/components/ui/badge";
-import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/avatar";
+import { FaGithub, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
+import { Mail } from "lucide-react";
+import { NoiseTexture } from "@/shared/components/ui/noise-texture";
+import { ProgressiveBlur } from "@/shared/components/ui/progressive-blur";
 
-const sidebarLinks = [
-  { label: "Introdução", href: "#introducao" },
-  { label: "Experiência", href: "#experiencia" },
-  { label: "Formação", href: "#formacao" },
-  { label: "Tecnologias", href: "#tecnologias" },
-  { label: "Contato", href: "#contato" },
-];
+const developer = {
+  name: "André Deomondes",
+  role: "Full Stack & Mobile Developer",
+  company: "Caji Solutions",
+  birthdate: "27/06/2003",
+  age: 21,
+  location: "Salvador, BA, Brasil",
+  bio: "Construo aplicações web e mobile que combinam código limpo, escalabilidade e experiências intuitivas. Meu foco é desenvolver produtos digitais rápidos, confiáveis e preparados para crescer.",
+};
+
+const techStack = {
+  Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+  Mobile: ["React Native", "Expo"],
+  Backend: ["Node.js", "NestJS", "Fastify", "Java", "Spring Boot"],
+  "Banco de dados": ["PostgreSQL", "MongoDB"],
+  DevOps: ["Docker", "AWS", "Git", "CI/CD"],
+};
 
 const experiences = [
   {
-    company: "AMR Mobile",
-    period: "2025 — Atualmente",
-    description:
-      "Desenvolvimento de sistemas internos, automações e aplicações mobile para operação e gestão.",
-    tags: ["Sistemas Internos", "Automação", "Aplicações Mobile"],
+    company: "Caji Solutions",
+    role: "Full Stack Developer",
+    period: "Abr 2026 — Presente",
+    active: true,
+    bullets: [
+      "Desenvolvo sistemas web e APIs para fluxos internos e produtos digitais.",
+      "Estruturo interfaces claras e integrações prontas para crescer.",
+      "Atuo em backend, front-end e organização técnica da entrega.",
+    ],
   },
   {
-    company: "Loyloucha Imports",
-    period: "2025",
-    description:
-      "Desenvolvimento de soluções para gestão interna, automatização de processos e melhoria operacional.",
-    tags: ["Gestão Interna", "Automação", "Processos"],
+    company: "REXIS Digital",
+    role: "Full Stack Developer",
+    period: "Jan 2026 — Presente",
+    active: true,
+    bullets: [
+      "Trabalho em software escalável com foco em arquitetura backend.",
+      "Integro fluxos com IA para operações mais rápidas e simples.",
+    ],
   },
   {
-    company: "SENAI",
-    period: "2025",
-    description:
-      "Desenvolvimento de projetos acadêmicos e aplicação de tecnologias em soluções práticas e inovadoras.",
-    tags: ["Projetos Acadêmicos", "Pesquisa Aplicada", "Desenvolvimento"],
+    company: "Workana",
+    role: "Desenvolvedor Web Freelancer",
+    period: "Jan 2025 — Presente",
+    active: false,
+    bullets: [
+      "Entrego sites, sistemas e soluções sob medida para clientes.",
+      "Cuido da experiência, da base técnica e da velocidade de entrega.",
+    ],
   },
 ];
 
 const education = [
-  { degree: "Engenharia da Computação", institution: "SENAI CIMATEC" },
   {
+    institution: "Universidade CIMATEC",
+    degree: "Bacharelado em Engenharia da Computação",
+    period: "Jan 2024 — Jan 2029",
+  },
+  {
+    institution: "SENAI BAHIA",
     degree: "Técnico em Desenvolvimento de Sistemas",
-    institution: "SENAI Dendezeiros",
+    period: "Ago 2025 — Ago 2027",
   },
 ];
 
-const techCategories = [
-  {
-    title: "Backend",
-    items: ["Java", "Spring Boot", "NestJS", "Fastify", "Node.js"],
-  },
-  {
-    title: "Frontend",
-    items: ["TypeScript", "React", "Next.js", "Tailwind CSS"],
-  },
-  {
-    title: "Database & Cache",
-    items: ["PostgreSQL", "Redis", "Prisma"],
-  },
-  {
-    title: "DevOps & Tools",
-    items: ["Docker", "AWS", "Git", "GitHub"],
-  },
+const socialLinks = [
+  { href: "https://github.com/andredeomondes", label: "GitHub", icon: FaGithub },
+  { href: "https://linkedin.com/in/andredeomondes", label: "LinkedIn", icon: FaLinkedin },
+  { href: "https://instagram.com/andredeomondes.dev", label: "Instagram", icon: FaInstagram },
+  { href: "mailto:contato@andredeomondes.dev", label: "Email", icon: Mail },
+  { href: "https://wa.me/5571988384932", label: "WhatsApp", icon: FaWhatsapp },
 ];
 
-function FadeUp({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
+function FadeUp({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{
-        duration: 0.5,
-        delay,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
       className={className}
     >
       {children}
@@ -98,258 +102,212 @@ function FadeUp({
   );
 }
 
+function SectionHeader({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
+  return (
+    <div className="mb-6 flex items-center gap-3">
+      <div className="flex size-8 items-center justify-center rounded-lg border border-violet-500/20 bg-violet-500/10">
+        <Icon className="size-4 text-violet-600 dark:text-violet-400" />
+      </div>
+      <span className="text-sm font-semibold tracking-[-0.02em] text-[#0b1020] dark:text-white">
+        {label}
+      </span>
+      <div className="h-px flex-1 bg-gradient-to-r from-violet-500/30 to-transparent" />
+    </div>
+  );
+}
+
 export default function AboutPage() {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-32 lg:flex-row">
-      <aside className="lg:sticky lg:top-32 lg:h-fit lg:w-72 shrink-0">
-        <motion.div
-          initial={{ opacity: 0, x: -24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col gap-6"
-        >
-          <Avatar className="h-24 w-24 rounded-xl border border-white/[0.08]">
-            <AvatarImage src="/andre.jpg" alt="André Deomondes" className="rounded-xl" />
-            <AvatarFallback className="rounded-xl bg-[#8B5CF6]/20 text-lg font-semibold text-[#8B5CF6]">
-              AD
-            </AvatarFallback>
-          </Avatar>
+    <div className="relative isolate min-h-screen overflow-hidden bg-[#f6f2ea] text-[#0b1020] dark:bg-[#080912] dark:text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(180,143,255,0.12),transparent_32%),linear-gradient(145deg,#f6f2ea_0%,#ede7dd_52%,#e8e2f5_100%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(120,80,255,0.1),transparent_32%),linear-gradient(145deg,#080912_0%,#0a0d1f_52%,#10091e_100%)]" />
+      <NoiseTexture noiseOpacity={0.1} frequency={0.6} octaves={3} slope={0.7} className="opacity-30 mix-blend-soft-light" />
+      <ProgressiveBlur position="top" className="opacity-50" blurLevels={[0.5, 1, 2, 4, 8, 12, 18, 24]} />
 
-          <div>
-            <h1 className="text-lg font-semibold text-[#F8FAFC]">
-              André Deomondes
-            </h1>
-            <p className="text-sm text-[#94A3B8]">Software Engineer</p>
-          </div>
+      <div className="relative z-10 mx-auto max-w-7xl px-6 py-28 sm:px-8 lg:px-12">
+        <div className="grid gap-8 lg:grid-cols-[280px_1fr] lg:items-start xl:grid-cols-[300px_1fr]">
 
-          <div className="flex items-center gap-2 text-xs text-[#64748B]">
-            <MapPin className="h-3 w-3" />
-            Salvador, BA
-          </div>
+          {/* ── SIDEBAR ── */}
+          <motion.aside
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:sticky lg:top-28 lg:h-fit"
+          >
+            {/* Profile card */}
+            <div className="overflow-hidden rounded-2xl border border-black/10 bg-white/72 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05]">
 
-          <div className="text-xs text-[#64748B]">
-            <p>Português — Nativo</p>
-            <p>English — Intermediate</p>
-          </div>
-
-          <nav className="hidden flex-col gap-2 lg:flex">
-            {sidebarLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="text-sm text-[#94A3B8] transition-all hover:text-[#8B5CF6] hover:translate-x-1"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-4">
-            <a
-              href="https://github.com/andredeomondes"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
-            >
-              <FaGithub className="h-4 w-4" />
-            </a>
-            <a
-              href="https://linkedin.com/in/andredeomondes"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
-            >
-              <FaLinkedin className="h-4 w-4" />
-            </a>
-            <a
-              href="mailto:contato@andredeomondes.dev"
-              className="text-[#94A3B8] transition-colors hover:text-[#F8FAFC]"
-            >
-              <Mail className="h-4 w-4" />
-            </a>
-          </div>
-        </motion.div>
-      </aside>
-
-      <div className="flex-1 space-y-24">
-        <section id="introducao">
-          <FadeUp>
-            <h2 className="text-3xl font-semibold leading-[1.1] tracking-tight text-[#F8FAFC] sm:text-4xl">
-              Construindo soluções
-              <br />
-              digitais que geram
-              <br />
-              impacto real.
-            </h2>
-          </FadeUp>
-          <FadeUp delay={0.1}>
-            <div className="mt-6 space-y-4 text-base leading-relaxed text-[#94A3B8]">
-              <p>
-                Sou engenheiro de software focado na construção de sistemas,
-                automações e produtos digitais.
-              </p>
-              <p>
-                Atualmente desenvolvo soluções para empresas e iniciativas
-                próprias, transformando problemas complexos em software simples,
-                escalável e útil.
-              </p>
-            </div>
-          </FadeUp>
-          <FadeUp delay={0.2}>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5">
-                <h3 className="mb-3 text-xs font-medium uppercase tracking-widest text-[#8B5CF6]">
-                  Foco
-                </h3>
-                <ul className="space-y-2 text-sm text-[#94A3B8]">
-                  <li>• Desenvolvimento de Software</li>
-                  <li>• Automação de Processos</li>
-                  <li>• Produtos Digitais</li>
-                </ul>
-              </div>
-              <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5">
-                <h3 className="mb-3 text-xs font-medium uppercase tracking-widest text-[#8B5CF6]">
-                  Interesses
-                </h3>
-                <ul className="space-y-2 text-sm text-[#94A3B8]">
-                  <li>• Arquitetura de Software</li>
-                  <li>• Performance</li>
-                  <li>• Experiência do Usuário</li>
-                  <li>• Inteligência Artificial</li>
-                </ul>
-              </div>
-            </div>
-          </FadeUp>
-        </section>
-
-        <section id="experiencia">
-          <FadeUp>
-            <h2 className="mb-2 text-sm font-medium text-[#8B5CF6]">
-              Experiência
-            </h2>
-          </FadeUp>
-
-          <div className="relative mt-8 space-y-10">
-            <div className="absolute left-[7px] top-2 h-[calc(100%-16px)] w-px bg-white/[0.08]" />
-
-            {experiences.map((exp, i) => (
-              <FadeUp key={exp.company} delay={i * 0.1}>
-                <div className="relative pl-8">
-                  <div className="absolute left-0 top-1.5 h-3.5 w-3.5 rounded-full border-2 border-[#8B5CF6] bg-[#050816]" />
-                  <span className="text-xs font-medium text-[#64748B]">
-                    {exp.period}
+              {/* Avatar header strip */}
+              <div className="relative bg-gradient-to-br from-violet-500/10 via-violet-500/5 to-transparent p-5 pb-0 dark:from-violet-500/20">
+                <div className="flex flex-col items-center pb-5 text-center">
+                  <div className="relative">
+                    <Image
+                      src="/andre.jpg"
+                      alt="André Deomondes"
+                      width={80}
+                      height={80}
+                      priority
+                      className="size-20 rounded-full border-2 border-white/80 object-cover shadow-lg dark:border-white/20"
+                    />
+                    <span className="absolute -bottom-1 -right-1 flex size-5 items-center justify-center rounded-full border-2 border-white bg-green-500 dark:border-[#080912]">
+                      <span className="size-2 animate-pulse rounded-full bg-white" />
+                    </span>
+                  </div>
+                  <div className="mt-3">
+                    <h1 className="text-base font-semibold tracking-[-0.03em]">{developer.name}</h1>
+                    <p className="mt-0.5 text-xs text-violet-600 dark:text-violet-400">{developer.role}</p>
+                  </div>
+                  <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-1 text-[11px] font-medium text-green-700 dark:text-green-400">
+                    Disponível para conversar
                   </span>
-                  <h3 className="mt-1 text-lg font-medium text-[#F8FAFC]">
-                    {exp.company}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[#94A3B8]">
-                    {exp.description}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {exp.tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className="border-white/[0.06] bg-white/[0.03] text-xs text-[#94A3B8]"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="h-px bg-gradient-to-r from-transparent via-black/8 to-transparent dark:via-white/8" />
+
+              {/* Info rows */}
+              <div className="divide-y divide-black/6 dark:divide-white/6">
+                {[
+                  { icon: Calendar, text: `${developer.birthdate} · ${developer.age} anos` },
+                  { icon: MapPin, text: developer.location },
+                  { icon: BriefcaseBusiness, text: developer.company },
+                ].map(({ icon: Icon, text }) => (
+                  <div key={text} className="flex items-center gap-3 px-4 py-2.5">
+                    <Icon className="size-3.5 shrink-0 text-violet-600 dark:text-violet-400" />
+                    <span className="text-xs text-[#0b1020]/66 dark:text-white/54">{text}</span>
                   </div>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-        </section>
+                ))}
+              </div>
 
-        <section id="formacao">
-          <FadeUp>
-            <h2 className="mb-2 text-sm font-medium text-[#8B5CF6]">
-              Formação
-            </h2>
-          </FadeUp>
+              {/* Divider */}
+              <div className="h-px bg-gradient-to-r from-transparent via-black/8 to-transparent dark:via-white/8" />
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {education.map((edu, i) => (
-              <FadeUp key={edu.degree} delay={i * 0.08}>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 transition-all hover:border-white/[0.12]">
-                  <BookOpen className="mb-3 h-4 w-4 text-[#8B5CF6]" />
-                  <h3 className="text-base font-medium text-[#F8FAFC]">
-                    {edu.degree}
-                  </h3>
-                  <p className="mt-1 text-sm text-[#64748B]">
-                    {edu.institution}
-                  </p>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-        </section>
+              {/* Bio */}
+              <p className="px-4 py-4 text-xs leading-6 text-[#0b1020]/58 dark:text-white/48">
+                {developer.bio}
+              </p>
 
-        <section id="tecnologias">
-          <FadeUp>
-            <h2 className="mb-2 text-sm font-medium text-[#8B5CF6]">
-              Tecnologias
-            </h2>
-          </FadeUp>
-
-          <div className="mt-8 grid gap-6 sm:grid-cols-2">
-            {techCategories.map((cat, i) => (
-              <FadeUp key={cat.title} delay={i * 0.1}>
-                <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5">
-                  <h3 className="mb-4 text-xs font-medium uppercase tracking-widest text-[#8B5CF6]">
-                    {cat.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {cat.items.map((item) => (
-                      <Badge
-                        key={item}
-                        variant="secondary"
-                        className="border-white/[0.06] bg-white/[0.03] text-xs text-[#94A3B8]"
-                      >
-                        {item}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-        </section>
-
-        <section id="contato">
-          <FadeUp>
-            <h2 className="mb-2 text-sm font-medium text-[#8B5CF6]">Contato</h2>
-          </FadeUp>
-          <FadeUp delay={0.1}>
-            <p className="mt-4 text-base text-[#94A3B8]">
-              Estou disponível para conversar sobre oportunidades, colaborações
-              e projetos interessantes.
-            </p>
-          </FadeUp>
-          <FadeUp delay={0.2}>
-            <div className="mt-6 flex flex-wrap gap-4">
-              <a
-                href="mailto:contato@andredeomondes.dev"
-                className="group inline-flex h-10 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-5 text-sm font-medium text-[#F8FAFC] backdrop-blur-xl transition-all hover:bg-[#8B5CF6]/20 hover:border-[#8B5CF6]/30"
-              >
-                <Mail className="h-4 w-4" />
-                Email
-                <ExternalLink className="h-3 w-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-              <a
-                href="https://wa.me/5571999999999"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex h-10 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-5 text-sm font-medium text-[#F8FAFC] backdrop-blur-xl transition-all hover:bg-[#8B5CF6]/20 hover:border-[#8B5CF6]/30"
-              >
-                <Globe className="h-4 w-4" />
-                WhatsApp
-                <ExternalLink className="h-3 w-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
+              {/* Social row */}
+              <div className="h-px bg-gradient-to-r from-transparent via-black/8 to-transparent dark:via-white/8" />
+              <div className="flex items-center justify-center gap-1 px-4 py-3">
+                {socialLinks.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : undefined}
+                    rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    title={item.label}
+                    className="flex size-8 items-center justify-center rounded-full border border-black/8 bg-white/60 text-[#0b1020]/52 transition-all hover:-translate-y-0.5 hover:border-violet-500/30 hover:text-violet-600 dark:border-white/8 dark:bg-white/[0.04] dark:text-white/40 dark:hover:text-violet-400"
+                  >
+                    <item.icon className="size-3" />
+                  </a>
+                ))}
+              </div>
             </div>
-          </FadeUp>
-        </section>
+
+            {/* Education card */}
+            <div className="mt-4 overflow-hidden rounded-2xl border border-black/10 bg-white/72 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05]">
+              <div className="flex items-center gap-2 border-b border-black/6 px-4 py-3 dark:border-white/6">
+                <GraduationCap className="size-3.5 text-violet-600 dark:text-violet-400" />
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-600 dark:text-violet-400">
+                  Formação
+                </span>
+              </div>
+              <div className="divide-y divide-black/6 dark:divide-white/6">
+                {education.map((e) => (
+                  <div key={e.institution} className="px-4 py-3">
+                    <p className="text-sm font-medium">{e.institution}</p>
+                    <p className="mt-0.5 text-xs leading-5 text-[#0b1020]/46 dark:text-white/38">{e.degree}</p>
+                    <p className="mt-0.5 text-[11px] text-[#0b1020]/36 dark:text-white/28">{e.period}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.aside>
+
+          {/* ── MAIN CONTENT ── */}
+          <main className="min-w-0 space-y-10">
+
+            {/* Experiência */}
+            <FadeUp>
+              <SectionHeader icon={BriefcaseBusiness} label="Experiência Profissional" />
+              <div className="space-y-4">
+                {experiences.map((item, i) => (
+                  <FadeUp key={item.company} delay={i * 0.07}>
+                    <div className="overflow-hidden rounded-2xl border border-black/8 bg-white/62 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.04]">
+                      {/* Card header */}
+                      <div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/6 bg-white/40 px-5 py-4 dark:border-white/6 dark:bg-white/[0.03]">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-semibold tracking-[-0.03em]">{item.company}</h3>
+                            {item.active && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/12 px-2 py-0.5 text-[10px] font-medium text-green-700 dark:text-green-400">
+                                <span className="size-1.5 rounded-full bg-green-500" />
+                                Ativo
+                              </span>
+                            )}
+                          </div>
+                          <p className="mt-0.5 text-sm text-violet-600 dark:text-violet-300">{item.role}</p>
+                        </div>
+                        <span className="shrink-0 text-xs text-[#0b1020]/40 dark:text-white/36">{item.period}</span>
+                      </div>
+                      {/* Bullets */}
+                      <ul className="space-y-2 px-5 py-4">
+                        {item.bullets.map((bullet) => (
+                          <li key={bullet} className="flex gap-3 text-sm leading-6 text-[#0b1020]/62 dark:text-white/56">
+                            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-violet-500/60 dark:bg-violet-400/60" />
+                            {bullet}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </FadeUp>
+                ))}
+              </div>
+            </FadeUp>
+
+            {/* Expertise técnica */}
+            <FadeUp>
+              <SectionHeader icon={Code2} label="Expertise Técnica" />
+              <div className="overflow-hidden rounded-2xl border border-black/8 bg-white/62 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.04]">
+                {Object.entries(techStack).map(([label, items], i) => (
+                  <div
+                    key={label}
+                    className={`flex flex-wrap items-start gap-4 px-5 py-4 ${i !== 0 ? "border-t border-black/6 dark:border-white/6" : ""}`}
+                  >
+                    <span className="w-28 shrink-0 text-xs font-medium text-[#0b1020]/42 dark:text-white/36 mt-0.5">
+                      {label}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {items.map((tech) => (
+                        <span
+                          key={tech}
+                          className="rounded-full border border-black/8 bg-white/72 px-3 py-1 text-xs font-medium text-[#0b1020]/72 dark:border-white/10 dark:bg-white/[0.06] dark:text-white/68"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </FadeUp>
+
+            {/* Sobre / bio expandida */}
+            <FadeUp>
+              <SectionHeader icon={NotebookPen} label="Sobre" />
+              <div className="rounded-2xl border border-black/8 bg-white/62 px-5 py-5 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.04]">
+                <p className="text-sm leading-8 text-[#0b1020]/66 dark:text-white/60">
+                  Construo aplicações web e mobile que combinam código limpo, escalabilidade e experiências intuitivas.
+                  Meu foco é desenvolver produtos digitais rápidos, confiáveis e preparados para crescer, transformando
+                  ideias em soluções que geram valor real para usuários e empresas. Com 2+ anos de experiência, já
+                  entreguei mais de 15 projetos em produção, desde sistemas internos até plataformas SaaS completas.
+                </p>
+              </div>
+            </FadeUp>
+
+          </main>
+        </div>
       </div>
     </div>
   );

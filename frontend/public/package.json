@@ -1,0 +1,5 @@
+{
+  "name": "andredeomondes.dev",
+  "private": true,
+  "workspaces": ["frontend"]
+}

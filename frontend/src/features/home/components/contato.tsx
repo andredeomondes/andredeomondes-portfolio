@@ -1,108 +1,219 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView, useScroll, useTransform } from "motion/react";
-import { ArrowUpRight, MessageSquare } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { useMemo, useState } from "react";
+import { motion } from "motion/react";
+import { ImagePlus, Mail, MessageCircle, X } from "lucide-react";
+import { FaGithub, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { Dock, DockIcon } from "@/shared/components/ui/dock";
-import { BorderBeam } from "@/shared/components/ui/border-beam";
-import { TextAnimate } from "@/shared/components/ui/text-animate";
+import { NoiseTexture } from "@/shared/components/ui/noise-texture";
+import { RetroGrid } from "@/shared/components/ui/retro-grid";
+import {
+  ShimmerAnchor,
+  ShimmerLink,
+} from "@/shared/components/ui/shimmer-button";
 
 const socialLinks = [
-  { icon: FaGithub, label: "GitHub", href: "https://github.com/andredeomondes" },
-  { icon: FaLinkedin, label: "LinkedIn", href: "https://linkedin.com/in/andredeomondes" },
-  { icon: MessageSquare, label: "Email", href: "mailto:contato@andredeomondes.dev" },
+  {
+    href: "https://github.com/andredeomondes",
+    label: "GitHub",
+    icon: FaGithub,
+  },
+  {
+    href: "https://linkedin.com/in/andredeomondes",
+    label: "LinkedIn",
+    icon: FaLinkedin,
+  },
+  {
+    href: "https://instagram.com/andredeomondes.dev",
+    label: "Instagram",
+    icon: FaInstagram,
+  },
+  {
+    href: "mailto:contato@andredeomondes.dev",
+    label: "Email",
+    icon: Mail,
+  },
 ];
 
+const whatsappNumber = "5571988384932";
+
 export function ContatoSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
+  const [message, setMessage] = useState("");
+  const [imageName, setImageName] = useState("");
 
-  const contentY = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [60, 0, 0, -60]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0]);
+  const whatsappHref = useMemo(() => {
+    const baseMessage = message.trim()
+      ? `Olá André, quero criar este software:%0A%0A${encodeURIComponent(
+          message.trim(),
+        )}`
+      : "Olá André, quero criar um software e conversar sobre o projeto.";
 
-  const fadeUpVariant = (delay: number) =>
-    ({
-      hidden: { opacity: 0, y: 30 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] } },
-      exit: { opacity: 0, y: -20, transition: { duration: 0.3, ease: "easeIn" } },
-    }) as const;
+    const imageNote = imageName
+      ? `%0A%0AImagem de referência selecionada: ${encodeURIComponent(
+          imageName,
+        )}%0A(Vou anexar a imagem no WhatsApp.)`
+      : "";
+
+    return `https://wa.me/${whatsappNumber}?text=${baseMessage}${imageNote}`;
+  }, [imageName, message]);
 
   return (
     <section
-      ref={sectionRef}
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6"
+      id="contato"
+      className="relative isolate min-h-screen overflow-hidden bg-[#eef2f6] px-6 py-28 text-[#0b1020] dark:bg-[#030611] dark:text-white sm:px-8 lg:px-12"
     >
-      <motion.div style={{ y: contentY, opacity: contentOpacity }} className="flex flex-col items-center">
-        <motion.h2
-          variants={fadeUpVariant(0.1)}
-          initial="hidden"
-          animate={isInView ? "visible" : "exit"}
-          className="text-center text-4xl font-medium leading-[1.15] tracking-tight sm:text-5xl lg:text-6xl"
-        >
-          Vamos construir{" "}
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-[#8B5CF6]"
-          >
-            algo incrível.
-          </motion.span>
-        </motion.h2>
+      {/* Light mode bg */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_20%,rgba(139,92,246,0.14),transparent_40%),linear-gradient(145deg,#eef2f6_0%,#e7e8ef_52%,#e2ddf3_100%)] dark:bg-[radial-gradient(circle_at_50%_20%,rgba(120,80,220,0.28),transparent_28%),linear-gradient(180deg,#030611_0%,#070914_45%,#090313_100%)]" />
 
-        <div className="mt-6 max-w-md">
-          <TextAnimate
-            animation="fadeIn"
-            by="line"
-            duration={0.5}
-            delay={0.45}
-            className="text-center text-base text-[#94A3B8]"
-          >
-            Estou sempre aberto para conversar
-            sobre produtos, tecnologia e novas ideias.
-          </TextAnimate>
-        </div>
+      <NoiseTexture
+        noiseOpacity={0.08}
+        frequency={0.55}
+        octaves={3}
+        slope={0.7}
+        className="z-[1] opacity-30 mix-blend-soft-light"
+      />
 
+      <RetroGrid
+        className="z-[2]"
+        angle={62}
+        cellSize={55}
+        opacity={1}
+        lightLineColor="rgba(109,40,217,0.55)"
+        darkLineColor="rgba(167,139,250,0.85)"
+      />
+      {/* Violet horizon glow */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-[28%] z-[3] h-px bg-gradient-to-r from-transparent via-violet-500/70 to-transparent dark:via-violet-500/90"
+        style={{ boxShadow: "0 0 30px 6px rgba(139,92,246,0.45), 0 0 90px 18px rgba(139,92,246,0.2)" }}
+      />
+      <div className="pointer-events-none absolute bottom-[26%] left-1/2 z-[3] h-32 w-[80%] -translate-x-1/2 bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.22),transparent_70%)] blur-3xl dark:bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.35),transparent_70%)]" />
+
+      <div className="relative z-10 mx-auto flex min-h-[72vh] max-w-6xl items-center justify-center">
         <motion.div
-          variants={fadeUpVariant(0.6)}
-          initial="hidden"
-          animate={isInView ? "visible" : "exit"}
-          className="mt-10"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[2.2rem] border border-violet-400/35 bg-[#080b18]/58 p-6 text-center shadow-[0_0_80px_rgba(120,80,220,0.28)] backdrop-blur-xl sm:p-8"
         >
-          <a
-            href="https://wa.me/5571999999999"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group relative inline-flex h-12 items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-8 text-sm font-medium text-[#F8FAFC] backdrop-blur-xl transition-all hover:bg-[#8B5CF6]/20 hover:border-[#8B5CF6]/30"
-          >
-            Conversar no WhatsApp
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            <BorderBeam duration={3} size={80} />
-          </a>
-        </motion.div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(166,120,255,0.13),transparent_55%)]" />
 
-        <motion.div
-          variants={fadeUpVariant(0.8)}
-          initial="hidden"
-          animate={isInView ? "visible" : "exit"}
-          className="mt-16"
-        >
-          <Dock direction="middle" className="border-white/[0.06] bg-white/[0.02]">
-            {socialLinks.map((link) => (
-              <DockIcon key={link.label}>
-                <a href={link.href} target="_blank" rel="noopener noreferrer" title={link.label}>
-                  <link.icon className="h-5 w-5 text-[#94A3B8] transition-colors hover:text-[#F8FAFC]" />
-                </a>
-              </DockIcon>
-            ))}
-          </Dock>
+          <div className="relative z-10">
+            <h2 className="text-balance text-4xl font-semibold leading-[0.98] tracking-[-0.06em] sm:text-5xl">
+              Descreva o software
+              <br />
+              que você quer criar.
+            </h2>
+
+            <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/58">
+              Envie a ideia no WhatsApp e, se quiser, leve uma imagem de
+              referência junto.
+            </p>
+
+            <div className="mt-8 rounded-[1.8rem] border border-white/10 bg-[#090d1f]/76 p-4 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+              <label
+                htmlFor="service-chat"
+                className="text-[11px] font-medium uppercase tracking-[0.26em] text-white/44"
+              >
+                Mensagem inicial
+              </label>
+
+              <textarea
+                id="service-chat"
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
+                placeholder="Ex.: quero um sistema interno com dashboard, automações e uma área de atendimento."
+                className="mt-3 min-h-44 w-full resize-none rounded-[1.4rem] border border-white/10 bg-[#050817]/90 px-4 py-4 text-sm leading-7 text-white outline-none transition-all duration-300 placeholder:text-white/28 hover:border-white/16 focus:border-violet-400 focus:shadow-[0_0_0_4px_rgba(127,103,255,0.14)]"
+              />
+
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <label className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:border-white/18 hover:bg-white/[0.09]">
+                  <ImagePlus className="size-4 transition-transform duration-300 group-hover:scale-110" />
+                  Adicionar imagem
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(event) => {
+                      const file = event.target.files?.[0];
+                      setImageName(file?.name ?? "");
+                    }}
+                  />
+                </label>
+
+                {imageName ? (
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 text-sm text-white/72">
+                    <span className="max-w-44 truncate">{imageName}</span>
+                    <button
+                      type="button"
+                      onClick={() => setImageName("")}
+                      className="inline-flex size-5 items-center justify-center rounded-full transition-colors hover:bg-white/10"
+                      aria-label="Remover imagem"
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-xs text-white/40">
+                    A imagem será anexada manualmente ao abrir o WhatsApp.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <ShimmerAnchor
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                shimmerColor="#4ade80"
+                background="rgba(22,163,74,0.88)"
+                className="h-12 gap-2 px-6 text-sm font-medium shadow-[0_0_28px_rgba(34,197,94,0.4)]"
+              >
+                Enviar no WhatsApp
+                <FaWhatsapp className="size-4" />
+              </ShimmerAnchor>
+
+              <ShimmerLink
+                href="/projects"
+                shimmerColor="#a78bfa"
+                background="rgba(30,27,75,0.72)"
+                className="h-12 border-violet-500/30 px-6 text-sm font-medium shadow-[0_0_18px_rgba(139,92,246,0.22)]"
+              >
+                Ver projetos
+              </ShimmerLink>
+            </div>
+
+            <div className="mt-4 inline-flex items-center gap-2 text-xs text-white/42">
+              <MessageCircle className="size-3.5" />
+              WhatsApp: +55 71 98838-4932
+            </div>
+
+            <Dock className="mt-10 border-white/10 bg-white/[0.05]">
+              {socialLinks.map((item) => (
+                <DockIcon
+                  key={item.label}
+                  className="text-white transition-colors duration-300 hover:text-violet-200"
+                >
+                  <a
+                    href={item.href}
+                    target={item.href.startsWith("http") ? "_blank" : undefined}
+                    rel={
+                      item.href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    title={item.label}
+                    className="flex items-center justify-center"
+                  >
+                    <item.icon className="size-4" />
+                  </a>
+                </DockIcon>
+              ))}
+            </Dock>
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
