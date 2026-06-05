@@ -6,47 +6,35 @@ import { ImagePlus, Mail, MessageCircle, X } from "lucide-react";
 import { FaGithub, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
 import { Dock, DockIcon } from "@/shared/components/ui/dock";
 import { NoiseTexture } from "@/shared/components/ui/noise-texture";
-import { RetroGrid } from "@/shared/components/ui/retro-grid";
 import {
   ShimmerAnchor,
   ShimmerLink,
 } from "@/shared/components/ui/shimmer-button";
+import type { ProfileSettings, SiteBrandingSettings } from "@/lib/site-content";
 
-const socialLinks = [
-  {
-    href: "https://github.com/andredeomondes",
-    label: "GitHub",
-    icon: FaGithub,
-  },
-  {
-    href: "https://linkedin.com/in/andredeomondes",
-    label: "LinkedIn",
-    icon: FaLinkedin,
-  },
-  {
-    href: "https://instagram.com/andredeomondes.dev",
-    label: "Instagram",
-    icon: FaInstagram,
-  },
-  {
-    href: "mailto:contato@andredeomondes.dev",
-    label: "Email",
-    icon: Mail,
-  },
-];
-
-const whatsappNumber = "5571988384932";
-
-export function ContatoSection() {
+export function ContatoSection({
+  profile,
+  branding,
+}: {
+  profile: ProfileSettings;
+  branding: SiteBrandingSettings;
+}) {
   const [message, setMessage] = useState("");
   const [imageName, setImageName] = useState("");
 
+  const socialLinks = [
+    { href: profile.social.github, label: "GitHub", icon: FaGithub },
+    { href: profile.social.linkedin, label: "LinkedIn", icon: FaLinkedin },
+    { href: profile.social.instagram, label: "Instagram", icon: FaInstagram },
+    { href: `mailto:${profile.email}`, label: "Email", icon: Mail },
+  ];
+
   const whatsappHref = useMemo(() => {
     const baseMessage = message.trim()
-      ? `Olá André, quero criar este software:%0A%0A${encodeURIComponent(
+      ? `Ola Andre, quero criar este software:%0A%0A${encodeURIComponent(
           message.trim(),
         )}`
-      : "Olá André, quero criar um software e conversar sobre o projeto.";
+      : branding.whatsappMessageTemplate;
 
     const imageNote = imageName
       ? `%0A%0AImagem de referência selecionada: ${encodeURIComponent(
@@ -54,8 +42,8 @@ export function ContatoSection() {
         )}%0A(Vou anexar a imagem no WhatsApp.)`
       : "";
 
-    return `https://wa.me/${whatsappNumber}?text=${baseMessage}${imageNote}`;
-  }, [imageName, message]);
+    return `https://wa.me/${profile.whatsapp}?text=${baseMessage}${imageNote}`;
+  }, [branding.whatsappMessageTemplate, imageName, message, profile.whatsapp]);
 
   return (
     <section
@@ -73,14 +61,6 @@ export function ContatoSection() {
         className="z-[1] opacity-30 mix-blend-soft-light"
       />
 
-      <RetroGrid
-        className="z-[2]"
-        angle={62}
-        cellSize={55}
-        opacity={1}
-        lightLineColor="rgba(109,40,217,0.55)"
-        darkLineColor="rgba(167,139,250,0.85)"
-      />
       {/* Violet horizon glow */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-[28%] z-[3] h-px bg-gradient-to-r from-transparent via-violet-500/70 to-transparent dark:via-violet-500/90"
@@ -100,14 +80,11 @@ export function ContatoSection() {
 
           <div className="relative z-10">
             <h2 className="text-balance text-4xl font-semibold leading-[0.98] tracking-[-0.06em] sm:text-5xl">
-              Descreva o software
-              <br />
-              que você quer criar.
+              {branding.contactTitle}
             </h2>
 
             <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-white/58">
-              Envie a ideia no WhatsApp e, se quiser, leve uma imagem de
-              referência junto.
+              {branding.contactDescription}
             </p>
 
             <div className="mt-8 rounded-[1.8rem] border border-white/10 bg-[#090d1f]/76 p-4 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
@@ -186,7 +163,7 @@ export function ContatoSection() {
 
             <div className="mt-4 inline-flex items-center gap-2 text-xs text-white/42">
               <MessageCircle className="size-3.5" />
-              WhatsApp: +55 71 98838-4932
+              WhatsApp: +{profile.whatsapp}
             </div>
 
             <Dock className="mt-10 border-white/10 bg-white/[0.05]">

@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "motion/react";
 import {
   BriefcaseBusiness,
   Calendar,
@@ -9,96 +6,19 @@ import {
   GraduationCap,
   MapPin,
   NotebookPen,
+  Mail,
 } from "lucide-react";
 import { FaGithub, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa";
-import { Mail } from "lucide-react";
+import { getPublicSettings } from "@/lib/frontend-api";
 import { NoiseTexture } from "@/shared/components/ui/noise-texture";
 import { ProgressiveBlur } from "@/shared/components/ui/progressive-blur";
-
-const developer = {
-  name: "André Deomondes",
-  role: "Full Stack & Mobile Developer",
-  company: "Caji Solutions",
-  birthdate: "27/06/2003",
-  age: 21,
-  location: "Salvador, BA, Brasil",
-  bio: "Construo aplicações web e mobile que combinam código limpo, escalabilidade e experiências intuitivas. Meu foco é desenvolver produtos digitais rápidos, confiáveis e preparados para crescer.",
-};
-
-const techStack = {
-  Frontend: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-  Mobile: ["React Native", "Expo"],
-  Backend: ["Node.js", "NestJS", "Fastify", "Java", "Spring Boot"],
-  "Banco de dados": ["PostgreSQL", "MongoDB"],
-  DevOps: ["Docker", "AWS", "Git", "CI/CD"],
-};
-
-const experiences = [
-  {
-    company: "Caji Solutions",
-    role: "Full Stack Developer",
-    period: "Abr 2026 — Presente",
-    active: true,
-    bullets: [
-      "Desenvolvo sistemas web e APIs para fluxos internos e produtos digitais.",
-      "Estruturo interfaces claras e integrações prontas para crescer.",
-      "Atuo em backend, front-end e organização técnica da entrega.",
-    ],
-  },
-  {
-    company: "REXIS Digital",
-    role: "Full Stack Developer",
-    period: "Jan 2026 — Presente",
-    active: true,
-    bullets: [
-      "Trabalho em software escalável com foco em arquitetura backend.",
-      "Integro fluxos com IA para operações mais rápidas e simples.",
-    ],
-  },
-  {
-    company: "Workana",
-    role: "Desenvolvedor Web Freelancer",
-    period: "Jan 2025 — Presente",
-    active: false,
-    bullets: [
-      "Entrego sites, sistemas e soluções sob medida para clientes.",
-      "Cuido da experiência, da base técnica e da velocidade de entrega.",
-    ],
-  },
-];
-
-const education = [
-  {
-    institution: "Universidade CIMATEC",
-    degree: "Bacharelado em Engenharia da Computação",
-    period: "Jan 2024 — Jan 2029",
-  },
-  {
-    institution: "SENAI BAHIA",
-    degree: "Técnico em Desenvolvimento de Sistemas",
-    period: "Ago 2025 — Ago 2027",
-  },
-];
-
-const socialLinks = [
-  { href: "https://github.com/andredeomondes", label: "GitHub", icon: FaGithub },
-  { href: "https://linkedin.com/in/andredeomondes", label: "LinkedIn", icon: FaLinkedin },
-  { href: "https://instagram.com/andredeomondes.dev", label: "Instagram", icon: FaInstagram },
-  { href: "mailto:contato@andredeomondes.dev", label: "Email", icon: Mail },
-  { href: "https://wa.me/5571988384932", label: "WhatsApp", icon: FaWhatsapp },
-];
+import { normalizeSiteContent } from "@/lib/site-content";
 
 function FadeUp({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-    >
+    <div className={className} style={{ animationDelay: `${delay}s` }}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -116,7 +36,18 @@ function SectionHeader({ icon: Icon, label }: { icon: React.ComponentType<{ clas
   );
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const settings = await getPublicSettings().catch(() => ({}));
+  const site = normalizeSiteContent(settings);
+  const { profile, about } = site;
+  const socialLinks = [
+    { href: profile.social.github, label: "GitHub", icon: FaGithub },
+    { href: profile.social.linkedin, label: "LinkedIn", icon: FaLinkedin },
+    { href: profile.social.instagram, label: "Instagram", icon: FaInstagram },
+    { href: `mailto:${profile.email}`, label: "Email", icon: Mail },
+    { href: `https://wa.me/${profile.whatsapp}`, label: "WhatsApp", icon: FaWhatsapp },
+  ];
+
   return (
     <div className="relative isolate min-h-screen overflow-hidden bg-[#f6f2ea] text-[#0b1020] dark:bg-[#080912] dark:text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(180,143,255,0.12),transparent_32%),linear-gradient(145deg,#f6f2ea_0%,#ede7dd_52%,#e8e2f5_100%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(120,80,255,0.1),transparent_32%),linear-gradient(145deg,#080912_0%,#0a0d1f_52%,#10091e_100%)]" />
@@ -125,24 +56,14 @@ export default function AboutPage() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-28 sm:px-8 lg:px-12">
         <div className="grid gap-8 lg:grid-cols-[280px_1fr] lg:items-start xl:grid-cols-[300px_1fr]">
-
-          {/* ── SIDEBAR ── */}
-          <motion.aside
-            initial={{ opacity: 0, x: -16 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:sticky lg:top-28 lg:h-fit"
-          >
-            {/* Profile card */}
+          <aside className="lg:sticky lg:top-28 lg:h-fit">
             <div className="overflow-hidden rounded-2xl border border-black/10 bg-white/72 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05]">
-
-              {/* Avatar header strip */}
               <div className="relative bg-gradient-to-br from-violet-500/10 via-violet-500/5 to-transparent p-5 pb-0 dark:from-violet-500/20">
                 <div className="flex flex-col items-center pb-5 text-center">
                   <div className="relative">
                     <Image
                       src="/andre.jpg"
-                      alt="André Deomondes"
+                      alt={profile.name}
                       width={80}
                       height={80}
                       priority
@@ -153,24 +74,21 @@ export default function AboutPage() {
                     </span>
                   </div>
                   <div className="mt-3">
-                    <h1 className="text-base font-semibold tracking-[-0.03em]">{developer.name}</h1>
-                    <p className="mt-0.5 text-xs text-violet-600 dark:text-violet-400">{developer.role}</p>
+                    <h1 className="text-base font-semibold tracking-[-0.03em]">{profile.name}</h1>
+                    <p className="mt-0.5 text-xs text-violet-600 dark:text-violet-400">{profile.role}</p>
                   </div>
                   <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-green-500/30 bg-green-500/10 px-2.5 py-1 text-[11px] font-medium text-green-700 dark:text-green-400">
-                    Disponível para conversar
+                    {profile.availability}
                   </span>
                 </div>
               </div>
 
-              {/* Divider */}
               <div className="h-px bg-gradient-to-r from-transparent via-black/8 to-transparent dark:via-white/8" />
-
-              {/* Info rows */}
               <div className="divide-y divide-black/6 dark:divide-white/6">
                 {[
-                  { icon: Calendar, text: `${developer.birthdate} · ${developer.age} anos` },
-                  { icon: MapPin, text: developer.location },
-                  { icon: BriefcaseBusiness, text: developer.company },
+                  { icon: Calendar, text: `${profile.birthdate} · ${profile.age} anos` },
+                  { icon: MapPin, text: profile.location },
+                  { icon: BriefcaseBusiness, text: profile.company },
                 ].map(({ icon: Icon, text }) => (
                   <div key={text} className="flex items-center gap-3 px-4 py-2.5">
                     <Icon className="size-3.5 shrink-0 text-violet-600 dark:text-violet-400" />
@@ -179,15 +97,10 @@ export default function AboutPage() {
                 ))}
               </div>
 
-              {/* Divider */}
               <div className="h-px bg-gradient-to-r from-transparent via-black/8 to-transparent dark:via-white/8" />
-
-              {/* Bio */}
               <p className="px-4 py-4 text-xs leading-6 text-[#0b1020]/58 dark:text-white/48">
-                {developer.bio}
+                {profile.shortBio}
               </p>
-
-              {/* Social row */}
               <div className="h-px bg-gradient-to-r from-transparent via-black/8 to-transparent dark:via-white/8" />
               <div className="flex items-center justify-center gap-1 px-4 py-3">
                 {socialLinks.map((item) => (
@@ -205,37 +118,32 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Education card */}
             <div className="mt-4 overflow-hidden rounded-2xl border border-black/10 bg-white/72 backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05]">
               <div className="flex items-center gap-2 border-b border-black/6 px-4 py-3 dark:border-white/6">
                 <GraduationCap className="size-3.5 text-violet-600 dark:text-violet-400" />
                 <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-600 dark:text-violet-400">
-                  Formação
+                  Formacao
                 </span>
               </div>
               <div className="divide-y divide-black/6 dark:divide-white/6">
-                {education.map((e) => (
-                  <div key={e.institution} className="px-4 py-3">
-                    <p className="text-sm font-medium">{e.institution}</p>
-                    <p className="mt-0.5 text-xs leading-5 text-[#0b1020]/46 dark:text-white/38">{e.degree}</p>
-                    <p className="mt-0.5 text-[11px] text-[#0b1020]/36 dark:text-white/28">{e.period}</p>
+                {about.education.map((item) => (
+                  <div key={`${item.institution}-${item.degree}`} className="px-4 py-3">
+                    <p className="text-sm font-medium">{item.institution}</p>
+                    <p className="mt-0.5 text-xs leading-5 text-[#0b1020]/46 dark:text-white/38">{item.degree}</p>
+                    <p className="mt-0.5 text-[11px] text-[#0b1020]/36 dark:text-white/28">{item.period}</p>
                   </div>
                 ))}
               </div>
             </div>
-          </motion.aside>
+          </aside>
 
-          {/* ── MAIN CONTENT ── */}
           <main className="min-w-0 space-y-10">
-
-            {/* Experiência */}
             <FadeUp>
-              <SectionHeader icon={BriefcaseBusiness} label="Experiência Profissional" />
+              <SectionHeader icon={BriefcaseBusiness} label="Experiencia Profissional" />
               <div className="space-y-4">
-                {experiences.map((item, i) => (
-                  <FadeUp key={item.company} delay={i * 0.07}>
+                {about.experiences.map((item, i) => (
+                  <FadeUp key={`${item.company}-${item.role}`} delay={i * 0.07}>
                     <div className="overflow-hidden rounded-2xl border border-black/8 bg-white/62 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.04]">
-                      {/* Card header */}
                       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-black/6 bg-white/40 px-5 py-4 dark:border-white/6 dark:bg-white/[0.03]">
                         <div>
                           <div className="flex items-center gap-2">
@@ -251,7 +159,6 @@ export default function AboutPage() {
                         </div>
                         <span className="shrink-0 text-xs text-[#0b1020]/40 dark:text-white/36">{item.period}</span>
                       </div>
-                      {/* Bullets */}
                       <ul className="space-y-2 px-5 py-4">
                         {item.bullets.map((bullet) => (
                           <li key={bullet} className="flex gap-3 text-sm leading-6 text-[#0b1020]/62 dark:text-white/56">
@@ -266,20 +173,19 @@ export default function AboutPage() {
               </div>
             </FadeUp>
 
-            {/* Expertise técnica */}
             <FadeUp>
-              <SectionHeader icon={Code2} label="Expertise Técnica" />
+              <SectionHeader icon={Code2} label="Expertise Tecnica" />
               <div className="overflow-hidden rounded-2xl border border-black/8 bg-white/62 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.04]">
-                {Object.entries(techStack).map(([label, items], i) => (
+                {about.techStack.map((section, i) => (
                   <div
-                    key={label}
+                    key={section.label}
                     className={`flex flex-wrap items-start gap-4 px-5 py-4 ${i !== 0 ? "border-t border-black/6 dark:border-white/6" : ""}`}
                   >
-                    <span className="w-28 shrink-0 text-xs font-medium text-[#0b1020]/42 dark:text-white/36 mt-0.5">
-                      {label}
+                    <span className="mt-0.5 w-28 shrink-0 text-xs font-medium text-[#0b1020]/42 dark:text-white/36">
+                      {section.label}
                     </span>
                     <div className="flex flex-wrap gap-2">
-                      {items.map((tech) => (
+                      {section.items.map((tech) => (
                         <span
                           key={tech}
                           className="rounded-full border border-black/8 bg-white/72 px-3 py-1 text-xs font-medium text-[#0b1020]/72 dark:border-white/10 dark:bg-white/[0.06] dark:text-white/68"
@@ -293,19 +199,14 @@ export default function AboutPage() {
               </div>
             </FadeUp>
 
-            {/* Sobre / bio expandida */}
             <FadeUp>
               <SectionHeader icon={NotebookPen} label="Sobre" />
               <div className="rounded-2xl border border-black/8 bg-white/62 px-5 py-5 backdrop-blur-md dark:border-white/8 dark:bg-white/[0.04]">
                 <p className="text-sm leading-8 text-[#0b1020]/66 dark:text-white/60">
-                  Construo aplicações web e mobile que combinam código limpo, escalabilidade e experiências intuitivas.
-                  Meu foco é desenvolver produtos digitais rápidos, confiáveis e preparados para crescer, transformando
-                  ideias em soluções que geram valor real para usuários e empresas. Com 2+ anos de experiência, já
-                  entreguei mais de 15 projetos em produção, desde sistemas internos até plataformas SaaS completas.
+                  {profile.longBio}
                 </p>
               </div>
             </FadeUp>
-
           </main>
         </div>
       </div>

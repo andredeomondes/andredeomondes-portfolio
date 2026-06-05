@@ -1,11 +1,16 @@
-import { NextResponse } from "next/server";
-import { analyzeATS, saveATSResult, getResume } from "@portfolio/backend";
+import { isAdminRequest } from "@/server/auth";
+import { jsonError, jsonOk, unauthorized } from "@/server/http";
+import { analyzeATS, getResume, saveATSResult } from "@/server/services/resume";
 
 export async function POST(request: Request) {
-  const { content, save = false } = await request.json();
-  if (!content) return NextResponse.json({ error: "Content required" }, { status: 400 });
+  if (!(await isAdminRequest())) {
+    return unauthorized();
+  }
 
-  const result = analyzeATS(content);
+  const { content, save = false } = await request.json();
+  if (!content) return jsonError("Content required", 400);
+
+  const result = await analyzeATS(content);
 
   if (save) {
     try {
@@ -14,5 +19,5 @@ export async function POST(request: Request) {
     } catch {}
   }
 
-  return NextResponse.json(result);
+  return jsonOk(result);
 }

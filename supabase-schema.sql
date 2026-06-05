@@ -62,10 +62,37 @@ alter table projects enable row level security;
 alter table site_settings enable row level security;
 alter table resume enable row level security;
 
+drop policy if exists "Public read published projects" on projects;
 create policy "Public read published projects" on projects
   for select using (published = true);
 
+drop policy if exists "Admin manage projects" on projects;
+create policy "Admin manage projects" on projects
+  for all
+  to authenticated
+  using ((auth.jwt() ->> 'email') = 'andredeomondes.dev@gmail.com')
+  with check ((auth.jwt() ->> 'email') = 'andredeomondes.dev@gmail.com');
+
+drop policy if exists "Public read settings" on site_settings;
 create policy "Public read settings" on site_settings
   for select using (true);
 
--- Service role bypasses RLS automatically
+drop policy if exists "Admin manage settings" on site_settings;
+create policy "Admin manage settings" on site_settings
+  for all
+  to authenticated
+  using ((auth.jwt() ->> 'email') = 'andredeomondes.dev@gmail.com')
+  with check ((auth.jwt() ->> 'email') = 'andredeomondes.dev@gmail.com');
+
+drop policy if exists "Public read resume" on resume;
+create policy "Public read resume" on resume
+  for select using (true);
+
+drop policy if exists "Admin manage resume" on resume;
+create policy "Admin manage resume" on resume
+  for all
+  to authenticated
+  using ((auth.jwt() ->> 'email') = 'andredeomondes.dev@gmail.com')
+  with check ((auth.jwt() ->> 'email') = 'andredeomondes.dev@gmail.com');
+
+-- Service role still bypasses RLS automatically, but admin panel should prefer user-authenticated access.

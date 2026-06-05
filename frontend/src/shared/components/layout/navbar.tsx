@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Mail, Menu, Moon, Sun, X } from "lucide-react";
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa";
@@ -32,9 +33,11 @@ const socialLinks = [
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const { scrollY } = useScroll();
   const { resolvedTheme, setTheme } = useTheme();
+  const isAdminRoute = pathname.startsWith("/admin");
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -42,6 +45,10 @@ export function Navbar() {
   });
 
   const isDark = resolvedTheme !== "light";
+
+  if (isAdminRoute) {
+    return null;
+  }
 
   return (
     <motion.header

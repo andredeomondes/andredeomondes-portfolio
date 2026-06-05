@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
-import { FileText, Settings, User, LayoutDashboard, ScrollText, Star } from "lucide-react";
+import { FileText, Settings, User, LayoutDashboard, ScrollText, LogOut } from "lucide-react";
 
 const adminLinks = [
   { title: "Projetos", description: "CRUD completo + selecionar 3 em destaque para a home", href: "/admin/projects", icon: FileText, accent: "violet" },
@@ -17,6 +20,17 @@ const accentMap: Record<string, string> = {
 };
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.replace("/admin/login");
+    router.refresh();
+  }
+
   return (
     <div className="min-h-screen bg-[#080912] px-6 py-12 text-white sm:px-8">
       <div className="mx-auto max-w-7xl">
@@ -25,9 +39,19 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="flex items-center gap-3">
-            <LayoutDashboard className="size-5 text-violet-400" />
-            <h1 className="text-2xl font-semibold tracking-[-0.04em]">Dashboard</h1>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <LayoutDashboard className="size-5 text-violet-400" />
+              <h1 className="text-2xl font-semibold tracking-[-0.04em]">Dashboard</h1>
+            </div>
+            <button
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/70 transition-colors hover:border-red-500/30 hover:text-red-300 disabled:opacity-50"
+            >
+              <LogOut className="size-4" />
+              {loggingOut ? "Saindo..." : "Sair"}
+            </button>
           </div>
           <p className="mt-2 text-sm text-white/40">Painel administrativo do portfólio.</p>
         </motion.div>
@@ -53,22 +77,6 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-8 rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5"
-        >
-          <div className="flex items-start gap-3">
-            <Star className="mt-0.5 size-4 shrink-0 text-violet-400" />
-            <div>
-              <p className="text-sm font-medium text-violet-300">Setup Supabase necessário</p>
-              <p className="mt-1 text-xs leading-5 text-white/50">
-                Adicione suas keys em <code className="rounded bg-white/8 px-1.5 py-0.5 font-mono text-violet-300">.env.local</code> e rode o SQL em <code className="rounded bg-white/8 px-1.5 py-0.5 font-mono text-violet-300">supabase-schema.sql</code> no painel Supabase → SQL Editor.
-              </p>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </div>
   );

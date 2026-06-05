@@ -44,6 +44,27 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
   return data as Project;
 }
 
+export async function getProjectById(id: string): Promise<Project | null> {
+  const { data, error } = await adminDb
+    .from(TABLE)
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error) return null;
+  return data as Project;
+}
+
+export async function getPublishedProjectBySlug(slug: string): Promise<Project | null> {
+  const { data, error } = await adminDb
+    .from(TABLE)
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .single();
+  if (error) return null;
+  return data as Project;
+}
+
 export async function createProject(input: ProjectInsert): Promise<Project> {
   const { data, error } = await adminDb
     .from(TABLE)

@@ -1,23 +1,32 @@
-import { NextResponse } from "next/server";
-import { getAllProjects, getPublishedProjects, createProject } from "@portfolio/backend";
+import { isAdminRequest } from "@/server/auth";
+import { jsonError, jsonOk, unauthorized } from "@/server/http";
+import { createProject, listProjects } from "@/server/services/projects";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const all = searchParams.get("all") === "true";
+
+  if (all && !(await isAdminRequest())) {
+    return unauthorized();
+  }
+
   try {
-    const data = all ? await getAllProjects() : await getPublishedProjects();
-    return NextResponse.json(data);
+    return jsonOk(await listProjects(all));
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    return jsonError(e);
   }
 }
 
 export async function POST(request: Request) {
+  if (!(await isAdminRequest())) {
+    return unauthorized();
+  }
+
   try {
     const body = await request.json();
     const data = await createProject(body);
-    return NextResponse.json(data, { status: 201 });
+    return jsonOk(data, { status: 201 });
   } catch (e) {
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    return jsonError(e);
   }
 }

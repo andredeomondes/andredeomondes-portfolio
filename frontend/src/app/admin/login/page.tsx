@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { ADMIN_EMAIL } from "@/lib/admin-user";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -11,12 +13,44 @@ import { BorderBeam } from "@/shared/components/ui/border-beam";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/admin");
+    setLoading(true);
+    setError("");
+
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError("Email ou senha invalidos.");
+        setLoading(false);
+        return;
+      }
+
+      if (data.user?.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        await supabase.auth.signOut();
+        setError("Este usuario nao tem acesso ao admin.");
+        setLoading(false);
+        return;
+      }
+
+      const next = searchParams.get("next");
+      router.replace(next && next.startsWith("/admin") ? next : "/admin");
+      router.refresh();
+    } catch {
+      setError("Nao foi possivel fazer login.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,7 +65,7 @@ export default function AdminLoginPage() {
           <CardHeader className="text-center">
             <CardTitle className="text-lg text-[#F8FAFC]">Admin</CardTitle>
             <CardDescription className="text-[#94A3B8]">
-              Faça login para acessar o painel
+              Faca login com o usuario autorizado no Supabase Auth. Nao ha criacao de conta.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -62,11 +96,15 @@ export default function AdminLoginPage() {
                   className="border-white/[0.08] bg-white/[0.04] text-[#F8FAFC] placeholder:text-[#64748B]"
                 />
               </div>
+              {error && (
+                <p className="text-sm text-red-400">{error}</p>
+              )}
               <Button
                 type="submit"
+                disabled={loading}
                 className="w-full bg-[#8B5CF6] text-white hover:bg-[#7C3AED]"
               >
-                Entrar
+                {loading ? "Entrando..." : "Entrar"}
               </Button>
             </form>
           </CardContent>
