@@ -207,14 +207,14 @@ export function HeroSection({
 
       <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col justify-center px-6 py-28 sm:px-8 lg:px-12">
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="max-w-xl">
+          <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
             <TextAnimate
               key={titleCycle}
               as="h1"
               by="character"
               animation="blurIn"
               duration={0.5}
-              className="text-[2.25rem] font-semibold leading-[0.92] tracking-[-0.08em] sm:whitespace-nowrap sm:text-[3.15rem] lg:text-[3.7rem]"
+              className="text-[2.25rem] font-semibold leading-[0.92] tracking-[-0.08em] sm:text-[3.15rem] lg:text-[3.7rem]"
             >
               {profile.heroTitle}
             </TextAnimate>
@@ -270,7 +270,7 @@ export function HeroSection({
                 delay: 0.34,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="mt-8 flex flex-wrap items-center gap-6"
+              className="mt-8 flex flex-wrap items-center justify-center gap-6 lg:justify-start"
             >
               <ShimmerLink
                 href="/projects"
@@ -311,7 +311,7 @@ export function HeroSection({
                 delay: 0.42,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="mt-10 flex flex-wrap gap-2.5"
+              className="mt-10 flex flex-wrap justify-center gap-2.5 lg:justify-start"
             >
               {stackIcons.map((item) => (
                 <div

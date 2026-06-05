@@ -222,16 +222,13 @@ function buildPdfFromResume(content: string) {
   const blocks = parseResumeMarkdown(content);
   const pageWidth = 595;
   const pageHeight = 842;
-  // ABNT: 3cm left/top, 2cm right/bottom
-  const marginLeft = 85;
-  const marginRight = 57;
-  const marginTop = 85;
-  const marginBottom = 57;
+  const marginLeft = 55;
+  const marginRight = 55;
+  const marginTop = 55;
+  const marginBottom = 50;
   const contentRight = pageWidth - marginRight;
-  const contentWidth = contentRight - marginLeft;
-  // ABNT body: 12pt Times, 1.5 spacing = 18pt
-  const bodySize = 10;
-  const bodyLeading = 15;
+  const bodySize = 9;
+  const bodyLeading = 13.5;
 
   const pages: string[][] = [[]];
   let y = pageHeight - marginTop;
@@ -260,86 +257,91 @@ function buildPdfFromResume(content: string) {
     push("ET");
   }
 
-  function drawSectionBox(label: string) {
-    const boxH = 18;
-    const padX = 7;
-    checkBreak(boxH + 14);
-    // box border
-    push("0 G");
-    push("0.6 w");
-    push(`${marginLeft} ${y - boxH} ${contentWidth} ${boxH} re`);
+  function drawRule(yPos: number) {
+    push("0.75 G");
+    push("0.5 w");
+    push(`${marginLeft} ${yPos} m`);
+    push(`${contentRight} ${yPos} l`);
     push("S");
-    // label: baseline at y - (boxH - ascent - (boxH - bodySize) / 2)
-    // center vertically: baseline = y - boxH/2 + bodySize*0.35
-    const textY = Math.round(y - boxH / 2 - bodySize * 0.35);
-    renderText(label, marginLeft + padX, textY, "/F2", bodySize);
-    y -= boxH + 10;
   }
 
-  blocks.forEach((block) => {
+  function drawSectionHeader(label: string) {
+    checkBreak(22);
+    renderText(label.toUpperCase(), marginLeft, y, "/F2", 9.5);
+    y -= 5;
+    drawRule(y);
+    y -= 10;
+  }
+
+  let isFirstBlock = true;
+
+  for (const block of blocks) {
     if (block.type === "h1") {
-      // Name: 14pt bold
-      const lines = splitLine(block.text.toUpperCase(), 62);
+      const lines = splitLine(block.text, 52);
       lines.forEach((line) => {
-        checkBreak(18);
-        renderText(line, marginLeft, y, "/F2", 12);
-        y -= 18;
+        checkBreak(24);
+        renderText(line, marginLeft, y, "/F2", 18);
+        y -= 24;
       });
-      y -= 4;
-      return;
+      isFirstBlock = false;
+      continue;
     }
 
     if (block.type === "h2") {
-      y -= 10;
-      drawSectionBox(block.text.toUpperCase());
-      return;
+      y -= isFirstBlock ? 0 : 10;
+      drawSectionHeader(block.text);
+      isFirstBlock = false;
+      continue;
     }
 
     if (block.type === "h3") {
-      y -= 4;
-      const lines = splitLine(block.text, 88);
+      const lines = splitLine(block.text, 92);
       lines.forEach((line) => {
         checkBreak(bodyLeading);
         renderText(line, marginLeft, y, "/F2", bodySize);
         y -= bodyLeading;
       });
-      return;
+      isFirstBlock = false;
+      continue;
     }
 
     if (block.type === "ul") {
       block.items.forEach((item) => {
-        const itemLines = splitLine(item, 85);
+        const itemLines = splitLine(item, 88);
         itemLines.forEach((line, i) => {
           checkBreak(bodyLeading);
           if (i === 0) {
-            renderText("-", marginLeft + 2, y, "/F1", bodySize);
-            renderText(line, marginLeft + 16, y, "/F1", bodySize);
+            renderText("-", marginLeft + 3, y, "/F1", bodySize);
+            renderText(line, marginLeft + 14, y, "/F1", bodySize);
           } else {
-            renderText(line, marginLeft + 16, y, "/F1", bodySize);
+            renderText(line, marginLeft + 14, y, "/F1", bodySize);
           }
           y -= bodyLeading;
         });
       });
-      return;
+      isFirstBlock = false;
+      continue;
     }
 
     // paragraph
     const text = normalizePdfText(block.text);
-    if (!text.trim()) return;
+    if (!text.trim()) continue;
 
-    const lines = splitLine(text, 88);
+    const lines = splitLine(text, 92);
     lines.forEach((line) => {
       checkBreak(bodyLeading);
       renderText(line, marginLeft, y, "/F1", bodySize);
       y -= bodyLeading;
     });
-  });
+    y -= 2;
+    isFirstBlock = false;
+  }
 
   const objects: string[] = [];
   objects.push("<< /Type /Catalog /Pages 2 0 R >>");
   objects.push(`<< /Type /Pages /Kids [${pages.map((_, i) => `${5 + i * 2} 0 R`).join(" ")}] /Count ${pages.length} >>`);
-  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman >>");
-  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold >>");
+  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
 
   pages.forEach((commands, i) => {
     const contentObjectId = 6 + i * 2;
