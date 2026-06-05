@@ -165,7 +165,7 @@ export function Navbar() {
 
               <div className="mt-auto mb-auto flex flex-col items-center gap-4 text-center">
                 {navLinks.map((link) => (
-                  <SheetClose key={link.href} render={<Link href={link.href} />}>
+                  <SheetClose key={link.href} nativeButton={false} render={<Link href={link.href} />}>
                     <span className="text-5xl font-semibold leading-none tracking-[-0.08em] sm:text-7xl">
                       {link.label}
                     </span>
