@@ -132,6 +132,14 @@ export default function LiquidEther({
   useEffect(() => {
     const container = mountRef.current;
     if (!container || typeof window === "undefined") return;
+    if (window.innerWidth < 768) return;
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, premultipliedAlpha: false });
+    } catch {
+      return;
+    }
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let W = Math.max(1, container.clientWidth);
@@ -140,7 +148,6 @@ export default function LiquidEther({
     let simH = Math.max(1, Math.round(resolution * H));
 
     // ── renderer ──
-    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, premultipliedAlpha: false });
     renderer.autoClear = false;
     renderer.setPixelRatio(dpr);
     renderer.setSize(W, H);

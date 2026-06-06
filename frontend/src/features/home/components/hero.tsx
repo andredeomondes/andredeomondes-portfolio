@@ -214,7 +214,7 @@ export function HeroSection({
               by="character"
               animation="blurIn"
               duration={0.5}
-              className="text-[2.25rem] font-semibold leading-[0.92] tracking-[-0.08em] sm:text-[3.15rem] lg:text-[3.7rem]"
+              className="text-[1.75rem] font-semibold leading-[0.92] tracking-[-0.08em] sm:text-[2.6rem] lg:text-[3.2rem]"
             >
               {profile.heroTitle}
             </TextAnimate>
