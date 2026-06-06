@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
@@ -20,9 +21,13 @@ import { NoiseTexture } from "@/shared/components/ui/noise-texture";
 import { GradualBlur } from "@/shared/components/ui/gradual-blur";
 import { TextAnimate } from "@/shared/components/ui/text-animate";
 import { ShimmerLink } from "@/shared/components/ui/shimmer-button";
-import LiquidEther from "@/shared/components/ui/liquid-ether";
 import type { Project } from "@/types/supabase";
 import type { ProfileSettings } from "@/lib/site-content";
+
+const LiquidEther = dynamic(() => import("@/shared/components/ui/liquid-ether"), {
+  ssr: false,
+  loading: () => null,
+});
 
 const stackIcons = [
   { label: "TypeScript", icon: SiTypescript, className: "text-[#3178C6]" },

@@ -1,15 +1,22 @@
 "use client";
 
-import { motion } from "motion/react";
+import { useEffect, useState } from "react";
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    setVisible(true);
+  }, []);
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    <div
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.35s cubic-bezier(0.22,1,0.36,1)",
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
