@@ -168,7 +168,7 @@ export function HeroSection({
   }, []);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#f6f2ea] text-[#0b1020] dark:bg-[#050714] dark:text-white">
+    <section className="relative overflow-hidden bg-[#f6f2ea] text-[#0b1020] dark:bg-[#050714] dark:text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.94),transparent_28%),radial-gradient(circle_at_24%_62%,rgba(180,143,255,0.14),transparent_22%),linear-gradient(145deg,#f6f2ea_0%,#ede7dd_44%,#e3dcf1_100%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(120,142,255,0.12),transparent_24%),radial-gradient(circle_at_24%_62%,rgba(180,143,255,0.16),transparent_22%),linear-gradient(145deg,#050714_0%,#0a0d1f_42%,#11091f_100%)]" />
       <NoiseTexture
         noiseOpacity={0.14}
@@ -188,20 +188,22 @@ export function HeroSection({
         autoResumeDelay={2000}
         className="opacity-60 dark:opacity-75 mix-blend-screen"
       />
-      <GradualBlur
-        position="top"
-        height="12rem"
-        strength={2.5}
-        divCount={8}
-        curve="bezier"
-      />
-      <GradualBlur
-        position="bottom"
-        height="14rem"
-        strength={3}
-        divCount={8}
-        curve="bezier"
-      />
+      <div className="hidden sm:contents">
+        <GradualBlur
+          position="top"
+          height="12rem"
+          strength={2.5}
+          divCount={8}
+          curve="bezier"
+        />
+        <GradualBlur
+          position="bottom"
+          height="14rem"
+          strength={3}
+          divCount={8}
+          curve="bezier"
+        />
+      </div>
       <div className="absolute left-[16%] top-[42%] h-[18rem] w-[38rem] rounded-full bg-white/18 blur-[90px] dark:bg-[#a26dff]/10" />
       <div className="absolute left-1/2 top-1/2 h-[42rem] w-[22rem] -translate-x-[-5%] -translate-y-1/2 rotate-[18deg] rounded-full bg-[linear-gradient(180deg,rgba(142,96,255,0.02),rgba(167,129,255,0.28)_26%,rgba(94,217,255,0.18)_74%,rgba(255,255,255,0.02))] blur-[48px] dark:bg-[linear-gradient(180deg,rgba(142,96,255,0.06),rgba(167,129,255,0.44)_26%,rgba(94,217,255,0.24)_74%,rgba(255,255,255,0.03))]" />
 
