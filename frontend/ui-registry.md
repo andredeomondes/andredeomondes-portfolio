@@ -24,8 +24,9 @@ Established: 2026-10-12
 ### Navigation
 
 File: `src/shared/components/layout/navbar.tsx`
+Last updated: 2026-10-13
 
-Fixed matte-black bar, one-pixel bottom rule, square monogram, compact monospaced links, and a rectangular contact action. Mobile navigation uses full-width ruled rows.
+Fixed matte-black bar, one-pixel bottom rule, typographic wordmark, compact monospaced links, and a rectangular contact action. The navbar never displays a logo image; “Andre Deomondes” is the sole home identifier and shifts to signal yellow on hover. Mobile navigation uses full-width ruled rows.
 
 ### Publication Card
 

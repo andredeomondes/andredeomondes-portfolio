@@ -1,7 +1,6 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -45,11 +44,12 @@ export function Navbar() {
   return (
     <header className="site-navigation fixed inset-x-0 top-0 z-50 border-b border-line bg-ink/92 backdrop-blur-md">
       <nav className="site-shell flex h-16 items-center justify-between" aria-label="Navegação principal">
-        <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="grid h-7 w-9 place-items-center bg-paper px-1" aria-hidden="true">
-            <Image src="/brand/monogram.webp" alt="" width={32} height={19} priority />
-          </span>
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper">Andre Deomondes</span>
+        <Link
+          href="/"
+          className="font-mono text-[11px] uppercase tracking-[0.18em] text-paper transition-colors hover:text-signal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+          onClick={() => setOpen(false)}
+        >
+          Andre Deomondes
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">
