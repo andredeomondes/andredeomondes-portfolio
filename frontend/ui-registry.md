@@ -43,6 +43,13 @@ File: `src/features/home/components/editorial-home.tsx`
 
 Sections are separated by full-width one-pixel rules. Content uses asymmetric grids, oversized headings and numbered technical labels. White sections are reserved for portfolio evidence and high-contrast pacing.
 
+### Home Hero
+
+File: `src/features/home/components/editorial-home.tsx`
+Last updated: 2026-10-13
+
+The opening hero is a single editorial field with no profile sidebar. The name owns the composition while a low-contrast SVG architecture trace runs behind its right edge. The trace uses one signal-yellow moving dash and three restrained node pulses; it is decorative, loops without changing layout, remains hidden on small screens and stops under reduced-motion preferences. Profile location appears only as a compact factual footer label.
+
 ### Carousel Viewer
 
 File: `src/shared/components/editorial/carousel-viewer.tsx`
@@ -53,7 +60,7 @@ One 4:5 card is visible at a time inside a ruled technical frame. Previous/next 
 
 File: `src/shared/components/editorial/exercise-workbench.tsx`
 
-The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an intentionally concealed reference solution. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use signal yellow; reading surfaces remain square, ruled, and matte black.
+The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an always-visible reviewed reference solution. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use signal yellow; reading surfaces remain square, ruled, and matte black.
 
 ### Project Case Study
 
@@ -68,12 +75,12 @@ Last updated: 2026-10-12
 | Text — primary | `text-paper`, `text-ink` on light evidence sections |
 | Text — secondary | `text-dim`, `text-ink/65` on light sections |
 | Spacing | Section rhythm `py-16 sm:py-24`; internal panels `p-5` to `p-8` |
-| Hover state | `text-signal`, screenshot scale `1.015`, visible open-image action |
+| Hover state | `text-signal`, screenshot scale `1.018`, signal frame and visible zoom action |
 | Shadow | None |
 | Accent usage | Signal yellow for numbering, architecture arrows and primary action |
 
 **Pattern notes:**
-Recruiter-facing cases use a factual sequence: context, real screenshots, personal contribution, system architecture, technologies, production, quality and lessons. Screenshots preserve their source aspect ratio and always include captions. Architecture uses horizontal ruled nodes on desktop and vertical nodes on mobile. Personal contribution remains visually separate from total product scope, especially for team projects. Hosting, providers and metrics appear only when confirmed.
+Recruiter-facing cases use a factual sequence: context, real screenshots, personal contribution, system architecture, technologies, production, quality and lessons. Screenshots preserve their source aspect ratio and always include captions. Clicking a screenshot opens an accessible in-page lightbox rather than navigating to the asset; Escape, the close control and backdrop dismiss it, body scroll is locked, and focus returns to the image trigger. Architecture uses horizontal ruled nodes on desktop and vertical nodes on mobile. Personal contribution remains visually separate from total product scope, especially for team projects. Hosting, providers and metrics appear only when confirmed.
 
 ### About Portrait
 

@@ -144,12 +144,23 @@ export const defaultSiteContent: SiteContent = {
       {
         company: "Drop Aki TCG",
         role: "Software Engineer · Freelance e consultoria",
-        period: "2026 – atual",
+        period: "2026 – atual · 3 meses",
         active: true,
         bullets: [
-          "Construí e continuo evoluindo o e-commerce full stack, da experiência de compra ao painel administrativo.",
-          "Integrei pagamentos, frete, contas de usuários, pedidos e estoque com serviços Node.js, Python, PostgreSQL e Redis.",
-          "Cuido de deploy, observabilidade, SEO técnico, desempenho e testes unitários, de integração e E2E.",
+          "Construí sozinho o e-commerce full stack em um trabalho de freelance e consultoria, conectando Wix Headless, Astro 5, React, Node.js e TypeScript.",
+          "Implementei contas de usuários, histórico de compras, painel administrativo, pedidos e estoque, além das integrações com PagBank e Melhor Envio.",
+          "Estruturei serviços com PostgreSQL, Redis, Python, FastAPI e LangChain, hospedagem e deploy em AWS, SEO técnico, otimização de desempenho e testes unitários, de integração e E2E com Playwright.",
+        ],
+      },
+      {
+        company: "AMR Mobile",
+        role: "Software Engineer · Freelance e consultoria",
+        period: "2024 – atual · 2 anos",
+        active: true,
+        bullets: [
+          "Desenvolvo sozinho a plataforma B2B para estoque e comercialização de iPhones no atacado, com Angular no frontend e NestJS no backend.",
+          "Criei contas de usuários, painel administrativo, automações em Python e web scraping para coleta e atualização de preços das lojas.",
+          "Integrei FastAPI, LangChain, PostgreSQL e Redis à camada de IA e cuido de AWS, hospedagem, deploy, SEO, Google Search Console, desempenho e testes com Playwright.",
         ],
       },
       {
@@ -158,9 +169,10 @@ export const defaultSiteContent: SiteContent = {
         period: "2025 – 2026 · 1 ano",
         active: false,
         bullets: [
-          "Atuei em uma equipe de quatro pessoas na construção do CajiAgent, um SaaS de atendimento e automação com IA.",
-          "Fui responsável pelas integrações com WhatsApp e Instagram e pela conexão do agente com o estoque em tempo real.",
-          "Implementei fluxos de áudio com Groq e Whisper, além de testes unitários, de integração e E2E com Playwright.",
+          "Atuei durante 1 ano em uma equipe de quatro pessoas na construção do CajiAgent, um SaaS de atendimento, vendas e automação com IA.",
+          "Fui responsável pelas integrações com WhatsApp e Instagram e pelo sistema de estoque conectado ao agente para consultar produtos e responder clientes em tempo real.",
+          "Desenvolvi fluxos com React, Vite, Node.js, Fastify, Python, FastAPI, LangChain, PostgreSQL e Redis, incluindo áudio com Groq e Whisper, infraestrutura AWS e deploy das áreas sob minha responsabilidade.",
+          "Implementei testes unitários, de integração e E2E com Playwright para os fluxos desenvolvidos.",
         ],
       },
     ],
@@ -177,12 +189,13 @@ export const defaultSiteContent: SiteContent = {
       },
     ],
     techStack: [
-      { label: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS"] },
+      { label: "Frontend", items: ["React", "Angular", "Astro 5", "Next.js", "Vite", "TypeScript", "Tailwind CSS"] },
       { label: "Mobile", items: ["React Native", "Expo"] },
       { label: "Backend", items: ["Node.js", "NestJS", "Fastify", "Python", "FastAPI", "Java", "Spring Boot"] },
       { label: "IA aplicada", items: ["LangChain", "Gemini", "Groq", "Whisper"] },
       { label: "Banco de dados", items: ["PostgreSQL", "Redis", "MongoDB"] },
-      { label: "DevOps", items: ["Docker", "AWS", "Git", "CI/CD"] },
+      { label: "Cloud & Deploy", items: ["AWS", "Docker", "CI/CD", "VPS", "Git"] },
+      { label: "Qualidade", items: ["Playwright", "Testes unitários", "Testes de integração", "E2E"] },
     ],
   },
   resume: {
@@ -243,6 +256,19 @@ function normalizeExperience(value: unknown, fallback: ExperienceItem[]): Experi
   }).filter((item) => item.company || item.role);
 }
 
+function curatePortfolioExperiences(experiences: ExperienceItem[]) {
+  const canonicalCompanies = new Set(["drop aki tcg", "amr mobile", "caji solutions"]);
+  const preserved = experiences.filter((item) => {
+    const company = item.company.trim().toLowerCase();
+    return !company.includes("rexis") && !canonicalCompanies.has(company);
+  });
+  const canonical = defaultSiteContent.about.experiences.filter((item) =>
+    canonicalCompanies.has(item.company.toLowerCase()),
+  );
+
+  return [...preserved, ...canonical];
+}
+
 function normalizeEducation(value: unknown, fallback: EducationItem[]): EducationItem[] {
   if (!Array.isArray(value)) return fallback;
   return value.map((item) => {
@@ -253,17 +279,6 @@ function normalizeEducation(value: unknown, fallback: EducationItem[]): Educatio
       period: asString(record?.period, ""),
     };
   }).filter((item) => item.institution || item.degree);
-}
-
-function normalizeTechStack(value: unknown, fallback: TechStackSection[]): TechStackSection[] {
-  if (!Array.isArray(value)) return fallback;
-  return value.map((item) => {
-    const record = asRecord(item);
-    return {
-      label: asString(record?.label, ""),
-      items: asStringArray(record?.items, []),
-    };
-  }).filter((item) => item.label);
 }
 
 export function normalizeResumeSections(value: unknown, fallback: ResumeSectionConfig[]) {
@@ -336,12 +351,12 @@ export function normalizeSiteContent(settings: Record<string, unknown>): SiteCon
       },
     },
     about: {
-      experiences: normalizeExperience(
+      experiences: curatePortfolioExperiences(normalizeExperience(
         aboutInput?.experiences,
         defaultSiteContent.about.experiences
-      ),
+      )),
       education: normalizeEducation(aboutInput?.education, defaultSiteContent.about.education),
-      techStack: normalizeTechStack(aboutInput?.techStack, defaultSiteContent.about.techStack),
+      techStack: defaultSiteContent.about.techStack,
     },
     resume: {
       targetRole: asString(resumeInput?.targetRole, defaultSiteContent.resume.targetRole),

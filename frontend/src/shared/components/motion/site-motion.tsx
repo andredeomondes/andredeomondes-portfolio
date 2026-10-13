@@ -112,7 +112,7 @@ export function SiteMotion() {
     const technicalGrids = Array.from(motionRoot.querySelectorAll<HTMLElement>(".technical-grid"));
     const loopTargets = Array.from(
       motionRoot.querySelectorAll<HTMLElement>(
-        ".technical-grid, .signal-square, .text-outline, [data-motion='lane']",
+        ".technical-grid, .signal-square, .text-outline, .hero-signal-loop, [data-motion='lane']",
       ),
     );
     const motionObserver = new IntersectionObserver(

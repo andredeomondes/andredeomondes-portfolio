@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -10,13 +9,13 @@ import {
   Check,
   Clock3,
   Cloud,
-  ExternalLink,
   Handshake,
   Layers3,
   Users,
   type LucideIcon,
 } from "lucide-react";
-import { getFallbackProject, type ProjectScreenshot } from "@/content/projects";
+import { getFallbackProject } from "@/content/projects";
+import { ProjectImageLightbox } from "@/shared/components/editorial/project-image-lightbox";
 import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -54,29 +53,6 @@ function NumberedList({ items }: { items: string[] }) {
         </li>
       ))}
     </ul>
-  );
-}
-
-function Screenshot({ screenshot, priority = false }: { screenshot: ProjectScreenshot; priority?: boolean }) {
-  return (
-    <figure data-motion="image" className="group border border-line bg-panel">
-      <a href={screenshot.src} target="_blank" rel="noreferrer" className="block" aria-label={`Abrir imagem: ${screenshot.alt}`}>
-        <div className="relative overflow-hidden border-b border-line bg-ink" style={{ aspectRatio: `${screenshot.width} / ${screenshot.height}` }}>
-          <Image
-            src={screenshot.src}
-            alt={screenshot.alt}
-            fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-contain transition duration-500 group-hover:scale-[1.015]"
-            priority={priority}
-          />
-          <span className="absolute right-3 top-3 inline-flex items-center gap-2 bg-ink px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-paper opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-            Abrir tela <ExternalLink className="size-3" />
-          </span>
-        </div>
-      </a>
-      <figcaption className="p-4 text-xs leading-6 text-dim">{screenshot.caption}</figcaption>
-    </figure>
   );
 }
 
@@ -193,7 +169,7 @@ export default async function ProjectCasePage({ params }: PageProps) {
           <div className="mt-10 grid gap-4 lg:grid-cols-2">
             {caseStudy.screenshots.map((screenshot, index) => (
               <div key={screenshot.src} className={index === 0 ? "lg:col-span-2" : undefined}>
-                <Screenshot screenshot={screenshot} priority={index === 0} />
+                <ProjectImageLightbox screenshot={screenshot} priority={index === 0} />
               </div>
             ))}
           </div>

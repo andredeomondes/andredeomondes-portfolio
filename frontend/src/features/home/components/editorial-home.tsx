@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, BrainCircuit, Braces, Database, MapPin, RadioTower, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Braces, Database, Sparkles } from "lucide-react";
 import { publications, series } from "@/content/posts";
 import { PublicationCard } from "@/shared/components/editorial/publication-card";
 import type { ProfileSettings } from "@/lib/site-content";
@@ -31,51 +31,48 @@ function Hero({ profile }: { profile: ProfileSettings }) {
   return (
     <section className="relative overflow-hidden border-b border-line pt-24 sm:pt-28">
       <div className="technical-grid absolute inset-0 opacity-70" aria-hidden="true" />
-      <div className="site-shell relative grid min-h-[740px] lg:grid-cols-[1fr_340px]">
-        <div className="flex flex-col justify-between py-16 sm:py-24 lg:border-r lg:border-line lg:pr-12">
+      <div className="site-shell relative min-h-[740px]">
+        <div className="flex min-h-[740px] flex-col justify-between py-16 sm:py-24">
           <div className="flex items-center gap-3">
             <span className="signal-square" />
             <p className="label text-paper">Backend &amp; Applied AI Engineer</p>
           </div>
 
-          <div className="max-w-5xl py-16">
-            <h1 className="text-[clamp(4rem,11vw,9.5rem)] font-semibold leading-[0.78] tracking-[-0.085em] text-paper">
+          <div className="relative py-16">
+            <div className="hero-signal-loop pointer-events-none absolute right-0 top-1/2 hidden w-[44%] -translate-y-1/2 lg:block" aria-hidden="true">
+              <svg viewBox="0 0 620 220" fill="none" className="w-full" preserveAspectRatio="xMidYMid meet">
+                <path className="hero-signal-loop__base" d="M16 174H132L206 100H361L438 24H604" />
+                <path className="hero-signal-loop__pulse" d="M16 174H132L206 100H361L438 24H604" />
+                <circle cx="16" cy="174" r="4" className="hero-signal-loop__node" />
+                <circle cx="206" cy="100" r="4" className="hero-signal-loop__node hero-signal-loop__node--delay" />
+                <circle cx="438" cy="24" r="4" className="hero-signal-loop__node hero-signal-loop__node--late" />
+                <path className="hero-signal-loop__tick" d="M132 158V190M361 84V116M604 8V40" />
+              </svg>
+            </div>
+
+            <h1 className="relative z-10 max-w-[11ch] text-[clamp(3rem,12vw,4rem)] font-semibold leading-[0.78] tracking-[-0.085em] text-paper sm:text-[clamp(4rem,12vw,10.5rem)]">
               ANDRE
               <span className="block text-outline">DEOMONDES.</span>
             </h1>
-            <p className="mt-10 max-w-2xl text-lg leading-8 text-dim sm:text-xl">
+            <p className="relative z-10 mt-10 max-w-2xl text-lg leading-8 text-dim sm:text-xl">
               Projeto backends, produtos digitais e sistemas com IA aplicada — e documento o raciocínio que existe entre o problema e o código.
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
-            <Link href="/projects" className="button-primary">
-              Ver projetos <ArrowRight className="size-4" />
-            </Link>
-            <Link href="/posts" className="button-secondary">
-              Ler publicações
-            </Link>
-          </div>
-        </div>
-
-        <aside className="hidden flex-col justify-between py-24 pl-8 lg:flex">
-          <div className="space-y-8">
-            <p className="label">System / profile</p>
-            <dl className="space-y-4 font-mono text-xs uppercase tracking-[0.1em]">
-              <div className="flex justify-between gap-4 border-b border-line pb-3"><dt className="flex items-center gap-2 text-dim"><MapPin className="size-3 text-signal" />Base</dt><dd className="text-right text-paper">{profile.location}</dd></div>
-              <div className="flex justify-between gap-4 border-b border-line pb-3"><dt className="flex items-center gap-2 text-dim"><RadioTower className="size-3 text-signal" />Status</dt><dd className="text-signal">Available</dd></div>
-              <div className="flex justify-between gap-4 border-b border-line pb-3"><dt className="flex items-center gap-2 text-dim"><BrainCircuit className="size-3 text-signal" />Focus</dt><dd className="text-paper">Backend / AI</dd></div>
-            </dl>
-          </div>
-          <div className="border border-line bg-ink/80 p-5">
-            <p className="font-mono text-xs leading-6 text-dim">
-              <span className="text-signal">$</span> build --with-context
-              <br />architecture: intentional
-              <br />delivery: observable
-              <br />learning: public
+          <div className="flex flex-col gap-8 border-t border-line pt-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="flex flex-wrap gap-3">
+              <Link href="/projects" className="button-primary">
+                Ver projetos <ArrowRight className="size-4" />
+              </Link>
+              <Link href="/posts" className="button-secondary">
+                Ler publicações
+              </Link>
+            </div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-dim">
+              {profile.location} · sistemas em produção
             </p>
           </div>
-        </aside>
+        </div>
       </div>
     </section>
   );

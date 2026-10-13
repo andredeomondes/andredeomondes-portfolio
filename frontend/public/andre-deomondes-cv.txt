@@ -1,14 +1,14 @@
 ANDRE DEOMONDES
 
-Cargo atual:
-Full Stack na Caji Solutions
+Atuação atual:
+Backend Software Engineer na AEX, Software Engineer na AMR Mobile e consultor na Drop Aki TCG
 
 Localizacao:
 Salvador, Bahia, Brasil
 
 Resumo:
-Engenheiro de software focado em backend, full stack e sistemas com IA.
-Trabalho com produtos web, sistemas internos e interfaces que precisam ser bonitas, rapidas e faceis de manter.
+Engenheiro de software focado em backend, frontend e sistemas com IA aplicada.
+Desenvolvo produtos completos, da interface e APIs à modelagem de dados, testes, deploy, hospedagem e operação em AWS.
 
 Links:
 GitHub: https://github.com/andredeomondes
@@ -17,11 +17,28 @@ Instagram: https://instagram.com/andredeomondes.dev
 Email: contato@andredeomondes.dev
 
 Experiencias:
-- Caji Solutions
-- REXIS Digital
-- Workana
-- Premcell
-- Marinha do Brasil
+- AEX — Backend Software Engineer — Jun 2026 ate o momento
+  APIs REST, automacoes, bancos relacionais, cache e evolucao do ecossistema MausOS.
+
+- AMR Mobile — Software Engineer, freelance e consultoria — 2 anos ate o momento
+  Plataforma B2B desenvolvida individualmente com Angular, NestJS, Python, web scraping, FastAPI, LangChain, PostgreSQL e Redis.
+  Responsabilidade por contas de usuarios, painel administrativo, IA, AWS, hospedagem, deploy, SEO, desempenho e testes automatizados.
+
+- Drop Aki TCG — Software Engineer, freelance e consultoria — 3 meses ate o momento
+  E-commerce full stack desenvolvido individualmente com Wix Headless, Astro 5, React, Node.js e TypeScript.
+  Integracoes com PagBank e Melhor Envio, painel administrativo, usuarios, pedidos, estoque, PostgreSQL, Redis, AWS, deploy, SEO e testes com Playwright.
+
+- Caji Solutions — Desenvolvedor Full Stack — 1 ano
+  Desenvolvimento do CajiAgent em uma equipe de quatro pessoas, com integracoes de WhatsApp e Instagram e estoque conectado a IA.
+  Stack com React, Vite, Node.js, Fastify, Python, FastAPI, LangChain, PostgreSQL, Redis, AWS, Groq e Whisper, alem de testes unitarios, de integracao e E2E.
+
+Competencias tecnicas:
+- Frontend: React, Angular, Astro 5, Next.js, Vite, TypeScript e Tailwind CSS
+- Backend: Node.js, Fastify, NestJS, Python, FastAPI, Java e Spring Boot
+- Cloud e deploy: AWS, Docker, CI/CD, VPS e Git
+- Dados: PostgreSQL, Redis e MongoDB
+- IA aplicada: LangChain, Gemini, Groq e Whisper
+- Qualidade: testes unitarios, testes de integracao, E2E e Playwright
 
 Formacao:
 - Engenharia da Computacao - Universidade CIMATEC

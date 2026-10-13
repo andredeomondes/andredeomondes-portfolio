@@ -722,6 +722,80 @@
     }
   }
 
+  .hero-signal-loop__base,
+  .hero-signal-loop__tick {
+    stroke: rgb(255 255 255 / 0.12);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .hero-signal-loop__pulse {
+    stroke: var(--color-signal);
+    stroke-width: 1.5;
+    stroke-linecap: square;
+    stroke-dasharray: 54 720;
+    vector-effect: non-scaling-stroke;
+    animation: hero-signal-trace 5.8s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .hero-signal-loop__node {
+    fill: var(--color-signal);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: hero-signal-node 2.9s ease-in-out infinite;
+    animation-play-state: paused;
+  }
+
+  .hero-signal-loop[data-motion-active][data-page-visible] .hero-signal-loop__pulse,
+  .hero-signal-loop[data-motion-active][data-page-visible] .hero-signal-loop__node {
+    animation-play-state: running;
+  }
+
+  .hero-signal-loop__node--delay {
+    animation-delay: 0.75s;
+  }
+
+  .hero-signal-loop__node--late {
+    animation-delay: 1.5s;
+  }
+
+  @keyframes hero-signal-trace {
+    to {
+      stroke-dashoffset: -774;
+    }
+  }
+
+  @keyframes hero-signal-node {
+    0%, 55%, 100% {
+      opacity: 0.25;
+      transform: scale(0.75);
+    }
+    12% {
+      opacity: 1;
+      transform: scale(1.35);
+    }
+  }
+
+  .project-lightbox {
+    animation: project-lightbox-backdrop 180ms ease-out both;
+  }
+
+  .project-lightbox > div {
+    animation: project-lightbox-panel 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes project-lightbox-backdrop {
+    from { opacity: 0; }
+  }
+
+  @keyframes project-lightbox-panel {
+    from {
+      opacity: 0;
+      transform: scale(0.975) translateY(8px);
+    }
+  }
+
   .exercise-markdown {
     color: #c7c7c1;
     font-size: 0.9375rem;
@@ -871,6 +945,10 @@
   .technical-grid::after,
   .signal-square,
   .text-outline,
+  .hero-signal-loop__pulse,
+  .hero-signal-loop__node,
+  .project-lightbox,
+  .project-lightbox > div,
   [data-motion="link"] {
     animation: none;
     transform: none;

@@ -11,8 +11,6 @@ import {
   ChevronDown,
   Code2,
   Copy,
-  Eye,
-  EyeOff,
   Lightbulb,
   LockKeyhole,
 } from "lucide-react";
@@ -20,10 +18,10 @@ import type { ExerciseContent } from "@/lib/exercise-content";
 
 function CodePanel({ code, label }: { code: string; label: string }) {
   return (
-    <div className="border border-line bg-ink">
-      <div className="flex items-center justify-between border-b border-line px-4 py-3">
+    <div className="group border border-line bg-ink transition-colors hover:border-signal">
+      <div className="flex items-center justify-between border-b border-line px-4 py-3 transition-colors group-hover:border-signal/50">
         <span className="font-mono text-[10px] uppercase tracking-[0.13em] text-dim">{label}</span>
-        <Code2 className="size-4 text-signal" aria-hidden="true" />
+        <Code2 className="size-4 text-signal transition-transform group-hover:-translate-y-0.5 group-hover:rotate-6" aria-hidden="true" />
       </div>
       <pre className="overflow-x-auto p-4 font-mono text-[12px] leading-6 text-paper sm:p-6"><code>{code}</code></pre>
     </div>
@@ -43,7 +41,7 @@ function CopyButton({ value, label = "Copiar" }: { value: string; label?: string
     <button
       type="button"
       onClick={copyValue}
-      className="inline-flex min-h-10 items-center gap-2 border border-line px-3 font-mono text-[10px] uppercase tracking-[0.12em] text-dim hover:border-signal hover:text-signal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
+      className="inline-flex min-h-10 items-center gap-2 border border-line px-3 font-mono text-[10px] uppercase tracking-[0.12em] text-dim transition-colors hover:border-signal hover:bg-signal hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
       aria-label={copied ? "Copiado" : label}
     >
       {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
@@ -54,7 +52,6 @@ function CopyButton({ value, label = "Copiar" }: { value: string; label?: string
 
 export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent; unit: number }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [solutionVisible, setSolutionVisible] = useState(false);
   const exercisePanelRef = useRef<HTMLDivElement>(null);
   const exercise = content.exercises[activeIndex];
   const categories = useMemo(
@@ -86,7 +83,6 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
 
   function selectExercise(index: number) {
     setActiveIndex(index);
-    setSolutionVisible(false);
   }
 
   const progress = ((activeIndex + 1) / content.exercises.length) * 100;
@@ -102,7 +98,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
             </h2>
           </div>
           <p className="max-w-md text-sm leading-7 text-dim">
-            Leia o contrato, escreva sua tentativa, confira os casos esperados e só então compare com a resolução.
+            Leia o contrato, escreva sua tentativa e confira os casos esperados. A resolução de referência permanece visível ao final de cada exercício.
           </p>
         </div>
         <div className="h-1 bg-line" aria-hidden="true">
@@ -131,7 +127,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                         type="button"
                         onClick={() => selectExercise(index)}
                         aria-current={selected ? "step" : undefined}
-                        className={`grid min-h-14 grid-cols-[28px_minmax(0,1fr)] items-center gap-2 border px-3 text-left transition-colors ${selected ? "border-signal bg-signal text-ink" : "border-transparent text-dim hover:border-line hover:text-paper"}`}
+                        className={`grid min-h-14 grid-cols-[28px_minmax(0,1fr)] items-center gap-2 border px-3 text-left transition-[color,background-color,border-color,transform] ${selected ? "border-signal bg-signal text-ink" : "border-transparent text-dim hover:translate-x-1 hover:border-line hover:bg-ink hover:text-paper"}`}
                       >
                         <span className="font-mono text-[10px] tabular-nums">{String(item.number).padStart(2, "0")}</span>
                         <span className="truncate font-mono text-[10px] tracking-[-0.01em]">{item.identifier}</span>
@@ -189,7 +185,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                 {exercise.examples.length ? (
                   <div className="divide-y divide-line border-y border-line">
                     {exercise.examples.map((example, index) => (
-                      <div key={`${example.input}-${index}`} className="grid gap-4 py-5 sm:grid-cols-[1fr_1fr]">
+                      <div key={`${example.input}-${index}`} className="grid gap-4 px-3 py-5 transition-colors hover:bg-ink/70 sm:grid-cols-[1fr_1fr]">
                         <div>
                           <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-dim">Entrada / chamada</p>
                           <code className="mt-2 block overflow-x-auto font-mono text-[12px] leading-6 text-paper">{example.input}</code>
@@ -238,7 +234,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                       <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-dim">Comportamentos cobertos</p>
                       <ul className="mt-3 divide-y divide-line border-y border-line">
                         {exercise.checks.map((check) => (
-                          <li key={check} className="grid grid-cols-[24px_1fr] gap-3 py-4 text-sm leading-6 text-paper">
+                          <li key={check} className="grid grid-cols-[24px_1fr] gap-3 px-3 py-4 text-sm leading-6 text-paper transition-colors hover:bg-ink/70 hover:text-signal">
                             <Check className="mt-1 size-4 text-signal" aria-hidden="true" />
                             <span>{check}</span>
                           </li>
@@ -249,7 +245,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
 
                   {exercise.testCode && (
                     <details className="group mt-6 border border-line">
-                      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-sm font-medium text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-sm font-medium text-paper transition-colors hover:text-signal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal">
                         <span>Ver código completo do teste</span>
                         <ChevronDown className="size-4 text-dim transition-transform group-open:rotate-180" />
                       </summary>
@@ -273,7 +269,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                   <div className="divide-y divide-line border-y border-line">
                     {exercise.hints.map((hint) => (
                       <details key={`${hint.level}-${hint.content}`} className="group">
-                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-sm font-medium text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal">
+                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-3 py-4 text-sm font-medium text-paper transition-colors hover:bg-ink/70 hover:text-signal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal">
                           <span className="flex items-center gap-3"><Lightbulb className="size-4 text-signal" /> {hint.level}</span>
                           <ChevronDown className="size-4 text-dim transition-transform group-open:rotate-180" />
                         </summary>
@@ -295,28 +291,12 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                 </div>
                 <div>
                   {exercise.solutionAvailable ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setSolutionVisible((visible) => !visible)}
-                        aria-expanded={solutionVisible}
-                        className="flex min-h-12 w-full items-center justify-between border border-line px-4 font-mono text-[10px] uppercase tracking-[0.12em] text-paper hover:border-signal hover:text-signal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
-                      >
-                        <span className="flex items-center gap-3">
-                          {solutionVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                          {solutionVisible ? "Ocultar resolução" : "Revelar resolução"}
-                        </span>
-                        <span className="hidden text-dim sm:inline">tente antes de abrir</span>
-                      </button>
-                      {solutionVisible && (
-                        <div className="mt-4">
-                          <div className="mb-4 border border-line bg-paper p-4 text-sm leading-7 text-ink">
-                            Compare as decisões, não apenas as linhas: validações primeiro, transformação no centro e retorno explícito no fim.
-                          </div>
-                          <CodePanel code={exercise.solution} label="resolução de referência" />
-                        </div>
-                      )}
-                    </>
+                    <div>
+                      <div className="mb-4 border border-line bg-paper p-4 text-sm leading-7 text-ink transition-colors hover:border-signal">
+                        A resolução fica sempre disponível para comparação. Observe as decisões, não apenas as linhas: validações primeiro, transformação no centro e retorno explícito no fim.
+                      </div>
+                      <CodePanel code={exercise.solution} label="resolução de referência" />
+                    </div>
                   ) : (
                     <div className="flex gap-4 border border-line p-5">
                       <LockKeyhole className="mt-1 size-5 shrink-0 text-dim" aria-hidden="true" />

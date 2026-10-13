@@ -32,12 +32,22 @@ export default async function AboutPage() {
       </header>
 
       <section className="site-shell grid gap-14 py-16 sm:py-24 lg:grid-cols-[240px_1fr]">
-        <div><p className="label">Experiência</p><p className="mt-4 text-sm leading-7 text-dim">Contextos em que transformei requisitos, dados e restrições em software utilizável.</p></div>
+        <div><p className="label">Experiência</p><p className="mt-4 text-sm leading-7 text-dim">Produtos reais em que atuei de ponta a ponta: interface, backend, dados, IA, deploy e operação em cloud.</p></div>
         <div className="border-t border-line">
           {about.experiences.map((item) => (
-            <article key={`${item.company}-${item.role}`} data-motion="item" className="grid gap-5 border-b border-line py-7 sm:grid-cols-[1fr_auto]">
-              <div><h2 className="text-2xl font-semibold tracking-[-0.04em] text-paper">{item.company}</h2><p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-signal">{item.role}</p><ul className="mt-5 space-y-2 text-sm leading-7 text-dim">{item.bullets.map((bullet) => <li key={bullet}>— {bullet}</li>)}</ul></div>
-              <span className="font-mono text-xs uppercase tracking-[0.1em] text-dim">{item.period}</span>
+            <article key={`${item.company}-${item.role}`} data-motion="card" className="group relative grid gap-5 overflow-hidden border-b border-line px-4 py-8 transition-colors hover:bg-panel sm:grid-cols-[1fr_auto]">
+              <span className="absolute inset-y-0 left-0 w-px origin-top scale-y-0 bg-signal transition-transform duration-300 group-hover:scale-y-100" aria-hidden="true" />
+              <div className="flex items-start gap-4">
+                <span className="grid size-10 shrink-0 place-items-center border border-line text-dim transition-colors group-hover:border-signal group-hover:text-signal">
+                  <TechnologyIcon name={item.company} className="text-base" />
+                </span>
+                <div>
+                  <h2 className="text-2xl font-semibold tracking-[-0.04em] text-paper transition-colors group-hover:text-signal">{item.company}</h2>
+                  <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-signal">{item.role}</p>
+                  <ul className="mt-5 space-y-2 text-sm leading-7 text-dim">{item.bullets.map((bullet) => <li key={bullet}>— {bullet}</li>)}</ul>
+                </div>
+              </div>
+              <span className="font-mono text-xs uppercase tracking-[0.1em] text-dim transition-colors group-hover:text-paper">{item.period}</span>
             </article>
           ))}
         </div>
@@ -45,15 +55,15 @@ export default async function AboutPage() {
 
       <section id="stack" className="scroll-mt-20 border-y border-line bg-paper text-ink">
         <div className="site-shell grid gap-14 py-16 sm:py-24 lg:grid-cols-[240px_1fr]">
-          <div><p className="label text-ink/50">Stack</p><p className="mt-4 text-sm leading-7 text-ink/60">Ferramentas mudam. Os fundamentos ajudam a escolher quando e por quê.</p></div>
+          <div><p className="label text-ink/50">Stack</p><p className="mt-4 text-sm leading-7 text-ink/60">Frontend, backend, IA, dados, qualidade e infraestrutura para levar um produto do código à produção.</p></div>
           <div className="border-t border-ink/20">
             {about.techStack.map((section) => (
-              <div key={section.label} data-motion="item" className="grid gap-5 border-b border-ink/20 py-6 sm:grid-cols-[140px_1fr]">
-                <h2 className="font-mono text-xs uppercase tracking-[0.12em] text-ink/50">{section.label}</h2>
+              <div key={section.label} data-motion="item" className="group -mx-4 grid gap-5 border-b border-ink/20 px-4 py-6 transition-colors hover:bg-ink sm:grid-cols-[140px_1fr]">
+                <h2 className="font-mono text-xs uppercase tracking-[0.12em] text-ink/50 transition-colors group-hover:text-signal">{section.label}</h2>
                 <div className="flex flex-wrap gap-x-5 gap-y-3">
                   {section.items.map((item) => (
-                    <span key={item} className="inline-flex items-center gap-2.5 text-base font-medium tracking-[-0.02em]">
-                      <span className="grid size-7 place-items-center border border-ink/20 text-ink/70">
+                    <span key={item} className="inline-flex items-center gap-2.5 text-base font-medium tracking-[-0.02em] transition-colors group-hover:text-paper">
+                      <span className="grid size-7 place-items-center border border-ink/20 text-ink/70 transition-colors group-hover:border-signal/60 group-hover:text-signal">
                         <TechnologyIcon name={item} className="text-sm" />
                       </span>
                       {item}
@@ -68,7 +78,7 @@ export default async function AboutPage() {
 
       <section className="site-shell grid gap-14 py-16 sm:py-24 lg:grid-cols-[240px_1fr]">
         <div><p className="label">Formação</p></div>
-        <div className="border-t border-line">{about.education.map((item) => <div key={`${item.institution}-${item.degree}`} data-motion="item" className="grid gap-3 border-b border-line py-6 sm:grid-cols-[1fr_auto]"><div><h2 className="text-xl font-semibold tracking-[-0.035em] text-paper">{item.institution}</h2><p className="mt-2 text-sm text-dim">{item.degree}</p></div><span className="font-mono text-xs uppercase tracking-[0.1em] text-dim">{item.period}</span></div>)}</div>
+        <div className="border-t border-line">{about.education.map((item) => <div key={`${item.institution}-${item.degree}`} data-motion="item" className="group -mx-4 grid gap-3 border-b border-line px-4 py-6 transition-colors hover:bg-panel sm:grid-cols-[1fr_auto]"><div><h2 className="text-xl font-semibold tracking-[-0.035em] text-paper transition-colors group-hover:text-signal">{item.institution}</h2><p className="mt-2 text-sm text-dim">{item.degree}</p></div><span className="font-mono text-xs uppercase tracking-[0.1em] text-dim transition-colors group-hover:text-paper">{item.period}</span></div>)}</div>
       </section>
     </div>
   );
