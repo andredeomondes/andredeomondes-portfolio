@@ -110,15 +110,27 @@ export function SiteMotion() {
     const pageProgress = scrollProgress;
 
     const technicalGrids = Array.from(motionRoot.querySelectorAll<HTMLElement>(".technical-grid"));
-    const gridObserver = new IntersectionObserver(
+    const loopTargets = Array.from(
+      motionRoot.querySelectorAll<HTMLElement>(
+        ".technical-grid, .signal-square, .text-outline, [data-motion='lane']",
+      ),
+    );
+    const motionObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          entry.target.toggleAttribute("data-grid-active", entry.isIntersecting);
+          entry.target.toggleAttribute("data-motion-active", entry.isIntersecting);
         });
       },
       { rootMargin: "12% 0px" },
     );
-    technicalGrids.forEach((grid) => gridObserver.observe(grid));
+    const updatePageVisibility = () => {
+      loopTargets.forEach((target) => {
+        target.toggleAttribute("data-page-visible", !document.hidden);
+      });
+    };
+    loopTargets.forEach((target) => motionObserver.observe(target));
+    updatePageVisibility();
+    document.addEventListener("visibilitychange", updatePageVisibility);
 
     let disposed = false;
     let cleanupMotion: () => void = () => {};
@@ -273,6 +285,23 @@ export function SiteMotion() {
         topLevelSections.forEach((section) => {
           if (intro?.closest("section") === section) return;
 
+          const sectionScan = createWipe(section, "motion-section-scan");
+          generatedElements.push(sectionScan);
+          gsap.fromTo(
+            sectionScan,
+            { scaleX: 0, transformOrigin: "left center" },
+            {
+              scaleX: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: section,
+                start: "top 94%",
+                end: "top 42%",
+                scrub: 0.45,
+              },
+            },
+          );
+
           const heading = section.querySelector<HTMLElement>(".section-heading");
           const headingTitle = heading?.querySelector<HTMLElement>("h2") ?? null;
 
@@ -312,6 +341,24 @@ export function SiteMotion() {
           "[data-motion='item'], [data-motion='card']",
           motionRoot,
         );
+
+        gsap.utils.toArray<HTMLElement>("[data-motion='card']", motionRoot).forEach((card) => {
+          const scan = createWipe(card, "motion-card-scan");
+          generatedElements.push(scan);
+          gsap.fromTo(
+            scan,
+            { xPercent: -125, autoAlpha: 0 },
+            {
+              xPercent: 125,
+              autoAlpha: 1,
+              duration: 0.72,
+              ease: "power2.inOut",
+              scrollTrigger: { trigger: card, start: "top 90%", once: true },
+              onComplete: () => gsap.set(scan, { autoAlpha: 0 }),
+            },
+          );
+        });
+
         ScrollTrigger.batch(revealItems, {
           start: "top 91%",
           once: true,
@@ -393,7 +440,8 @@ export function SiteMotion() {
 
     return () => {
       disposed = true;
-      gridObserver.disconnect();
+      motionObserver.disconnect();
+      document.removeEventListener("visibilitychange", updatePageVisibility);
       removeStartListeners();
       cleanupMotion();
     };

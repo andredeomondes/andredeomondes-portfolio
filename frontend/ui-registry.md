@@ -117,7 +117,7 @@ Use official monochrome brand marks only for named technologies and services. Fu
 ### Site Motion
 
 File: `src/shared/components/motion/site-motion.tsx`
-Last updated: 2026-10-12
+Last updated: 2026-10-13
 
 | Property | Pattern |
 | --- | --- |
@@ -129,9 +129,12 @@ Last updated: 2026-10-12
 | Architecture | Ink lane overlay, staggered nodes/arrows and SVG stroke draw-on |
 | Scroll depth | Signal-yellow progress rule plus subtle scrubbed depth on technical-grid fields |
 | Ambient grid | 22s diagonal drift and 16s signal pulse; runs only while the grid intersects the viewport |
-| Interaction | Compositor-only carousel change, mobile-menu sequence, button press and exercise-panel continuity |
-| Performance | Transform and opacity on moving surfaces; lazy GSAP loading, batched triggers, intersection-paused grid loops and scoped cleanup |
-| Accessibility | `gsap.matchMedia()` removes spatial motion but retains ≤150ms opacity cues; CSS grid motion and scroll progress are removed under reduced motion |
+| Section scan | One-pixel signal rule grows with scroll progress as each top-level section enters |
+| Card scan | A single low-opacity inspection sweep crosses cards on first reveal and is clipped to the card boundary |
+| Ambient signals | Signal square pulse, outline breathing and directional architecture arrows run only while visible |
+| Interaction | Control shine on hover, directional icon response, nav underline, carousel change, mobile-menu sequence and exercise-panel continuity |
+| Performance | Transform, opacity and clip-safe overlays; lazy GSAP loading, batched triggers, intersection-paused loops and scoped cleanup |
+| Accessibility | `gsap.matchMedia()` removes spatial motion but retains ≤150ms opacity cues; CSS loops, scans and scroll progress are removed under reduced motion |
 
 **Pattern notes:**
-Motion follows the same engineering-notebook metaphor as the visual system: headings are assembled line by line, dark covers retract like inspected panels, architecture paths draw as connections become available, and the technical grid behaves as a slow spatial field. Use GSAP match-media contexts with cleanup for every React-owned animation. Keep routine feedback between 0.12s and 0.38s, authored entrances below 0.75s, and preserve the navigation bar across route transitions. The technical grid is the only approved ambient loop; it must remain low contrast, pause offscreen and disappear under reduced motion. Do not add bounce, elastic easing, full-surface bright flashes or animation that changes layout-driving properties.
+Motion follows the same engineering-notebook metaphor as the visual system: headings are assembled line by line, dark covers retract like inspected panels, architecture paths draw as connections become available, and technical signals show that the system is active. Use GSAP match-media contexts with cleanup for every React-owned animation. Keep routine feedback between 0.12s and 0.38s, authored entrances below 0.75s, and preserve the navigation bar across route transitions. Ambient loops are restricted to the technical grid, signal square, outline heading and architecture connectors; they must remain low contrast, pause offscreen and disappear under reduced motion. Do not add bounce, elastic easing, full-surface bright flashes or animation that changes layout-driving properties.
