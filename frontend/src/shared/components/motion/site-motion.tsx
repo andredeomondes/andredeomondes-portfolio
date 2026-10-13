@@ -31,7 +31,6 @@ export function SiteMotion() {
   const pathname = usePathname();
   const router = useRouter();
   const scanlineRef = useRef<HTMLDivElement>(null);
-  const scrollProgressRef = useRef<HTMLDivElement>(null);
   const pendingNavigationRef = useRef<(() => void) | null>(null);
   const navigationTimeoutRef = useRef<number | null>(null);
 
@@ -99,15 +98,13 @@ export function SiteMotion() {
   }, [router]);
 
   useEffect(() => {
-    if (!isPublicPortfolioRoute(pathname)) return;
+    if (!isPublicPortfolioRoute(pathname) || pathname === "/") return;
 
     const root = document.querySelector<HTMLElement>("main");
     const scanline = scanlineRef.current;
-    const scrollProgress = scrollProgressRef.current;
-    if (!root || !scanline || !scrollProgress) return;
+    if (!root || !scanline) return;
     const motionRoot = root;
     const routeScanline = scanline;
-    const pageProgress = scrollProgress;
 
     const technicalGrids = Array.from(motionRoot.querySelectorAll<HTMLElement>(".technical-grid"));
     const loopTargets = Array.from(
@@ -197,20 +194,6 @@ export function SiteMotion() {
 
           return;
         }
-
-        gsap.fromTo(
-          pageProgress,
-          { scaleX: 0, transformOrigin: "left center" },
-          {
-            scaleX: 1,
-            ease: "none",
-            scrollTrigger: {
-              start: 0,
-              end: "max",
-              scrub: 0.18,
-            },
-          },
-        );
 
         technicalGrids.forEach((grid) => {
           gsap.fromTo(
@@ -447,10 +430,5 @@ export function SiteMotion() {
     };
   }, [pathname]);
 
-  return (
-    <>
-      <div ref={scanlineRef} className="route-scanline" aria-hidden="true" />
-      <div ref={scrollProgressRef} className="scroll-progress" aria-hidden="true" />
-    </>
-  );
+  return <div ref={scanlineRef} className="route-scanline" aria-hidden="true" />;
 }

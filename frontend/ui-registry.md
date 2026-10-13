@@ -13,7 +13,7 @@ Established: 2026-10-12
 | Border radius | None for editorial/public surfaces |
 | Text — primary | `text-paper` |
 | Text — secondary | `text-dim` (`#9a9a94`) |
-| Accent | `text-signal` / `bg-signal` (`#f7c928`) |
+| Accent | `text-signal` / `bg-signal` (`#ff5a1f`) |
 | UI labels | Geist Mono, uppercase, 0.14–0.17em tracking |
 | Display headings | Geist Sans, weight 600, tight negative tracking |
 | Content width | `.site-shell`, max 86rem |
@@ -26,7 +26,7 @@ Established: 2026-10-12
 File: `src/shared/components/layout/navbar.tsx`
 Last updated: 2026-10-13
 
-Fixed matte-black bar, one-pixel bottom rule, typographic wordmark, compact monospaced links, and a rectangular contact action. The navbar never displays a logo image; “Andre Deomondes” is the sole home identifier and shifts to signal yellow on hover. Mobile navigation uses full-width ruled rows.
+Fixed navigation with two scroll-aware states: at the top it is an edge-to-edge translucent ink rail with a single bottom rule; after 24px it contracts into the floating matte-black panel with graphite border, 14px radius and restrained blur. The navigation owns the highest public-interface layer, above route scanlines and scroll progress, so page signals never cross its surface. The wordmark is always `ANDREDEOMONDES.DEV`, with only `.DEV` in signal orange. Desktop keeps a left identity / center navigation / right availability-and-CTA rhythm. Mobile follows the same top-to-compact transition; opening the menu temporarily restores the full-width rail and reveals a 100svh ink canvas with oversized ruled links, availability status and the signal-orange contact action pinned to the reading flow. Body scrolling is locked while the menu is open, Escape closes it, and the navbar never displays a logo image.
 
 ### Publication Card
 
@@ -36,20 +36,60 @@ Horizontal ruled entry with a square carousel cover, unit metadata, large title 
 
 ### Buttons
 
-Primary buttons use signal yellow with black type. Secondary buttons use black with graphite border. All buttons are rectangular, monospaced and uppercase.
+Primary buttons use signal orange with black type. Secondary buttons use black with graphite border. All buttons are rectangular, monospaced and uppercase.
+
+### Site Footer
+
+File: `src/shared/components/layout/site-footer.tsx`
+Last updated: 2026-10-13
+
+| Property | Pattern |
+| --- | --- |
+| Background | Ink `#050505` throughout |
+| Border | One-pixel graphite rules separating social and directory cells |
+| Border radius | Pill radius only on paired CTA actions |
+| Text — primary | Space Grotesk display and paper-white directory copy |
+| Text — secondary | Geist Mono in muted gray for metadata |
+| Spacing | Large CTA canvas, shell-aligned atmospheric glass band, social rail and compact directory |
+| Hover state | Paper-white CTA fill, social arrow shift and white directory links |
+| Shadow | A restrained inset highlight and soft black depth only inside the glass band |
+| Accent usage | Monochrome throughout the footer; no signal-orange states |
+
+**Pattern notes:**
+The footer closes every public route with a project CTA, followed by one restrained monochrome glass band, a four-cell social rail and a four-column directory. Soft white and neutral-gray light fields blur behind the glass while the domain and role stay crisp; the footer deliberately contains no orange accent. The glass, social rail, CTA, directory and legal row all align to the same 86rem `.site-shell`, while only the atmospheric background remains full-bleed. On mobile the glass copy stacks, the social rail becomes 2×2 and the directory collapses progressively to one column.
 
 ### Editorial Sections
 
 File: `src/features/home/components/editorial-home.tsx`
 
-Sections are separated by full-width one-pixel rules. Content uses asymmetric grids, oversized headings and numbered technical labels. White sections are reserved for portfolio evidence and high-contrast pacing.
+Interior pages keep ruled editorial sections. The home is the presentation-led exception: each narrative chapter uses at least `100svh`, alternates ink and paper fields, and carries one dominant idea rather than stacking explanatory copy. White sections remain reserved for evidence and high-contrast pacing.
 
 ### Home Hero
 
 File: `src/features/home/components/editorial-home.tsx`
 Last updated: 2026-10-13
 
-The opening hero is a single editorial field with no profile sidebar. The name owns the composition while a low-contrast SVG architecture trace runs behind its right edge. The trace uses one signal-yellow moving dash and three restrained node pulses; it is decorative, loops without changing layout, remains hidden on small screens and stops under reduced-motion preferences. Profile location appears only as a compact factual footer label.
+The opening hero is a full-viewport black field. Andre's real monochrome portrait occupies the right side while the two-line name overlaps it from the left; the outlined surname retypes on a restrained 5.4s loop while the first name remains stable, preserving immediate identity. The 72px engineering grid drifts one cell horizontally every 12s and a fine-pointer hover lights exactly one tracked cell with a translucent signal-orange inspection state. Both loops pause when the hero leaves the viewport or the document becomes hidden; reduced-motion mode freezes the grid, shows the complete surname and removes the cursor. After the global route loader exits, the original short mask entrance still reveals the portrait and name, while the bottom metadata rail holds role, location and the scroll action. Mobile keeps the same overlap with a reduced name scale so the surname never clips. The hero contains no descriptive paragraph.
+
+### Home Kinetic Chapters
+
+File: `src/features/home/components/editorial-home.tsx`
+Last updated: 2026-10-13
+
+| Property | Pattern |
+| --- | --- |
+| Background | Alternating `#050505` ink and `#f4f4f0` paper fields |
+| Border | Full-width one-pixel rules using line or 20–25% ink |
+| Border radius | None, except the navigation contact action |
+| Text — primary | Space Grotesk display type, max 6rem, `-0.04em` tracking |
+| Text — secondary | Geist Mono for metadata; `text-dim` or 62% ink |
+| Spacing | One narrative chapter per `min-height: 100svh` |
+| Hover state | Signal-orange rules, color recovery on project images and directional icons |
+| Shadow | None |
+| Accent usage | Signal orange for status, moving markers and action rules only |
+
+**Pattern notes:**
+The home uses five full-viewport chapters: identity, practice, selected work, writing and contact. Copy stays factual and compact. Project screenshots are the proof surface; they start monochrome and recover source color on interaction. Technology names and official monochrome service icons run in a continuous offscreen-paused marquee. Icons remain signal orange while labels inherit the current field color. Desktop projects use three columns; mobile uses a horizontal snap rail without a visible scrollbar.
 
 ### Carousel Viewer
 
@@ -61,12 +101,12 @@ One 4:5 card is visible at a time inside a ruled technical frame. Previous/next 
 
 File: `src/shared/components/editorial/exercise-workbench.tsx`
 
-The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an always-visible resolution area. Resolution access is never hidden behind review, reveal or lock states; the code currently present in the unit is shown directly, with the starter as a safe fallback when an export cannot be parsed. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use signal yellow; reading surfaces remain square, ruled, and matte black.
+The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an always-visible resolution area. Resolution access is never hidden behind review, reveal or lock states; the code currently present in the unit is shown directly, with the starter as a safe fallback when an export cannot be parsed. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use signal orange; reading surfaces remain square, ruled, and matte black.
 
 ### Project Case Study
 
 File: `src/app/projects/[slug]/page.tsx`
-Last updated: 2026-10-12
+Last updated: 2026-10-13
 
 | Property | Class |
 | --- | --- |
@@ -78,7 +118,7 @@ Last updated: 2026-10-12
 | Spacing | Section rhythm `py-16 sm:py-24`; internal panels `p-5` to `p-8` |
 | Hover state | `text-signal`, screenshot scale `1.018`, signal frame and visible zoom action |
 | Shadow | None |
-| Accent usage | Signal yellow for numbering, architecture arrows and primary action |
+| Accent usage | Signal orange for numbering, architecture arrows and primary action |
 
 **Pattern notes:**
 Recruiter-facing cases use a factual sequence: context, real screenshots, personal contribution, system architecture, technologies, production, quality and lessons. Screenshots preserve their source aspect ratio and always include captions. Clicking a screenshot opens an accessible in-page lightbox rather than navigating to the asset; Escape, the close control and backdrop dismiss it, body scroll is locked, and focus returns to the image trigger. Architecture uses horizontal ruled nodes on desktop and vertical nodes on mobile. Personal contribution remains visually separate from total product scope, especially for team projects. Hosting, providers and metrics appear only when confirmed.
@@ -97,7 +137,7 @@ Last updated: 2026-10-12
 | Spacing | Portrait participates in the existing editorial hero grid |
 | Hover state | None |
 | Shadow | None |
-| Accent usage | Signal-yellow location label over the lower-left corner |
+| Accent usage | Signal-orange location label over the lower-left corner |
 
 **Pattern notes:**
 Profile photography remains documentary and monochrome. Use the original portrait without generated effects; the only overlay is a compact factual location label.
@@ -105,7 +145,7 @@ Profile photography remains documentary and monochrome. Use the original portrai
 ### Technology Icon
 
 File: `src/shared/components/editorial/technology-icon.tsx`
-Last updated: 2026-10-12
+Last updated: 2026-10-13
 
 | Property | Class |
 | --- | --- |
@@ -120,7 +160,7 @@ Last updated: 2026-10-12
 | Accent usage | `text-signal` for diagrams and integrations; muted ink for the light stack section |
 
 **Pattern notes:**
-Use official monochrome brand marks only for named technologies and services. Functional concepts use Lucide's linear icons. Never introduce brand colors into the portfolio palette. Architecture nodes may show at most two marks when the node intentionally groups tools; chips and stack entries use one mark.
+Use official monochrome brand marks for named technologies when available. Services without a bundled brand mark, such as AWS and Playwright, use a clear service-specific cloud or testing pictogram; Redis and the remaining named stack keep their official marks. Never introduce brand colors into the portfolio palette. Architecture nodes may show at most two marks when the node intentionally groups tools; chips and stack entries use one mark.
 
 ### Site Motion
 
@@ -129,20 +169,82 @@ Last updated: 2026-10-13
 
 | Property | Pattern |
 | --- | --- |
-| Focal entrance | Signal-yellow route scanline plus SplitText line masks on the display heading |
+| Focal entrance | Global pixel `AD` loader, signal-orange route scanline and SplitText line masks |
 | Route continuity | Native View Transitions; persistent navigation, 180ms exit and 360ms entrance |
 | Section reveal | Temporary signal rule, masked heading lines and supporting copy with asymmetric timing |
 | List cadence | `0.045s` stagger, capped to visible ScrollTrigger batches |
 | Image reveal | Ink overlay retracts with `scaleY`; image settles from `scale: 1.025` |
 | Architecture | Ink lane overlay, staggered nodes/arrows and SVG stroke draw-on |
-| Scroll depth | Signal-yellow progress rule plus subtle scrubbed depth on technical-grid fields |
+| Scroll depth | Subtle scrubbed depth on technical-grid fields; no persistent page-progress rail |
 | Ambient grid | 22s diagonal drift and 16s signal pulse; runs only while the grid intersects the viewport |
 | Section scan | One-pixel signal rule grows with scroll progress as each top-level section enters |
 | Card scan | A single low-opacity inspection sweep crosses cards on first reveal and is clipped to the card boundary |
 | Ambient signals | Signal square pulse, outline breathing and directional architecture arrows run only while visible |
 | Interaction | Control shine on hover, directional icon response, nav underline, carousel change, mobile-menu sequence and exercise-panel continuity |
 | Performance | Transform, opacity and clip-safe overlays; lazy GSAP loading, batched triggers, intersection-paused loops and scoped cleanup |
-| Accessibility | `gsap.matchMedia()` removes spatial motion but retains ≤150ms opacity cues; CSS loops, scans and scroll progress are removed under reduced motion |
+| Accessibility | `gsap.matchMedia()` removes spatial motion but retains ≤150ms opacity cues; CSS loops and scans are removed under reduced motion |
 
 **Pattern notes:**
 Motion follows the same engineering-notebook metaphor as the visual system: headings are assembled line by line, dark covers retract like inspected panels, architecture paths draw as connections become available, and technical signals show that the system is active. Use GSAP match-media contexts with cleanup for every React-owned animation. Keep routine feedback between 0.12s and 0.38s, authored entrances below 0.75s, and preserve the navigation bar across route transitions. Ambient loops are restricted to the technical grid, signal square, outline heading and architecture connectors; they must remain low contrast, pause offscreen and disappear under reduced motion. Do not add bounce, elastic easing, full-surface bright flashes or animation that changes layout-driving properties.
+
+The home owns a route-specific motion score after the global loader: masked name reveal, portrait wipe, scroll-scrubbed typographic counter-motion and image parallax. Its marquees pause when offscreen or when the document is hidden. Under reduced motion the loader becomes a short opacity acknowledgment, marquees become static and every chapter remains fully visible.
+
+### Route Loader
+
+File: `src/shared/components/motion/route-loader.tsx`
+Last updated: 2026-10-13
+
+| Property | Pattern |
+| --- | --- |
+| Background | Full-viewport ink `#050505` with a faint orange system grid |
+| Border | None; a 3px orange progress rail closes the bottom edge |
+| Border radius | None |
+| Text — primary | Space Grotesk 650 domain wordmark; `.dev` in signal orange |
+| Text — secondary | None |
+| Spacing | Centered domain wordmark with a two-pixel cursor |
+| Hover state | None |
+| Shadow | None |
+| Accent usage | `.dev`, cursor and progress rail only |
+
+**Pattern notes:**
+The loader is mounted by the root template, so it appears on the first visit and every route transition. It types `andredeomondes.dev` in the site's own Space Grotesk voice using a 17-step mask, then exits with a vertical clip in 920ms. It remains decorative and hidden from assistive technology. Reduced-motion mode shows the complete domain immediately and replaces the spatial exit with a 180ms fade.
+
+### Editorial Index Atmosphere
+
+File: `src/shared/components/editorial/editorial-atmosphere.tsx`
+Last updated: 2026-10-13
+
+| Property | Pattern |
+| --- | --- |
+| Background | Generated black editorial photography with a single burnt-orange material signal |
+| Border | One-pixel graphite rule at the page-hero boundary |
+| Border radius | None |
+| Text — primary | Warm paper white; second title line uses a one-pixel outline |
+| Text — secondary | Warm white at 70% opacity |
+| Spacing | 72–76svh title canvas; grid content keeps the standard site shell |
+| Hover state | Project grid surfaces move from 91% to 96% opaque ink |
+| Shadow | None on the hero; imagery supplies depth |
+| Accent usage | Orange scanline and active navigation only |
+
+**Pattern notes:**
+Projects and Publications use different generated image assets, but share the same title-canvas anatomy. The raster drifts slowly under a dark veil while visible; the orange inspection line crosses occasionally. In content grids the same asset becomes a heavily blurred, low-opacity atmosphere behind readable ink surfaces. Motion pauses offscreen and disappears under reduced-motion preferences.
+
+### Project Intake Form
+
+File: `src/features/contact/components/project-intake-form.tsx`
+Last updated: 2026-10-13
+
+| Property | Pattern |
+| --- | --- |
+| Background | 96% ink panel over the contact chapter |
+| Border | One-pixel `#343434` outer and sectional rules |
+| Border radius | None; only global navigation actions remain pill-shaped |
+| Text — primary | Space Grotesk legends and paper-white field values |
+| Text — secondary | Geist Mono uppercase labels; `#9a9a94` supporting copy |
+| Spacing | 1.5–2.5rem fieldset padding; 1.2rem field rhythm |
+| Hover state | Paper recovery on orange next/submit action; white recovery on back action |
+| Shadow | Soft downward black depth, no colored halo |
+| Accent usage | Orange progress, focus rule, consent control and primary action |
+
+**Pattern notes:**
+The intake is a three-step embedded briefing: contact, project and scope. Every field has a visible label, server-mirrored validation and a nearby recovery message. Step changes move focus to the new legend; validation moves focus to the first invalid control. The final success state stays inside the same surface. Desktop uses a two-column form beside a sticky narrative, tablet and mobile stack it into the reading flow.
