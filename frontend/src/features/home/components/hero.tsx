@@ -300,7 +300,7 @@ export function HeroSection({
                 className="inline-flex h-12 items-center gap-3 text-sm font-medium text-[#0b1020]/82 transition-colors hover:text-[#0b1020] dark:text-white/82 dark:hover:text-white"
               >
                 <Image
-                  src="/andre.jpg"
+                  src="/andre.webp"
                   alt="Andre Deomondes"
                   width={32}
                   height={32}

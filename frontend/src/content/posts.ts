@@ -1,0 +1,282 @@
+export type Publication = {
+  unit: number;
+  slug: string;
+  title: string;
+  statement: string;
+  excerpt: string;
+  publishedAt: string;
+  readTime: string;
+  code: string;
+  takeaways: string[];
+  exercisePath: string;
+  images: string[];
+};
+
+const imageNames: Record<number, string[]> = {
+  1: ["01-capa.webp", "02-coercao.webp", "03-entrada-api.webp", "04-contrato.webp", "05-igualdade.webp", "06-previsibilidade.webp", "07-encerramento.webp"],
+  2: ["01-capa.webp", "02-break.webp", "03-break-continue.webp", "04-switch.webp", "05-guard-clauses.webp", "06-regra-de-negocio.webp", "07-encerramento.webp"],
+  3: ["01-capa.webp", "02-return-arrow.webp", "03-defaults.webp", "04-funcoes-como-valor.webp", "05-composicao.webp", "06-backend.webp", "07-encerramento.webp"],
+  4: ["01-capa.webp", "02-var-let.webp", "03-tdz.webp", "04-shadowing.webp", "05-const.webp", "06-estado-privado.webp", "07-encerramento.webp"],
+  5: ["01-capa.webp", "02-contador.webp", "03-var-let-loop.webp", "04-rate-limiter.webp", "05-memoization.webp", "06-backend.webp", "07-encerramento.webp"],
+  6: ["01-capa.webp", "02-imutabilidade.webp", "03-payloads.webp", "04-keys-values-entries.webp", "05-agrupamento.webp", "06-referencia-compartilhada.webp", "07-encerramento.webp"],
+  7: ["01-capa.webp", "02-valor-vs-referencia.webp", "03-copia-rasa.webp", "04-copia-profunda.webp", "05-sort-imutavel.webp", "06-update-aninhado.webp", "07-encerramento.webp"],
+  8: ["01-capa.webp", "02-middleware.webp", "03-fabrica-de-funcoes.webp", "04-pipeline.webp", "05-once.webp", "06-memoize.webp", "07-encerramento.webp"],
+  9: ["01-capa.webp", "02-map.webp", "03-filter-find.webp", "04-some-every.webp", "05-reduce.webp", "06-relatorio.webp", "07-encerramento.webp"],
+  10: ["01-capa.webp", "02-req-body.webp", "03-defaults.webp", "04-renomeacao.webp", "05-aninhado.webp", "06-arrays-objetos.webp", "07-encerramento.webp"],
+  11: ["01-capa.webp", "02-copia-rasa.webp", "03-overrides.webp", "04-rest-args.webp", "05-rest-remover.webp", "06-update-pedido.webp", "07-encerramento.webp"],
+  12: ["01-capa.webp", "02-catch-vazio.webp", "03-erros-proprios.webp", "04-contexto-cause.webp", "05-finally.webp", "06-retry.webp", "07-encerramento.webp"],
+  13: ["01-capa.webp", "02-prototype-compartilhado.webp", "03-heranca-super.webp", "04-instancia-static.webp", "05-getters-setters.webp", "06-mixin.webp", "07-encerramento.webp"],
+  14: ["01-capa.webp", "02-binding-implicito.webp", "03-metodo-sem-contexto.webp", "04-call-apply-bind.webp", "05-arrow-this-lexico.webp", "06-callbacks-contexto.webp", "07-encerramento.webp"],
+  15: ["01-capa.webp", "02-protocolo-iteracao.webp", "03-yield.webp", "04-lazy-pipeline.webp", "05-generator-infinito.webp", "06-objeto-iteravel.webp", "07-encerramento.webp"],
+  16: ["01-capa.webp", "02-ancoras.webp", "03-flags.webp", "04-operacoes.webp", "05-grupos-nomeados.webp", "06-legibilidade.webp", "07-encerramento.webp"],
+  17: ["01-capa.webp", "02-named-default.webp", "03-namespace.webp", "04-reexport.webp", "05-avaliacao-cache.webp", "06-dependencia-circular.webp", "07-encerramento.webp"],
+  18: ["01-capa.webp", "02-error-first.webp", "03-double-callback.webp", "04-serie-paralelo.webp", "05-callback-hell.webp", "06-timeout-retry.webp", "07-encerramento.webp"],
+};
+
+const entries: Omit<Publication, "images">[] = [
+  {
+    unit: 1,
+    slug: "01-javascript-tipos-coercao",
+    title: "Tipos, coerção e igualdade",
+    statement: "Antes de aplicar a regra, normalize a entrada.",
+    excerpt: "Por que dados vindos de uma API precisam ser interpretados de forma previsível antes de qualquer regra de negócio.",
+    publishedAt: "2026-09-01",
+    readTime: "5 min",
+    code: `"5" + 3 // "53"\n"5" - 3 // 2\n\n"1" == 1  // true\n"1" === 1 // false`,
+    takeaways: ["Coerção implícita muda o significado de operadores.", "Validação e normalização fazem parte do contrato da API.", "Igualdade estrita reduz decisões invisíveis no código."],
+    exercisePath: "unit-01-values-types-operators",
+  },
+  {
+    unit: 2,
+    slug: "02-javascript-controle-de-fluxo",
+    title: "Controle de fluxo",
+    statement: "Código bom não faz tudo. Faz o necessário.",
+    excerpt: "Break, continue, switch e guard clauses vistos como decisões de negócio — não apenas como sintaxe.",
+    publishedAt: "2026-09-02",
+    readTime: "5 min",
+    code: `for (const item of items) {\n  if (item.id === targetId) break\n}`,
+    takeaways: ["Interrompa o trabalho quando a resposta já foi encontrada.", "Guard clauses deixam o caminho principal mais claro.", "Cada desvio deve expressar uma decisão do domínio."],
+    exercisePath: "unit-02-control-flow",
+  },
+  {
+    unit: 3,
+    slug: "03-javascript-funcoes",
+    title: "Funções como contratos",
+    statement: "Entrada clara. Responsabilidade pequena. Saída previsível.",
+    excerpt: "Returns, parâmetros padrão e composição para criar funções que sejam simples de testar e reutilizar.",
+    publishedAt: "2026-09-08",
+    readTime: "5 min",
+    code: `const double = n => n * 2\n\nconst broken = n => {\n  n * 2\n}`,
+    takeaways: ["Uma arrow com chaves exige return explícito.", "Parâmetros e retorno formam um contrato.", "Funções pequenas podem virar validadores, handlers e middlewares."],
+    exercisePath: "unit-03-functions",
+  },
+  {
+    unit: 4,
+    slug: "04-javascript-escopo-lexico",
+    title: "Escopo léxico",
+    statement: "Saber onde um valor vive importa tanto quanto o valor.",
+    excerpt: "Var, let, const, TDZ e shadowing explicados pelo impacto real que causam no estado da aplicação.",
+    publishedAt: "2026-09-09",
+    readTime: "6 min",
+    code: `if (ok) {\n  var status = "ready"\n}\n\n// status continua acessível`,
+    takeaways: ["Var tem escopo de função; let e const, de bloco.", "Const impede reatribuição, não mutação.", "Nomes repetidos em escopos diferentes podem esconder intenção."],
+    exercisePath: "unit-04-lexical-scope",
+  },
+  {
+    unit: 5,
+    slug: "05-javascript-closures",
+    title: "Closures",
+    statement: "Uma função pode continuar carregando contexto.",
+    excerpt: "Estado privado, rate limiting e memoização a partir de uma das ideias mais importantes do JavaScript.",
+    publishedAt: "2026-09-15",
+    readTime: "6 min",
+    code: `function makeCounter() {\n  let count = 0\n  return () => ++count\n}`,
+    takeaways: ["A closure mantém acesso à variável, não a uma fotografia.", "Cada fábrica pode produzir seu próprio estado privado.", "Let cria um binding por iteração em loops."],
+    exercisePath: "unit-05-closures",
+  },
+  {
+    unit: 6,
+    slug: "06-javascript-arrays-objetos",
+    title: "Arrays e objetos",
+    statement: "Quase tudo que cruza um backend assume uma dessas formas.",
+    excerpt: "Transformação de payloads, agrupamentos e a importância de não alterar uma entrada sem perceber.",
+    publishedAt: "2026-09-16",
+    readTime: "6 min",
+    code: `const nextTags = [...tags, "backend"]`,
+    takeaways: ["Prefira transformações que preservem a entrada.", "Referências compartilhadas podem espalhar mutações.", "Keys, values e entries ajudam a percorrer estruturas dinâmicas."],
+    exercisePath: "unit-06-arrays-objects",
+  },
+  {
+    unit: 7,
+    slug: "07-javascript-referencias-mutabilidade-copias",
+    title: "Referências, mutabilidade e cópias",
+    statement: "Referência compartilhada também é estado compartilhado.",
+    excerpt: "Cópia rasa, cópia profunda e os bugs silenciosos que aparecem quando duas partes do sistema apontam para o mesmo dado.",
+    publishedAt: "2026-09-22",
+    readTime: "7 min",
+    code: `const copy = { ...user }\n// copy.profile ainda é compartilhado`,
+    takeaways: ["Spread cria apenas uma cópia rasa.", "Objetos iguais em conteúdo não são a mesma referência.", "Métodos mutáveis como sort pedem intenção explícita."],
+    exercisePath: "unit-07-references-mutability-copies",
+  },
+  {
+    unit: 8,
+    slug: "08-javascript-funcoes-alta-ordem",
+    title: "Funções de alta ordem",
+    statement: "Transforme comportamento em composição.",
+    excerpt: "A ideia comum por trás de middleware, retry, validação, cache, decorators e pipelines.",
+    publishedAt: "2026-09-23",
+    readTime: "6 min",
+    code: `const saveUser = pipeAll(\n  sanitize,\n  validate,\n  persist\n)`,
+    takeaways: ["Funções podem receber e devolver comportamento.", "Pipelines tornam a regra de negócio legível.", "Once e memoize encapsulam políticas reutilizáveis."],
+    exercisePath: "unit-08-higher-order-functions",
+  },
+  {
+    unit: 9,
+    slug: "09-javascript-map-filter-reduce",
+    title: "Map, filter e reduce",
+    statement: "Coleções viram decisões, transformações e relatórios.",
+    excerpt: "Como escolher o verbo correto para transformar DTOs, filtrar permissões e resumir dados do backend.",
+    publishedAt: "2026-10-01",
+    readTime: "7 min",
+    code: `const total = prices.reduce(\n  (sum, price) => sum + price,\n  0\n)`,
+    takeaways: ["Map transforma; filter seleciona; find localiza.", "Some e every respondem perguntas booleanas.", "Reduce precisa de um acumulador inicial coerente."],
+    exercisePath: "unit-09-map-filter-reduce",
+  },
+  {
+    unit: 10,
+    slug: "10-javascript-destructuring",
+    title: "Destructuring",
+    statement: "A sintaxe pode revelar o contrato da função.",
+    excerpt: "Extração, defaults, renomeação e dados aninhados aplicados a requests, queries e mensagens.",
+    publishedAt: "2026-10-02",
+    readTime: "5 min",
+    code: `const { email, password } = req.body`,
+    takeaways: ["Extraia apenas os campos que o fluxo usa.", "Defaults só entram quando o valor é undefined.", "Renomear na entrada adapta contratos externos ao domínio."],
+    exercisePath: "unit-10-destructuring",
+  },
+  {
+    unit: 11,
+    slug: "11-javascript-spread-rest",
+    title: "Spread e rest",
+    statement: "O mesmo operador expande dados ou coleta o restante.",
+    excerpt: "Cópias, overrides e remoção segura de campos sensíveis usando os três pontos do JavaScript.",
+    publishedAt: "2026-10-05",
+    readTime: "6 min",
+    code: `const { passwordHash, ...safeUser } = user\nconst config = { ...base, ...overrides }`,
+    takeaways: ["Em overrides, o último valor vence.", "Rest torna explícito o que ficou de fora.", "Spread não copia profundamente objetos aninhados."],
+    exercisePath: "unit-11-spread-rest",
+  },
+  {
+    unit: 12,
+    slug: "12-javascript-tratamento-erros",
+    title: "Tratamento de erros",
+    statement: "Tratar um erro não é escondê-lo.",
+    excerpt: "Erros de domínio, contexto, cause, finally e retry como decisões de arquitetura.",
+    publishedAt: "2026-10-06",
+    readTime: "7 min",
+    code: `throw new Error(\n  "falha ao salvar pedido",\n  { cause: error }\n)`,
+    takeaways: ["Capture quando existir uma decisão real a tomar.", "Preserve a causa e acrescente contexto operacional.", "Retry precisa de limite e só serve para falhas transitórias."],
+    exercisePath: "unit-12-error-handling",
+  },
+  {
+    unit: 13,
+    slug: "13-javascript-classes-prototipos",
+    title: "Classes e protótipos",
+    statement: "O modelo vem antes da sintaxe.",
+    excerpt: "Estado de instância, comportamento compartilhado, herança, static, getters, setters e mixins.",
+    publishedAt: "2026-10-07",
+    readTime: "7 min",
+    code: `class Order {\n  summary() {\n    return this.items.length\n  }\n}`,
+    takeaways: ["Métodos vivem no prototype e são compartilhados.", "Static pertence à classe; o método comum, à instância.", "Mixins compõem capacidades sem forçar herança."],
+    exercisePath: "unit-13-classes-prototypes",
+  },
+  {
+    unit: 14,
+    slug: "14-javascript-this",
+    title: "Contexto e this",
+    statement: "Olhe para a chamada antes de olhar para a função.",
+    excerpt: "Binding implícito, perda de contexto, call, apply, bind e o comportamento léxico das arrow functions.",
+    publishedAt: "2026-10-08",
+    readTime: "7 min",
+    code: `person.greet()\n\nconst greet = person.greet\ngreet() // contexto perdido`,
+    takeaways: ["This normalmente depende de como a função foi chamada.", "Bind devolve uma nova função com contexto fixo.", "Arrow functions capturam this do escopo externo."],
+    exercisePath: "unit-14-this",
+  },
+  {
+    unit: 15,
+    slug: "15-javascript-iterables-generators",
+    title: "Iterables e generators",
+    statement: "Produza dados sob demanda.",
+    excerpt: "O protocolo de iteração e pipelines lazy que evitam materializar coleções inteiras na memória.",
+    publishedAt: "2026-10-09",
+    readTime: "8 min",
+    code: `function* ids() {\n  let id = 1\n  while (true) yield id++\n}`,
+    takeaways: ["Symbol.iterator separa produção e consumo.", "Yield pausa e retoma uma execução.", "Fontes infinitas são seguras quando o consumidor impõe limite."],
+    exercisePath: "unit-15-iterables-generators",
+  },
+  {
+    unit: 16,
+    slug: "16-javascript-regex",
+    title: "Regular expressions",
+    statement: "Regex boa expressa um contrato, não esperteza.",
+    excerpt: "Âncoras, flags, captura e legibilidade ao reconhecer padrões em texto no backend.",
+    publishedAt: "2026-10-12",
+    readTime: "7 min",
+    code: `const orderId = /^ORD-(?<year>\\d{4})-(?<id>\\d+)$/`,
+    takeaways: ["Âncoras validam o valor inteiro, não só um trecho.", "Escolha test, match ou replace pela intenção.", "Quebre o problema quando a expressão parar de ser legível."],
+    exercisePath: "unit-16-regex",
+  },
+  {
+    unit: 17,
+    slug: "17-javascript-modulos-es",
+    title: "Módulos ES",
+    statement: "Módulos desenham as fronteiras do sistema.",
+    excerpt: "Named exports, default, namespaces, reexports, cache de avaliação e dependências circulares.",
+    publishedAt: "2026-10-13",
+    readTime: "7 min",
+    code: `export { parseOrder }\nimport { parseOrder } from "./orders.js"`,
+    takeaways: ["Imports tornam dependências explícitas.", "Reexports devem revelar uma API, não esconder acoplamento.", "Ciclos costumam apontar responsabilidades mal divididas."],
+    exercisePath: "unit-17-es-modules",
+  },
+  {
+    unit: 18,
+    slug: "18-javascript-callbacks",
+    title: "Callbacks",
+    statement: "Quando terminar, entregue a continuação como função.",
+    excerpt: "Error-first callbacks, execução em série ou paralelo, double callback e migração segura para promises.",
+    publishedAt: "2026-10-14",
+    readTime: "8 min",
+    code: `readFile(path, (err, result) => {\n  if (err) return callback(err)\n  return callback(null, result)\n})`,
+    takeaways: ["O contrato tradicional do Node é callback(err, result).", "Retorne depois de concluir para evitar double callback.", "Promisify cria uma ponte segura para APIs legadas."],
+    exercisePath: "unit-18-callbacks",
+  },
+];
+
+export const publications: Publication[] = entries.map((entry) => ({
+  ...entry,
+  images: imageNames[entry.unit].map((image) => `/posts/${entry.slug}/${image}`),
+}));
+
+export const publishedPublications = publications.filter(
+  (post) => new Date(`${post.publishedAt}T12:00:00-03:00`) <= new Date(),
+);
+
+export function getPublication(slug: string) {
+  return publications.find((post) => post.slug === slug);
+}
+
+export function getPublicationNeighbors(unit: number) {
+  return {
+    previous: publications.find((post) => post.unit === unit - 1),
+    next: publications.find((post) => post.unit === unit + 1),
+  };
+}
+
+export const series = {
+  slug: "javascript-core",
+  title: "JavaScript Core",
+  description:
+    "27 fundamentos de JavaScript observados pela lente de quem constrói backends: contratos, estado, fluxo e assincronicidade.",
+  totalUnits: 27,
+  publishedUnits: publications.length,
+};

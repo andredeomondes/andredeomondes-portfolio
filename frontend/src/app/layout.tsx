@@ -1,24 +1,36 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/app/providers";
 import { Navbar } from "@/shared/components/layout/navbar";
+import { SiteFooter } from "@/shared/components/layout/site-footer";
+import { SiteMotion } from "@/shared/components/motion/site-motion";
 
 const geist = Geist({
   subsets: ["latin"],
+  variable: "--font-geist-sans",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
-  title: "André Deomondes — Software Engineer",
+  metadataBase: new URL("https://andredeomondes.dev"),
+  title: {
+    default: "Andre Deomondes — Backend & Applied AI Engineer",
+    template: "%s — Andre Deomondes",
+  },
   description:
-    "Construindo produtos com foco em experiência, performance e arquitetura.",
+    "Backend, IA aplicada e notas de engenharia por Andre Deomondes.",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "48x48" },
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.webp", type: "image/webp", sizes: "512x512" },
     ],
-    apple: "/favicon.svg",
-    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.svg",
   },
 };
 
@@ -29,10 +41,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="h-full antialiased" suppressHydrationWarning>
-      <body className={`${geist.className} min-h-full flex flex-col bg-background`}>
+      <body className={`${geist.variable} ${geistMono.variable} min-h-full flex flex-col bg-background`}>
         <AppProviders>
-            <Navbar />
-            <main className="flex-1">{children}</main>
+          <Navbar />
+          <SiteMotion />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
         </AppProviders>
       </body>
     </html>

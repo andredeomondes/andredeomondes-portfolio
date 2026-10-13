@@ -1,255 +1,378 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
-import { FaGithub as Github } from "react-icons/fa";
 import {
-  SiDocker, SiMongodb, SiNestjs, SiNextdotjs, SiNodedotjs,
-  SiPostgresql, SiPrisma, SiReact, SiRedis, SiSpringboot,
-  SiTailwindcss, SiTypescript,
-} from "react-icons/si";
-import { DiJava } from "react-icons/di";
-import { FaAws } from "react-icons/fa";
-import { getPublicProjectBySlug } from "@/lib/frontend-api";
-import { NoiseTexture } from "@/shared/components/ui/noise-texture";
-import { ProgressiveBlur } from "@/shared/components/ui/progressive-blur";
-import { ShimmerAnchor, ShimmerLink } from "@/shared/components/ui/shimmer-button";
+  Activity,
+  ArrowLeft,
+  ArrowUpRight,
+  BriefcaseBusiness,
+  Check,
+  Clock3,
+  Cloud,
+  ExternalLink,
+  Handshake,
+  Layers3,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+import { getFallbackProject, type ProjectScreenshot } from "@/content/projects";
+import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
 
-const techIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  "Next.js": SiNextdotjs,
-  "React": SiReact,
-  "TypeScript": SiTypescript,
-  "Tailwind CSS": SiTailwindcss,
-  "Node.js": SiNodedotjs,
-  "NestJS": SiNestjs,
-  "Spring Boot": SiSpringboot,
-  "Java": DiJava,
-  "PostgreSQL": SiPostgresql,
-  "MongoDB": SiMongodb,
-  "Redis": SiRedis,
-  "Docker": SiDocker,
-  "Prisma": SiPrisma,
-  "AWS": FaAws,
-  "AWS S3 / EC2": FaAws,
-  "React Native": SiReact,
+type PageProps = { params: Promise<{ slug: string }> };
+
+const factIcons: Record<string, LucideIcon> = {
+  Papel: BriefcaseBusiness,
+  Modelo: Handshake,
+  Equipe: Users,
+  Duração: Clock3,
+  Status: Activity,
+  Produto: Layers3,
+  Infraestrutura: Cloud,
 };
 
-const techColorMap: Record<string, string> = {
-  "Next.js": "#ffffff",
-  "React": "#61DAFB",
-  "TypeScript": "#3178C6",
-  "Tailwind CSS": "#06B6D4",
-  "Node.js": "#339933",
-  "NestJS": "#E0234E",
-  "Spring Boot": "#6DB33F",
-  "Java": "#EA8220",
-  "PostgreSQL": "#4169E1",
-  "MongoDB": "#47A248",
-  "Redis": "#DC382D",
-  "Docker": "#2496ED",
-  "Prisma": "#2D3748",
-  "AWS": "#FF9900",
-  "AWS S3 / EC2": "#FF9900",
-  "React Native": "#61DAFB",
-};
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-8 flex items-center gap-3">
-      <span className="h-px w-8 rounded-full bg-violet-500" />
-      <span className="text-xs font-semibold uppercase tracking-[0.22em] text-violet-600 dark:text-violet-400">
-        {children}
-      </span>
-    </div>
-  );
-}
-
-function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`rounded-[1.5rem] border border-black/8 bg-white/58 p-6 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.05] ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-export default async function ProjectCasePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = await getPublicProjectBySlug(slug).catch(() => null);
+  const project = getFallbackProject(slug);
 
+  if (!project) return {};
+
+  return {
+    title: `${project.title} — Estudo de caso`,
+    description: project.description,
+    openGraph: project.image_url ? { images: [project.image_url] } : undefined,
+  };
+}
+
+function NumberedList({ items }: { items: string[] }) {
+  return (
+    <ul className="border-t border-line">
+      {items.map((item, index) => (
+        <li key={item} data-motion="item" className="grid grid-cols-[34px_1fr] gap-3 border-b border-line py-4 text-sm leading-7 text-paper">
+          <span className="font-mono text-[10px] text-signal">{String(index + 1).padStart(2, "0")}</span>
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Screenshot({ screenshot, priority = false }: { screenshot: ProjectScreenshot; priority?: boolean }) {
+  return (
+    <figure data-motion="image" className="group border border-line bg-panel">
+      <a href={screenshot.src} target="_blank" rel="noreferrer" className="block" aria-label={`Abrir imagem: ${screenshot.alt}`}>
+        <div className="relative overflow-hidden border-b border-line bg-ink" style={{ aspectRatio: `${screenshot.width} / ${screenshot.height}` }}>
+          <Image
+            src={screenshot.src}
+            alt={screenshot.alt}
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-contain transition duration-500 group-hover:scale-[1.015]"
+            priority={priority}
+          />
+          <span className="absolute right-3 top-3 inline-flex items-center gap-2 bg-ink px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-paper opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+            Abrir tela <ExternalLink className="size-3" />
+          </span>
+        </div>
+      </a>
+      <figcaption className="p-4 text-xs leading-6 text-dim">{screenshot.caption}</figcaption>
+    </figure>
+  );
+}
+
+export default async function ProjectCasePage({ params }: PageProps) {
+  const { slug } = await params;
+  const project = getFallbackProject(slug);
   if (!project || !project.published) notFound();
 
+  const caseStudy = project.case_study;
+  const overview = [
+    { label: "Problema", text: project.overview_problema },
+    { label: "Solução", text: project.overview_solucao },
+    { label: "Entrega", text: project.overview_resultado },
+  ];
+
   return (
-    <div className="relative isolate min-h-screen overflow-hidden bg-[#f6f2ea] text-[#0b1020] dark:bg-[#080912] dark:text-white">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(180,143,255,0.1),transparent_32%),linear-gradient(145deg,#f6f2ea_0%,#ede7dd_52%,#e8e2f5_100%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(120,80,255,0.08),transparent_32%),linear-gradient(145deg,#080912_0%,#0a0d1f_52%,#10091e_100%)]" />
-      <NoiseTexture noiseOpacity={0.1} frequency={0.6} octaves={3} slope={0.7} className="opacity-30 mix-blend-soft-light" />
-      <ProgressiveBlur position="top" className="opacity-50" blurLevels={[0.5, 1, 2, 4, 8, 12, 18, 24]} />
-
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-28 sm:px-8 lg:px-12">
-        <div>
-          <Link href="/projects" className="inline-flex items-center gap-1.5 text-sm text-[#0b1020]/54 transition-colors hover:text-violet-600 dark:text-white/46 dark:hover:text-violet-400">
-            <ArrowLeft className="size-4" />
-            Projetos
+    <article className="min-h-screen pt-16">
+      <header className="relative overflow-hidden border-b border-line">
+        <div className="technical-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+        <div className="site-shell relative py-14 sm:py-20">
+          <Link href="/projects" className="label inline-flex items-center gap-2 transition-colors hover:text-signal">
+            <ArrowLeft className="size-3" /> Projetos
           </Link>
-        </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
-          <div className="max-w-4xl">
-            <div className="flex flex-wrap gap-2">
-              {project.tags.map((tag) => (
-                <span key={tag} className="rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-700 dark:text-violet-300">
-                  {tag}
-                </span>
-              ))}
+          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            <div>
+              <p className="label text-signal">{caseStudy.kicker} / Estudo de caso</p>
+              <h1 className="mt-5 max-w-5xl text-[clamp(3.4rem,8vw,7.5rem)] font-semibold leading-[0.86] tracking-[-0.075em] text-paper">
+                {project.title}
+              </h1>
             </div>
-
-            <h1 className="mt-6 text-4xl font-semibold leading-[1.08] tracking-[-0.06em] sm:text-5xl lg:text-6xl">
-              {project.title}
-            </h1>
-
-            <p className="mt-6 max-w-2xl text-base leading-8 text-[#0b1020]/58 dark:text-white/58">
-              {project.long_description || project.description}
-            </p>
-
-            <div className="mt-6 flex flex-wrap gap-5">
-              {project.meta.map((item) => (
-                <span key={item} className="flex items-center gap-2 text-sm text-[#0b1020]/46 dark:text-white/42">
-                  <span className="size-1.5 rounded-full bg-violet-500" />
-                  {item}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              {project.github_url && (
-                <ShimmerAnchor
-                  href={project.github_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  shimmerColor="#a78bfa"
-                  background="rgba(109,40,217,0.85)"
-                  className="h-10 gap-2 px-5 text-sm font-medium shadow-[0_0_24px_rgba(139,92,246,0.4)]"
-                >
-                  <Github className="size-4" />
-                  Ver no GitHub
-                </ShimmerAnchor>
-              )}
-              {project.live_url && (
-                <ShimmerAnchor
-                  href={project.live_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  shimmerColor="#ffffff"
-                  background="rgba(15,23,42,0.78)"
-                  className="h-10 gap-2 px-5 text-sm font-medium"
-                >
-                  Acessar projeto
-                  <ExternalLink className="size-4" />
-                </ShimmerAnchor>
-              )}
+            <div className="border-l border-line pl-6">
+              <p className="text-lg leading-8 text-paper">{project.description}</p>
+              <p className="mt-5 text-sm leading-7 text-dim">{caseStudy.role_summary}</p>
             </div>
           </div>
 
-          <GlassCard className="overflow-hidden p-0">
-            <Image
-              src={project.image_url || "/clubeprogramacao.png"}
-              alt={project.title}
-              width={1200}
-              height={900}
-              className="h-full w-full object-cover"
-            />
-          </GlassCard>
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            {project.live_url ? (
+              <a href={project.live_url} target="_blank" rel="noreferrer" className="button-primary">
+                Visitar produto <ArrowUpRight className="size-4" />
+              </a>
+            ) : null}
+            <a href="#minha-contribuicao" className="button-secondary">Ver minha contribuição</a>
+          </div>
+        </div>
+      </header>
+
+      <section className="border-b border-line" aria-label="Informações principais do projeto">
+        <div className="site-shell grid border-x border-line sm:grid-cols-2 lg:grid-cols-4">
+          {caseStudy.facts.map((fact) => {
+            const FactIcon = factIcons[fact.label] ?? Layers3;
+
+            return (
+              <div key={fact.label} data-motion="card" className="border-b border-line p-5 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="label">{fact.label}</p>
+                  <FactIcon className="size-4 text-signal" strokeWidth={1.5} aria-hidden="true" />
+                </div>
+                <p className="mt-3 text-sm font-medium text-paper">{fact.value}</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <nav className="border-b border-line bg-ink" aria-label="Seções do estudo de caso">
+        <div className="site-shell flex gap-6 overflow-x-auto py-4">
+          {[
+            ["visao-geral", "Visão geral"],
+            ["telas", "Telas"],
+            ["minha-contribuicao", "Contribuição"],
+            ["arquitetura", "Arquitetura"],
+            ["tecnologias", "Tecnologias"],
+            ["operacao", "Deploy"],
+            ["qualidade", "Qualidade"],
+          ].map(([href, label]) => (
+            <a key={href} href={`#${href}`} className="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-dim transition-colors hover:text-signal">
+              {label}
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <section id="visao-geral" className="site-shell scroll-mt-24 py-16 sm:py-24">
+        <div className="section-heading">
+          <div>
+            <p className="label text-signal">01 / Contexto</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Do problema à entrega.</h2>
+          </div>
+          <p className="max-w-md text-sm leading-7 text-dim">O case descreve entregas verificáveis. Nenhuma métrica foi estimada ou criada para preencher a narrativa.</p>
         </div>
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-2">
-          <GlassCard>
-            <SectionLabel>Contexto</SectionLabel>
-            <div className="space-y-6 text-sm leading-7 text-[#0b1020]/66 dark:text-white/60">
-              <div>
-                <h2 className="font-medium text-[#0b1020] dark:text-white">Problema</h2>
-                <p className="mt-2">{project.overview_problema || "Em definicao."}</p>
-              </div>
-              <div>
-                <h2 className="font-medium text-[#0b1020] dark:text-white">Solucao</h2>
-                <p className="mt-2">{project.overview_solucao || "Em definicao."}</p>
-              </div>
-              <div>
-                <h2 className="font-medium text-[#0b1020] dark:text-white">Resultado</h2>
-                <p className="mt-2">{project.overview_resultado || "Em definicao."}</p>
-              </div>
-            </div>
-          </GlassCard>
-
-          <GlassCard>
-            <SectionLabel>Stack</SectionLabel>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {project.tech_stack.map((tech) => {
-                const Icon = techIconMap[tech] ?? SiNextdotjs;
-                const color = techColorMap[tech] ?? "#a78bfa";
-                return (
-                  <div key={tech} className="flex items-center gap-3 rounded-2xl border border-black/8 bg-white/58 px-4 py-3 dark:border-white/10 dark:bg-white/[0.04]">
-                    <span style={{ color }}>
-                      <Icon className="size-5" />
-                    </span>
-                    <span className="text-sm">{tech}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </GlassCard>
-
-          <GlassCard>
-            <SectionLabel>Arquitetura</SectionLabel>
-            <ul className="space-y-3 text-sm leading-7 text-[#0b1020]/66 dark:text-white/60">
-              {project.architecture.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span className="mt-3 size-1.5 shrink-0 rounded-full bg-violet-500" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </GlassCard>
-
-          <GlassCard>
-            <SectionLabel>Aprendizados</SectionLabel>
-            <ul className="space-y-3 text-sm leading-7 text-[#0b1020]/66 dark:text-white/60">
-              {project.aprendizados.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span className="mt-3 size-1.5 shrink-0 rounded-full bg-emerald-500" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </GlassCard>
+        <div className="mt-10 grid gap-px border border-line bg-line lg:grid-cols-3">
+          {overview.map((item, index) => (
+            <section key={item.label} data-motion="card" className="bg-ink p-6 sm:p-8">
+              <p className="label text-signal">{String(index + 1).padStart(2, "0")} / {item.label}</p>
+              <p className="mt-6 text-base leading-8 text-dim">{item.text}</p>
+            </section>
+          ))}
         </div>
+      </section>
 
-        <GlassCard className="mt-6">
-          <SectionLabel>Proximos Passos</SectionLabel>
-          <div className="flex flex-wrap gap-3">
-            {project.next_steps.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-black/8 bg-white/72 px-4 py-2 text-sm text-[#0b1020]/72 dark:border-white/10 dark:bg-white/[0.06] dark:text-white/68"
-              >
-                {item}
-              </span>
+      <section id="telas" className="scroll-mt-24 border-y border-line bg-paper text-ink">
+        <div className="site-shell py-16 sm:py-24">
+          <div className="section-heading">
+            <div>
+              <p className="label text-ink/60">02 / Produto real</p>
+              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Telas e fluxos.</h2>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-ink/65">Capturas reais do produto, preservadas sem mockups gerados ou números tratados como resultado.</p>
+          </div>
+
+          <div className="mt-10 grid gap-4 lg:grid-cols-2">
+            {caseStudy.screenshots.map((screenshot, index) => (
+              <div key={screenshot.src} className={index === 0 ? "lg:col-span-2" : undefined}>
+                <Screenshot screenshot={screenshot} priority={index === 0} />
+              </div>
             ))}
           </div>
-          <div className="mt-8">
-            <ShimmerLink
-              href="/projects"
-              shimmerColor="#a78bfa"
-              background="rgba(109,40,217,0.84)"
-              className="h-11 px-5 text-sm font-medium shadow-[0_0_24px_rgba(139,92,246,0.38)]"
-            >
-              Ver outros projetos
-            </ShimmerLink>
+        </div>
+      </section>
+
+      <section id="minha-contribuicao" className="site-shell scroll-mt-24 py-16 sm:py-24">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-20">
+          <div>
+            <p className="label text-signal">03 / Responsabilidade</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Minha contribuição.</h2>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-dim">{caseStudy.contribution_intro}</p>
+            <div className="mt-8">
+              <NumberedList items={caseStudy.contributions} />
+            </div>
           </div>
-        </GlassCard>
-      </div>
-    </div>
+
+          <aside className="border border-line bg-panel p-6 sm:p-8">
+            <p className="label">Escopo do produto</p>
+            <ul className="mt-7 space-y-5">
+              {caseStudy.product_scope.map((item) => (
+                <li key={item} data-motion="item" className="flex gap-3 text-sm leading-7 text-dim">
+                  <Check className="mt-1.5 size-3.5 shrink-0 text-signal" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section id="arquitetura" className="relative scroll-mt-24 overflow-hidden border-y border-line bg-panel">
+        <div className="technical-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
+        <div className="site-shell relative py-16 sm:py-24">
+          <div className="section-heading">
+            <div>
+              <p className="label text-signal">04 / Sistema</p>
+              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Arquitetura em alto nível.</h2>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-dim">Uma visão intencionalmente simples das partes confirmadas do sistema, sem expor detalhes sensíveis ou presumir serviços não informados.</p>
+          </div>
+
+          <div className="mt-12 space-y-5">
+            {caseStudy.architecture_lanes.map((lane, laneIndex) => (
+              <div key={lane.label} data-motion="lane" className="border border-line bg-ink/90 p-5 sm:p-6">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[10px] text-signal">L{String(laneIndex + 1).padStart(2, "0")}</span>
+                  <h3 className="font-mono text-[10px] uppercase tracking-[0.15em] text-paper">{lane.label}</h3>
+                </div>
+                <div className="mt-5 flex flex-col md:flex-row md:items-stretch">
+                  {lane.nodes.map((node, nodeIndex) => (
+                    <div key={`${lane.label}-${node.title}`} className="contents">
+                      <div data-motion="node" className="min-w-0 flex-1 border border-line bg-panel p-4">
+                        <div className="flex items-start gap-3">
+                          <span className="grid size-8 shrink-0 place-items-center border border-line text-signal">
+                            <TechnologyIcon name={`${node.title} ${node.detail}`} className="text-sm" maxIcons={2} />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-paper">{node.title}</p>
+                            <p className="mt-1.5 text-xs leading-5 text-dim">{node.detail}</p>
+                          </div>
+                        </div>
+                      </div>
+                      {nodeIndex < lane.nodes.length - 1 ? (
+                        <span data-motion="link" className="grid h-8 shrink-0 place-items-center font-mono text-sm text-signal md:h-auto md:w-10" aria-hidden="true">
+                          <span className="md:hidden">↓</span><span className="hidden md:inline">→</span>
+                        </span>
+                      ) : null}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="tecnologias" className="site-shell scroll-mt-24 py-16 sm:py-24">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-20">
+          <div>
+            <p className="label text-signal">05 / Implementação</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Tecnologias utilizadas.</h2>
+            <div className="mt-10 grid gap-px border border-line bg-line sm:grid-cols-2">
+              {caseStudy.technology_groups.map((group, index) => (
+                <section
+                  key={group.label}
+                  data-motion="card"
+                  className={`bg-ink p-6 ${caseStudy.technology_groups.length % 2 === 1 && index === caseStudy.technology_groups.length - 1 ? "sm:col-span-2" : ""}`}
+                >
+                  <h3 className="label text-paper">{group.label}</h3>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {group.items.map((item) => (
+                      <span key={item} className="inline-flex items-center gap-2 border border-line px-3 py-2 font-mono text-[10px] uppercase tracking-[0.11em] text-dim">
+                        <TechnologyIcon name={item} className="text-xs text-paper" />
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </div>
+
+          <aside className="border-l border-line pl-6 sm:pl-8">
+            <p className="label">Integrações confirmadas</p>
+            <ul className="mt-6">
+              {caseStudy.integrations.map((integration) => (
+                <li key={integration} data-motion="item" className="flex items-center gap-3 border-b border-line py-4 text-sm text-paper">
+                  <span className="grid size-7 place-items-center border border-line text-signal">
+                    <TechnologyIcon name={integration} className="text-xs" />
+                  </span>
+                  {integration}
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section id="operacao" className="scroll-mt-24 border-t border-line bg-panel">
+        <div className="site-shell grid gap-12 py-16 sm:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <p className="label text-signal">06 / Produção</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Hospedagem, deploy e operação.</h2>
+            <p className="mt-6 max-w-md text-sm leading-7 text-dim">Como as partes confirmadas do produto chegam e permanecem em produção.</p>
+          </div>
+          <ul className="border-t border-line">
+            {caseStudy.operations.map((item, index) => (
+              <li key={item} data-motion="item" className="grid grid-cols-[34px_1fr] gap-4 border-b border-line py-5 text-sm leading-7 text-paper">
+                <span className="font-mono text-[10px] text-signal">{String(index + 1).padStart(2, "0")}</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section id="qualidade" className="scroll-mt-24 border-y border-line bg-paper text-ink">
+        <div className="site-shell grid gap-12 py-16 sm:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <p className="label text-ink/60">07 / Engenharia</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Qualidade faz parte da entrega.</h2>
+            <p className="mt-6 max-w-md text-sm leading-7 text-ink/65">Práticas aplicadas no projeto, descritas sem atribuir notas ou resultados que não foram informados.</p>
+          </div>
+          <ul className="border-t border-ink/15">
+            {caseStudy.quality.map((item, index) => (
+              <li key={item} data-motion="item" className="grid grid-cols-[34px_1fr] gap-4 border-b border-ink/15 py-5 text-sm leading-7">
+                <span className="font-mono text-[10px] font-semibold">{String(index + 1).padStart(2, "0")}</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="site-shell py-16 sm:py-24">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
+          <div>
+            <p className="label text-signal">08 / Aprendizados</p>
+            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">O que este projeto evidencia.</h2>
+          </div>
+          <NumberedList items={project.aprendizados} />
+        </div>
+
+        <div className="mt-16 flex flex-col items-start justify-between gap-8 border-t border-line pt-10 sm:flex-row sm:items-end">
+          <div>
+            <p className="label">Próximo passo</p>
+            <p className="mt-3 max-w-xl text-2xl font-semibold tracking-[-0.04em] text-paper">Veja o produto em funcionamento ou continue pelos outros estudos de caso.</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/projects" className="button-secondary">Outros projetos</Link>
+            {project.live_url ? (
+              <a href={project.live_url} target="_blank" rel="noreferrer" className="button-primary">
+                Abrir produto <ArrowUpRight className="size-4" />
+              </a>
+            ) : null}
+          </div>
+        </div>
+      </section>
+    </article>
   );
 }

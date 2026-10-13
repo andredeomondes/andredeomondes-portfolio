@@ -1,25 +1,11 @@
-import { HeroSection } from "@/features/home/components/hero";
-import { FilosofiaSection } from "@/features/home/components/filosofia";
-import { ConstruindoSection } from "@/features/home/components/construindo";
-import { ContatoSection } from "@/features/home/components/contato";
-import { StackSection } from "@/features/home/components/stack";
-import { getPublicFeaturedProjects, getPublicSettings } from "@/lib/frontend-api";
+import { EditorialHome } from "@/features/home/components/editorial-home";
+import { getPublicSettings } from "@/lib/frontend-api";
 import { normalizeSiteContent } from "@/lib/site-content";
+import { fallbackProjects } from "@/content/projects";
 
 export default async function Home() {
-  const [settings, featuredProjects] = await Promise.all([
-    getPublicSettings().catch(() => ({})),
-    getPublicFeaturedProjects().catch(() => []),
-  ]);
+  const settings = await getPublicSettings().catch(() => ({}));
   const site = normalizeSiteContent(settings);
 
-  return (
-    <>
-      <HeroSection profile={site.profile} featuredProjects={featuredProjects} />
-      <FilosofiaSection />
-      <ConstruindoSection />
-      <StackSection />
-      <ContatoSection profile={site.profile} branding={site.branding} />
-    </>
-  );
+  return <EditorialHome profile={site.profile} projects={fallbackProjects} />;
 }

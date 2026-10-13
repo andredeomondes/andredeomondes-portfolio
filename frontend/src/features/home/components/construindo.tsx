@@ -14,7 +14,7 @@ const projects = [
     description:
       "Sistema completo de agendamentos, com dashboard administrativo e gestão de pacientes.",
     href: "/projects",
-    image: "/clubeprogramacao.png",
+    image: "/clubeprogramacao.webp",
     tags: ["TypeScript", "Next.js", "React.js", "Node.js", "+2"],
   },
   {
@@ -22,7 +22,7 @@ const projects = [
     description:
       "Plataforma de agendamento online para barbearias com sistema de reservas e gestão de serviços.",
     href: "/projects",
-    image: "/clubeprogramacao.png",
+    image: "/clubeprogramacao.webp",
     tags: ["TypeScript", "Next.js", "React.js", "Node.js", "+2"],
   },
   {
@@ -30,7 +30,7 @@ const projects = [
     description:
       "Sistema com foco em diminuir filas em lanchonetes, automatizando pedidos e pagamentos.",
     href: "/projects",
-    image: "/clubeprogramacao.png",
+    image: "/clubeprogramacao.webp",
     tags: ["TypeScript", "Next.js", "React.js", "Node.js", "+2"],
   },
 ];
@@ -118,7 +118,7 @@ export function ConstruindoSection() {
 
                 <div className="mt-5 flex items-center gap-3">
                   <Image
-                    src="/andre.jpg"
+                    src="/andre.webp"
                     alt="Andre Deomondes"
                     width={40}
                     height={40}

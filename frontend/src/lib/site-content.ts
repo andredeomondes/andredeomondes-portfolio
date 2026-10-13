@@ -92,36 +92,36 @@ export interface SiteContent {
 }
 
 export const defaultResumeSections: ResumeSectionConfig[] = [
-  { id: "header", label: "Cabecalho", enabled: true },
+  { id: "header", label: "Cabeçalho", enabled: true },
   { id: "summary", label: "Resumo", enabled: true },
-  { id: "experience", label: "Experiencia", enabled: true },
+  { id: "experience", label: "Experiência", enabled: true },
   { id: "projects", label: "Projetos em destaque", enabled: true },
   { id: "skills", label: "Habilidades", enabled: true },
   { id: "keywords", label: "Keywords", enabled: true },
-  { id: "education", label: "Formacao", enabled: true },
+  { id: "education", label: "Formação", enabled: true },
 ];
 
 export const defaultSiteContent: SiteContent = {
   profile: {
     name: "Andre Deomondes",
-    role: "Full Stack & Mobile Developer",
-    company: "Caji Solutions",
+    role: "Backend & Applied AI Engineer",
+    company: "AEX",
     birthdate: "27/06/2003",
-    age: 21,
+    age: 23,
     location: "Salvador, BA, Brasil",
     email: "contato@andredeomondes.dev",
     website: "andredeomondes.dev",
     whatsapp: "5571988384932",
-    availability: "Disponivel para conversar",
+    availability: "Disponível para conversar",
     shortBio:
-      "Construo aplicacoes web e mobile que combinam codigo limpo, escalabilidade e experiencias intuitivas.",
+      "Projeto backends, produtos digitais e sistemas com IA aplicada, com foco em contratos claros, observabilidade e evolução segura.",
     longBio:
-      "Construo aplicacoes web e mobile que combinam codigo limpo, escalabilidade e experiencias intuitivas. Meu foco e desenvolver produtos digitais rapidos, confiaveis e preparados para crescer, transformando ideias em solucoes que geram valor real para usuarios e empresas.",
+      "Projeto backends, produtos digitais e sistemas com IA aplicada. Meu trabalho conecta regras de negócio, arquitetura e experiência para transformar problemas reais em software confiável, observável e preparado para evoluir.",
     heroTitle: "ANDRE DEOMONDES.",
-    heroIntro: "Eu sou Desenvolvedor Full Stack na Caji Solutions",
+    heroIntro: "Eu sou Backend & Applied AI Engineer",
     heroDescription:
-      "Desenvolvo aplicativos mobile, sistemas web e solucoes completas de software que unem design, performance e escalabilidade.",
-    resumeHeadline: "Full Stack & Mobile Developer",
+      "Projeto backends, produtos digitais e sistemas com IA aplicada — e documento o raciocínio entre o problema e o código.",
+    resumeHeadline: "Backend & Applied AI Engineer",
     social: {
       github: "https://github.com/andredeomondes",
       linkedin: "https://linkedin.com/in/andredeomondes",
@@ -131,53 +131,66 @@ export const defaultSiteContent: SiteContent = {
   about: {
     experiences: [
       {
-        company: "Caji Solutions",
-        role: "Full Stack Developer",
-        period: "Abr 2026 - Presente",
+        company: "AEX",
+        role: "Backend Software Engineer",
+        period: "Jun 2026 – atual",
         active: true,
         bullets: [
-          "Desenvolvo sistemas web e APIs para fluxos internos e produtos digitais.",
-          "Estruturo interfaces claras e integracoes prontas para crescer.",
-          "Atuo em backend, front-end e organizacao tecnica da entrega.",
+          "Desenvolvo APIs REST e fluxos de automação para o ecossistema MausOS.",
+          "Estruturo soluções com bancos de dados relacionais, estratégias de cache e contratos claros entre serviços.",
+          "Contribuo para decisões de arquitetura, confiabilidade e evolução segura do backend.",
         ],
       },
       {
-        company: "REXIS Digital",
-        role: "Full Stack Developer",
-        period: "Jan 2026 - Presente",
+        company: "Drop Aki TCG",
+        role: "Software Engineer · Freelance e consultoria",
+        period: "2026 – atual",
         active: true,
         bullets: [
-          "Trabalho em software escalavel com foco em arquitetura backend.",
-          "Integro fluxos com IA para operacoes mais rapidas e simples.",
+          "Construí e continuo evoluindo o e-commerce full stack, da experiência de compra ao painel administrativo.",
+          "Integrei pagamentos, frete, contas de usuários, pedidos e estoque com serviços Node.js, Python, PostgreSQL e Redis.",
+          "Cuido de deploy, observabilidade, SEO técnico, desempenho e testes unitários, de integração e E2E.",
+        ],
+      },
+      {
+        company: "Caji Solutions",
+        role: "Desenvolvedor Full Stack",
+        period: "2025 – 2026 · 1 ano",
+        active: false,
+        bullets: [
+          "Atuei em uma equipe de quatro pessoas na construção do CajiAgent, um SaaS de atendimento e automação com IA.",
+          "Fui responsável pelas integrações com WhatsApp e Instagram e pela conexão do agente com o estoque em tempo real.",
+          "Implementei fluxos de áudio com Groq e Whisper, além de testes unitários, de integração e E2E com Playwright.",
         ],
       },
     ],
     education: [
       {
         institution: "Universidade CIMATEC",
-        degree: "Bacharelado em Engenharia da Computacao",
+        degree: "Bacharelado em Engenharia da Computação",
         period: "Jan 2024 - Jan 2029",
       },
       {
         institution: "SENAI BAHIA",
-        degree: "Tecnico em Desenvolvimento de Sistemas",
+        degree: "Técnico em Desenvolvimento de Sistemas",
         period: "Ago 2025 - Ago 2027",
       },
     ],
     techStack: [
       { label: "Frontend", items: ["React", "Next.js", "TypeScript", "Tailwind CSS"] },
       { label: "Mobile", items: ["React Native", "Expo"] },
-      { label: "Backend", items: ["Node.js", "NestJS", "Fastify", "Java", "Spring Boot"] },
-      { label: "Banco de dados", items: ["PostgreSQL", "MongoDB"] },
+      { label: "Backend", items: ["Node.js", "NestJS", "Fastify", "Python", "FastAPI", "Java", "Spring Boot"] },
+      { label: "IA aplicada", items: ["LangChain", "Gemini", "Groq", "Whisper"] },
+      { label: "Banco de dados", items: ["PostgreSQL", "Redis", "MongoDB"] },
       { label: "DevOps", items: ["Docker", "AWS", "Git", "CI/CD"] },
     ],
   },
   resume: {
     targetRole: "Full Stack Software Engineer",
     summary:
-      "Desenvolvedor Full Stack e Mobile com experiencia em produtos web, aplicativos e sistemas internos orientados a performance, usabilidade e escalabilidade.",
+      "Desenvolvedor Full Stack e Mobile com experiência em produtos web, aplicativos e sistemas internos orientados a desempenho, usabilidade e escalabilidade.",
     focusTopics: ["React", "Next.js", "TypeScript", "Node.js", "Java", "Arquitetura", "Produtos Digitais"],
-    softSkills: ["Comunicacao", "Colaboracao", "Resolucao de problemas", "Pensamento analitico", "Ownership", "Adaptabilidade"],
+    softSkills: ["Comunicação", "Colaboração", "Resolução de problemas", "Pensamento analítico", "Ownership", "Adaptabilidade"],
     keywords: ["Full Stack", "Next.js", "TypeScript", "Node.js", "APIs", "Arquitetura de Software", "PostgreSQL", "AWS", "React Native"],
     defaultProjectIds: [],
     sections: defaultResumeSections,
@@ -185,11 +198,11 @@ export const defaultSiteContent: SiteContent = {
   branding: {
     siteTitle: "Andre Deomondes - Software Engineer",
     accentColor: "#8b5cf6",
-    contactTitle: "Descreva o software que voce quer criar.",
+    contactTitle: "Descreva o software que você quer criar.",
     contactDescription:
-      "Envie a ideia no WhatsApp e, se quiser, leve uma imagem de referencia junto.",
+      "Envie a ideia no WhatsApp e, se quiser, leve uma imagem de referência junto.",
     whatsappMessageTemplate:
-      "Ola Andre, quero criar um software e conversar sobre o projeto.",
+      "Olá Andre, quero criar um software e conversar sobre o projeto.",
   },
 };
 
