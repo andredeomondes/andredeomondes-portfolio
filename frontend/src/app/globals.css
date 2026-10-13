@@ -437,18 +437,58 @@
   }
 
   .technical-grid {
+    overflow: hidden;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+    transform-origin: center;
+  }
+
+  .technical-grid::before {
+    content: "";
+    position: absolute;
+    inset: -12%;
     background-image:
       linear-gradient(rgba(244, 244, 240, 0.055) 1px, transparent 1px),
       linear-gradient(90deg, rgba(244, 244, 240, 0.055) 1px, transparent 1px);
+    background-position: center;
     background-size: 28px 28px;
-    mask-image: linear-gradient(to bottom, black, transparent 90%);
+    animation: technical-grid-drift 22s linear infinite alternate;
+    animation-play-state: paused;
+    will-change: transform;
   }
 
   .technical-grid::after {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -8%;
     background: radial-gradient(circle at 78% 28%, rgba(247, 201, 40, 0.08), transparent 24rem);
+    animation: technical-grid-signal 16s ease-in-out infinite alternate;
+    animation-play-state: paused;
+    will-change: opacity, transform;
+  }
+
+  .technical-grid[data-grid-active]::before,
+  .technical-grid[data-grid-active]::after {
+    animation-play-state: running;
+  }
+
+  @keyframes technical-grid-drift {
+    from {
+      transform: translate3d(-1.5%, -1.5%, 0);
+    }
+    to {
+      transform: translate3d(1.5%, 1.5%, 0);
+    }
+  }
+
+  @keyframes technical-grid-signal {
+    from {
+      opacity: 0.48;
+      transform: translate3d(-2%, 1%, 0) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(2%, -1%, 0) scale(1.04);
+    }
   }
 
   .signal-square {
@@ -468,6 +508,18 @@
     background: #f7c928;
     opacity: 0;
     transform: scaleX(0);
+  }
+
+  .scroll-progress {
+    position: fixed;
+    inset: 4rem 0 auto;
+    z-index: 59;
+    height: 1px;
+    pointer-events: none;
+    background: #f7c928;
+    box-shadow: 0 1px 10px rgba(247, 201, 40, 0.24);
+    transform: scaleX(0);
+    transform-origin: left center;
   }
 
   .site-navigation {
@@ -645,6 +697,7 @@
   }
 
   .route-scanline,
+  .scroll-progress,
   .motion-image-wipe,
   .motion-lane-wipe,
   .motion-section-rule,
@@ -652,6 +705,12 @@
   .animate-retro-horizon-pulse,
   .animate-retro-glow-pulse {
     display: none;
+  }
+
+  .technical-grid::before,
+  .technical-grid::after {
+    animation: none;
+    transform: none;
   }
 }
 

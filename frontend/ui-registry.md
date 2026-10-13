@@ -127,9 +127,11 @@ Last updated: 2026-10-12
 | List cadence | `0.045s` stagger, capped to visible ScrollTrigger batches |
 | Image reveal | Ink overlay retracts with `scaleY`; image settles from `scale: 1.025` |
 | Architecture | Ink lane overlay, staggered nodes/arrows and SVG stroke draw-on |
+| Scroll depth | Signal-yellow progress rule plus subtle scrubbed depth on technical-grid fields |
+| Ambient grid | 22s diagonal drift and 16s signal pulse; runs only while the grid intersects the viewport |
 | Interaction | Compositor-only carousel change, mobile-menu sequence, button press and exercise-panel continuity |
-| Performance | Transform and opacity on moving surfaces; batched triggers and scoped cleanup |
-| Accessibility | `gsap.matchMedia()` removes spatial motion but retains ≤150ms opacity cues |
+| Performance | Transform and opacity on moving surfaces; lazy GSAP loading, batched triggers, intersection-paused grid loops and scoped cleanup |
+| Accessibility | `gsap.matchMedia()` removes spatial motion but retains ≤150ms opacity cues; CSS grid motion and scroll progress are removed under reduced motion |
 
 **Pattern notes:**
-Motion follows the same engineering-notebook metaphor as the visual system: headings are assembled line by line, dark covers retract like inspected panels, and architecture paths draw as connections become available. Use GSAP match-media contexts with cleanup for every React-owned animation. Keep routine feedback between 0.12s and 0.38s, authored entrances below 0.75s, and preserve the navigation bar across route transitions. Do not add bounce, elastic easing, continuous decorative loops, full-surface bright flashes or animation that changes layout-driving properties.
+Motion follows the same engineering-notebook metaphor as the visual system: headings are assembled line by line, dark covers retract like inspected panels, architecture paths draw as connections become available, and the technical grid behaves as a slow spatial field. Use GSAP match-media contexts with cleanup for every React-owned animation. Keep routine feedback between 0.12s and 0.38s, authored entrances below 0.75s, and preserve the navigation bar across route transitions. The technical grid is the only approved ambient loop; it must remain low contrast, pause offscreen and disappear under reduced motion. Do not add bounce, elastic easing, full-surface bright flashes or animation that changes layout-driving properties.

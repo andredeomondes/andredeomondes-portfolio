@@ -31,6 +31,7 @@ export function SiteMotion() {
   const pathname = usePathname();
   const router = useRouter();
   const scanlineRef = useRef<HTMLDivElement>(null);
+  const scrollProgressRef = useRef<HTMLDivElement>(null);
   const pendingNavigationRef = useRef<(() => void) | null>(null);
   const navigationTimeoutRef = useRef<number | null>(null);
 
@@ -102,9 +103,22 @@ export function SiteMotion() {
 
     const root = document.querySelector<HTMLElement>("main");
     const scanline = scanlineRef.current;
-    if (!root || !scanline) return;
+    const scrollProgress = scrollProgressRef.current;
+    if (!root || !scanline || !scrollProgress) return;
     const motionRoot = root;
     const routeScanline = scanline;
+    const pageProgress = scrollProgress;
+
+    const technicalGrids = Array.from(motionRoot.querySelectorAll<HTMLElement>(".technical-grid"));
+    const gridObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.toggleAttribute("data-grid-active", entry.isIntersecting);
+        });
+      },
+      { rootMargin: "12% 0px" },
+    );
+    technicalGrids.forEach((grid) => gridObserver.observe(grid));
 
     let disposed = false;
     let cleanupMotion: () => void = () => {};
@@ -171,6 +185,38 @@ export function SiteMotion() {
 
           return;
         }
+
+        gsap.fromTo(
+          pageProgress,
+          { scaleX: 0, transformOrigin: "left center" },
+          {
+            scaleX: 1,
+            ease: "none",
+            scrollTrigger: {
+              start: 0,
+              end: "max",
+              scrub: 0.18,
+            },
+          },
+        );
+
+        technicalGrids.forEach((grid) => {
+          gsap.fromTo(
+            grid,
+            { yPercent: -2.5, scale: 1.055 },
+            {
+              yPercent: 2.5,
+              scale: 1.055,
+              ease: "none",
+              scrollTrigger: {
+                trigger: grid.parentElement ?? grid,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.8,
+              },
+            },
+          );
+        });
 
         const routeTimeline = gsap.timeline({ defaults: { ease: "power3.out" } });
         routeTimeline
@@ -347,10 +393,16 @@ export function SiteMotion() {
 
     return () => {
       disposed = true;
+      gridObserver.disconnect();
       removeStartListeners();
       cleanupMotion();
     };
   }, [pathname]);
 
-  return <div ref={scanlineRef} className="route-scanline" aria-hidden="true" />;
+  return (
+    <>
+      <div ref={scanlineRef} className="route-scanline" aria-hidden="true" />
+      <div ref={scrollProgressRef} className="scroll-progress" aria-hidden="true" />
+    </>
+  );
 }
