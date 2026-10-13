@@ -60,7 +60,7 @@ One 4:5 card is visible at a time inside a ruled technical frame. Previous/next 
 
 File: `src/shared/components/editorial/exercise-workbench.tsx`
 
-The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an always-visible reviewed reference solution. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use signal yellow; reading surfaces remain square, ruled, and matte black.
+The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an always-visible resolution area. Resolution access is never hidden behind review, reveal or lock states; the code currently present in the unit is shown directly, with the starter as a safe fallback when an export cannot be parsed. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use signal yellow; reading surfaces remain square, ruled, and matte black.
 
 ### Project Case Study
 

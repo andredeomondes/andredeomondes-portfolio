@@ -15,7 +15,6 @@ export type ExerciseItem = {
   statement: string;
   starter: string;
   solution: string;
-  solutionAvailable: boolean;
   checks: string[];
   examples: ExerciseExample[];
   testCode: string;
@@ -73,7 +72,7 @@ function extractSection(markdown: string, heading: string) {
 
 function parseExportBlocks(source: string): ExportBlock[] {
   const matches = Array.from(
-    source.matchAll(/^export\s+(?:async\s+)?(?:function|class|const|let|var)\s+([A-Za-z_$][\w$]*)/gm),
+    source.matchAll(/^export\s+(?:async\s+)?(?:function\s*\*?|class|const|let|var)\s+([A-Za-z_$][\w$]*)/gm),
   );
 
   return matches.map((match, index) => {
@@ -82,6 +81,7 @@ function parseExportBlocks(source: string): ExportBlock[] {
     const raw = source.slice(start, end);
     const code = raw
       .replace(/\n\/\/ ---[^\n]*[-]+\s*$/, "")
+      .replace(/\n\/\/ test:[^\n]*\s*$/, "")
       .replace(/\n\/\*[\s\S]*$/, "")
       .trim();
     return { name: match[1], code };
@@ -91,7 +91,7 @@ function parseExportBlocks(source: string): ExportBlock[] {
 function createStarter(code: string, identifier: string) {
   const name = escapeRegExp(identifier);
   const declaration = code.match(
-    new RegExp(`^export\\s+(?:async\\s+)?(?:function|class)\\s+${name}[^\\{]*\\{`),
+    new RegExp(`^export\\s+(?:async\\s+)?(?:function\\s*\\*?|class)\\s+${name}[^\\{]*\\{`),
   );
 
   if (declaration) {
@@ -269,7 +269,6 @@ function parseHints(source: string, identifier: string): ExerciseHint[] {
 function parseExercises(readme: string, implementation: string, tests: string, hints: string) {
   const exports = parseExportBlocks(implementation);
   const testBlocks = parseTestBlocks(tests);
-  const wholeUnitHasReviewedSolutions = !implementation.includes("not implemented:");
 
   return EXERCISE_SECTIONS.flatMap(({ heading, label }) => {
     const section = extractSection(readme, heading);
@@ -300,7 +299,6 @@ function parseExercises(readme: string, implementation: string, tests: string, h
         statement: cleanMarkdownBlock(entry[3]),
         starter: createStarter(exportBlock?.code ?? "", identifier),
         solution,
-        solutionAvailable: wholeUnitHasReviewedSolutions && Boolean(solution),
         checks,
         examples: extractExamples(testCode, identifier, checks[0] ?? ""),
         testCode,

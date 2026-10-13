@@ -12,7 +12,6 @@ import {
   Code2,
   Copy,
   Lightbulb,
-  LockKeyhole,
 } from "lucide-react";
 import type { ExerciseContent } from "@/lib/exercise-content";
 
@@ -290,22 +289,12 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                   <h4 id="exercise-solution-title" className="mt-2 text-lg font-semibold text-paper">Resolução</h4>
                 </div>
                 <div>
-                  {exercise.solutionAvailable ? (
-                    <div>
-                      <div className="mb-4 border border-line bg-paper p-4 text-sm leading-7 text-ink transition-colors hover:border-signal">
-                        A resolução fica sempre disponível para comparação. Observe as decisões, não apenas as linhas: validações primeiro, transformação no centro e retorno explícito no fim.
-                      </div>
-                      <CodePanel code={exercise.solution} label="resolução de referência" />
+                  <div>
+                    <div className="mb-4 border border-line bg-paper p-4 text-sm leading-7 text-ink transition-colors hover:border-signal">
+                      Esta área permanece livre em todos os exercícios. O código atual da unidade aparece abaixo para comparação com os testes e casos esperados.
                     </div>
-                  ) : (
-                    <div className="flex gap-4 border border-line p-5">
-                      <LockKeyhole className="mt-1 size-5 shrink-0 text-dim" aria-hidden="true" />
-                      <div>
-                        <p className="font-medium text-paper">Resolução em revisão</p>
-                        <p className="mt-2 text-sm leading-7 text-dim">O enunciado e os casos esperados já estão disponíveis. A resolução desta unidade só será liberada quando estiver revisada por completo.</p>
-                      </div>
-                    </div>
-                  )}
+                    <CodePanel code={exercise.solution || exercise.starter} label="código disponível" />
+                  </div>
                 </div>
               </div>
             </section>
