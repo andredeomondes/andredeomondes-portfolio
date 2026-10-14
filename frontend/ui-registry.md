@@ -187,7 +187,27 @@ Last updated: 2026-10-13
 **Pattern notes:**
 Motion follows the same engineering-notebook metaphor as the visual system: headings are assembled line by line, dark covers retract like inspected panels, architecture paths draw as connections become available, and technical signals show that the system is active. Use GSAP match-media contexts with cleanup for every React-owned animation. Keep routine feedback between 0.12s and 0.38s, authored entrances below 0.75s, and preserve the navigation bar across route transitions. Ambient loops are restricted to the technical grid, signal square, outline heading and architecture connectors; they must remain low contrast, pause offscreen and disappear under reduced motion. Do not add bounce, elastic easing, full-surface bright flashes or animation that changes layout-driving properties.
 
-The home owns a route-specific motion score after the global loader: masked name reveal, portrait wipe, scroll-scrubbed typographic counter-motion and image parallax. Its marquees pause when offscreen or when the document is hidden. Under reduced motion the loader becomes a short opacity acknowledgment, marquees become static and every chapter remains fully visible.
+The home owns a route-specific motion score after the global loader: CSS typing on the name, scroll-scrubbed typographic counter-motion and image parallax. The portrait is never hidden by an entrance animation because it is the LCP element. Marquees pause when offscreen or when the document is hidden. Under reduced motion the loader becomes a short opacity acknowledgment, marquees become static and every chapter remains fully visible.
+
+### Responsive Navigation & Performance Guardrails
+
+Files: `src/shared/components/layout/navbar.tsx`, `src/features/home/components/editorial-home.tsx`, `src/app/globals.css`
+Last updated: 2026-10-14
+
+| Concern | Rule |
+| --- | --- |
+| Mobile range | The full-screen menu remains active below `1024px`; desktop navigation begins at `1024px` |
+| Touch target | Menu trigger is at least `48 × 48px`, uses `touch-action: manipulation` and has no tap highlight |
+| Menu visibility | Opening depends only on React state and CSS; never gate visibility behind GSAP, `clip-path` or a late dynamic import |
+| Safe areas | Navigation and full-height menu respect iOS safe-area insets and use `100svh` |
+| Motion loading | GSAP and ScrollTrigger load only after intentional interaction; critical text and LCP images render without JS animation |
+| LCP images | Above-the-fold image uses eager loading plus `fetchPriority="high"`; below-the-fold cards remain lazy |
+| Mobile glass | Coarse pointers and narrow viewports disable expensive backdrop filters while preserving opaque glass surfaces |
+| Long indexes | Publication and project cards use `content-visibility: auto` with an intrinsic fallback size |
+| Regression tests | Playwright covers iPhone XR (`414 × 896`), tablet (`768px`) and desktop (`1024px`) navigation states |
+
+**Pattern notes:**
+Keep navigation usable before any motion library is available. Decorative entrance motion must never hide the LCP element. Breakpoint changes need matching Tailwind visibility classes, CSS media queries and an E2E assertion. The public shell stays fully semantic and crawlable before hydration; dynamic effects enhance it only after input.
 
 ### Route Loader
 
@@ -207,7 +227,7 @@ Last updated: 2026-10-13
 | Accent usage | Signal orange on `.dev`, cursor and progress rail only |
 
 **Pattern notes:**
-The loader is mounted by the root template, so it appears on the first visit and every route transition. It types `andredeomondes.dev` in the site's own Space Grotesk voice using a 17-step mask, then exits with a vertical clip in 920ms. It remains decorative and hidden from assistive technology. Reduced-motion mode shows the complete domain immediately and replaces the spatial exit with a 180ms fade.
+The loader is mounted by the root template, so it appears on the first visit and every route transition. It types `andredeomondes.dev` in the site's own Space Grotesk voice using a 17-step mask, then exits with a vertical clip in 300ms so it does not delay the LCP. It remains decorative and hidden from assistive technology. Reduced-motion mode shows the complete domain immediately and replaces the spatial exit with a 180ms fade.
 
 ### Editorial Index Atmosphere
 

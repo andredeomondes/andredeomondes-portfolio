@@ -11,7 +11,7 @@ export function PublicationCard({
   priority?: boolean;
 }) {
   return (
-    <article data-motion="item" className="group border-t border-line py-6 sm:py-8">
+    <article data-motion="item" className="publication-card group border-t border-line py-6 sm:py-8">
       <Link
         href={`/posts/${post.slug}`}
         className="grid gap-5 sm:grid-cols-[120px_1fr_auto] sm:items-center"
@@ -21,7 +21,7 @@ export function PublicationCard({
             src={post.images[0]}
             alt={`Capa da unidade ${post.unit}: ${post.title}`}
             fill
-            priority={priority}
+            fetchPriority={priority ? "high" : undefined}
             sizes="(max-width: 640px) 100vw, 120px"
             className="object-cover grayscale transition duration-500 group-hover:scale-[1.025] group-hover:contrast-110"
           />
@@ -29,9 +29,9 @@ export function PublicationCard({
 
         <div>
           <p className="label">Unidade {String(post.unit).padStart(2, "0")} · {post.readTime}</p>
-          <h3 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-paper sm:text-3xl">
+          <h2 className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-paper sm:text-3xl">
             {post.title}
-          </h3>
+          </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-dim sm:text-base">
             {post.excerpt}
           </p>

@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
-import { publications, series } from "@/content/posts";
+import { publishedPublications, series } from "@/content/posts";
 
 export const metadata: Metadata = {
   title: "Série JavaScript Core",
   description: series.description,
+  alternates: { canonical: "/series/javascript-core" },
+  openGraph: { url: "/series/javascript-core", title: "JavaScript Core — do fundamento ao backend", description: series.description },
 };
 
 export default function JavaScriptCoreSeriesPage() {
@@ -37,7 +39,7 @@ export default function JavaScriptCoreSeriesPage() {
             </p>
           </div>
           <ol className="border-t border-line">
-            {publications.map((post) => (
+            {publishedPublications.map((post) => (
               <li key={post.slug} data-motion="item">
                 <Link href={`/posts/${post.slug}`} className="group grid gap-4 border-b border-line py-6 sm:grid-cols-[64px_1fr_auto] sm:items-center">
                   <span className="font-mono text-sm text-signal">{String(post.unit).padStart(2, "0")}</span>
@@ -51,7 +53,7 @@ export default function JavaScriptCoreSeriesPage() {
                 </Link>
               </li>
             ))}
-            {Array.from({ length: series.totalUnits - publications.length }, (_, index) => publications.length + index + 1).map((unit) => (
+            {Array.from({ length: series.totalUnits - publishedPublications.length }, (_, index) => publishedPublications.length + index + 1).map((unit) => (
               <li key={unit} data-motion="item" className="grid gap-4 border-b border-line py-6 opacity-40 sm:grid-cols-[64px_1fr_auto] sm:items-center">
                 <span className="font-mono text-sm text-dim">{String(unit).padStart(2, "0")}</span>
                 <span className="text-xl font-semibold tracking-[-0.035em] text-paper">Próxima unidade</span>

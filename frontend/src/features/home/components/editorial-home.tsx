@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
@@ -135,7 +135,7 @@ function Hero({ profile }: { profile: ProfileSettings }) {
       <div className="home-hero__field" aria-hidden="true"><span>BUILD</span><span>SHIP</span><span>LEARN</span></div>
       <div className="site-shell home-stage-content home-hero__content">
         <div className="home-hero__portrait" data-home-photo>
-          <Image src="/brand/andre-editorial-v2.webp" alt="Retrato de Andre Deomondes" fill priority sizes="(max-width: 767px) 88vw, 42vw" className="object-cover object-top" />
+          <Image src="/brand/andre-editorial-v2.webp" alt="Retrato de Andre Deomondes" fill fetchPriority="high" loading="eager" sizes="(max-width: 767px) 88vw, 42vw" className="object-cover object-top" />
           <span className="home-hero__portrait-shade" />
         </div>
         <div className="home-hero__title" aria-label={profile.name}>
@@ -151,7 +151,7 @@ function Hero({ profile }: { profile: ProfileSettings }) {
         <div className="home-hero__bottom home-hero-support">
           <p>Backend &amp; Applied AI Engineer</p>
           <p>{profile.location}</p>
-          <a href="#atuacao" aria-label="Avançar para atuação">Explorar <ArrowDown className="size-4" /></a>
+          <a href="#atuacao" aria-label="Explorar: avançar para atuação">Explorar <ArrowDown className="size-4" /></a>
         </div>
       </div>
     </section>
@@ -172,7 +172,7 @@ function Marquee({ reverse = false }: { reverse?: boolean }) {
   }, []);
   const repeated = [...stack, ...stack];
   return (
-    <div ref={ref} className="home-marquee" aria-label={`Tecnologias: ${stack.join(", ")}`}>
+    <div ref={ref} className="home-marquee" role="region" aria-label={`Tecnologias: ${stack.join(", ")}`}>
       <div className={reverse ? "home-marquee__track home-marquee__track--reverse" : "home-marquee__track"} aria-hidden="true">
         {repeated.map((item, index) => <span key={`${item}-${index}`}><TechnologyIcon name={item} className="home-marquee__icon" />{item}</span>)}
       </div>
@@ -280,12 +280,20 @@ function Contact({ profile }: { profile: ProfileSettings }) {
 
 export function EditorialHome({ profile, projects }: { profile: ProfileSettings; projects: Project[] }) {
   const rootRef = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
+  useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
     let disposed = false;
     let cleanup = () => {};
-    void Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
+    let started = false;
+
+    const removeStartListeners = () => {
+      window.removeEventListener("pointerdown", startMotion);
+      window.removeEventListener("scroll", startMotion);
+      window.removeEventListener("keydown", startMotion);
+    };
+
+    const initializeMotion = () => Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(([{ gsap }, { ScrollTrigger }]) => {
       if (disposed) return;
       gsap.registerPlugin(ScrollTrigger);
       const context = gsap.context(() => {
@@ -293,15 +301,6 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
         if (reduceMotion) {
           return;
         }
-
-        const entrance = gsap.timeline({
-          defaults: { ease: "power4.inOut" },
-          delay: 0.16,
-        });
-        entrance
-          .from(".home-hero-title-line", { yPercent: 112, duration: 0.68, stagger: 0.07, ease: "power4.out" })
-          .from(".home-hero__portrait", { clipPath: "inset(100% 0 0 0)", duration: 0.64, ease: "power3.inOut" }, "-=0.58")
-          .from(".home-hero-support > *", { autoAlpha: 0, y: 12, duration: 0.34, stagger: 0.04, ease: "power3.out" }, "-=0.3");
 
         gsap.utils.toArray<HTMLElement>("[data-home-section]").slice(1).forEach((section) => {
           const content = section.querySelector<HTMLElement>(".home-stage-content");
@@ -329,7 +328,21 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
       cleanup = () => context.revert();
     });
 
-    return () => { disposed = true; cleanup(); };
+    function startMotion() {
+      if (started) return;
+      started = true;
+      removeStartListeners();
+      void initializeMotion();
+    }
+
+    window.addEventListener("pointerdown", startMotion, { once: true, passive: true });
+    window.addEventListener("scroll", startMotion, { once: true, passive: true });
+    window.addEventListener("keydown", startMotion, { once: true });
+    return () => {
+      disposed = true;
+      removeStartListeners();
+      cleanup();
+    };
   }, []);
 
   return (

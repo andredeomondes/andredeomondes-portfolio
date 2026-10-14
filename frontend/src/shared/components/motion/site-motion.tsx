@@ -134,9 +134,8 @@ export function SiteMotion() {
     let started = false;
 
     const removeStartListeners = () => {
-      window.removeEventListener("pointermove", startMotion);
       window.removeEventListener("pointerdown", startMotion);
-      window.removeEventListener("scroll", startMotion);
+      window.removeEventListener("scroll", startMotionFromScroll);
       window.removeEventListener("keydown", startMotion);
     };
 
@@ -416,9 +415,13 @@ export function SiteMotion() {
       void initializeMotion();
     }
 
-    window.addEventListener("pointermove", startMotion, { once: true, passive: true });
+    function startMotionFromScroll() {
+      if (Math.abs(window.scrollY) < 24) return;
+      startMotion();
+    }
+
     window.addEventListener("pointerdown", startMotion, { once: true, passive: true });
-    window.addEventListener("scroll", startMotion, { once: true, passive: true });
+    window.addEventListener("scroll", startMotionFromScroll, { passive: true });
     window.addEventListener("keydown", startMotion, { once: true });
 
     return () => {

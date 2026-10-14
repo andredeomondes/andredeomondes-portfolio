@@ -1,0 +1,14 @@
+# Andre Deomondes
+
+Portfolio e publicação técnica em português sobre JavaScript, backend, engenharia de software e inteligência artificial aplicada.
+
+## Conteúdo principal
+
+- https://andredeomondes.dev/posts — índice de tutoriais e publicações
+- https://andredeomondes.dev/series/javascript-core — trilha JavaScript Core com teoria, exemplos, testes e exercícios
+- https://andredeomondes.dev/projects — estudos de caso de produtos reais
+- https://andredeomondes.dev/about — experiência profissional e stack
+- https://andredeomondes.dev/feed.xml — feed RSS das publicações
+
+Autor: Andre Deomondes
+Idioma principal: português do Brasil

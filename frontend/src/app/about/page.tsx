@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
-import { getPublicSettings } from "@/lib/frontend-api";
 import { normalizeSiteContent } from "@/lib/site-content";
 import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
+import { getCachedPublicSettings } from "@/server/services/settings";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Sobre",
-  description: "Experiência, formação e princípios de trabalho de Andre Deomondes.",
+  description: "Experiência de Andre Deomondes em backend, frontend, IA aplicada, dados, cloud, testes e produtos digitais.",
+  alternates: { canonical: "/about" },
+  openGraph: { url: "/about", title: "Sobre Andre Deomondes", images: ["/andre-deomondes-profile.webp"] },
 };
 
 export default async function AboutPage() {
-  const settings = await getPublicSettings().catch(() => ({}));
+  const settings = await getCachedPublicSettings().catch(() => ({}));
   const { profile, about } = normalizeSiteContent(settings);
 
   return (
@@ -19,7 +23,7 @@ export default async function AboutPage() {
       <header className="border-b border-line">
         <div className="site-shell grid gap-12 py-20 sm:py-28 lg:grid-cols-[300px_1fr] lg:items-end">
           <div data-motion="image" className="relative aspect-[4/5] overflow-hidden border border-line bg-panel">
-            <Image src="/andre-deomondes-profile.webp" alt={profile.name} fill sizes="300px" className="object-cover object-top grayscale" priority />
+            <Image src="/andre-deomondes-profile.webp" alt={profile.name} fill sizes="300px" className="object-cover object-top grayscale" fetchPriority="high" loading="eager" />
             <span className="absolute bottom-4 left-4 bg-signal px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ink">Salvador · BA</span>
           </div>
           <div>

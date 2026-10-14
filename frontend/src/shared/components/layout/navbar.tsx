@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -16,7 +16,7 @@ export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const syncNavigationState = () => setCompact(window.scrollY > 24);
@@ -27,7 +27,7 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    const desktopBreakpoint = window.matchMedia("(min-width: 768px)");
+    const desktopBreakpoint = window.matchMedia("(min-width: 1024px)");
     const closeMenuOnDesktop = (event: MediaQueryListEvent) => {
       if (event.matches) setOpen(false);
     };
@@ -40,66 +40,20 @@ export function Navbar() {
     if (!open) return;
 
     const previousOverflow = document.body.style.overflow;
+    const menuButton = menuButtonRef.current;
+    const firstLink = document.querySelector<HTMLAnchorElement>("#mobile-navigation a");
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
 
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", closeOnEscape);
+    firstLink?.focus();
 
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
-    };
-  }, [open]);
-
-  useLayoutEffect(() => {
-    if (!open || !mobileMenuRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let disposed = false;
-    let cleanup: () => void = () => {};
-
-    void import("gsap").then(({ gsap }) => {
-      if (disposed || !mobileMenuRef.current) return;
-      const context = gsap.context(() => {
-        const rows = mobileMenuRef.current?.querySelectorAll(".mobile-menu__link");
-        const footer = mobileMenuRef.current?.querySelector(".mobile-menu__footer");
-        const timeline = gsap.timeline();
-
-        timeline
-          .from(mobileMenuRef.current, {
-            clipPath: "inset(0 0 100% 0)",
-            duration: 0.4,
-            ease: "power4.inOut",
-          })
-          .from(
-            rows ?? [],
-            {
-              autoAlpha: 0,
-              y: 24,
-              duration: 0.32,
-              stagger: 0.05,
-              ease: "power3.out",
-            },
-            "-=0.18",
-          )
-          .from(
-            footer ?? [],
-            {
-              autoAlpha: 0,
-              y: 12,
-              duration: 0.24,
-              ease: "power2.out",
-            },
-            "-=0.16",
-          );
-      }, mobileMenuRef);
-      cleanup = () => context.revert();
-    });
-
-    return () => {
-      disposed = true;
-      cleanup();
+      menuButton?.focus();
     };
   }, [open]);
 
@@ -113,7 +67,7 @@ export function Navbar() {
         open && "site-navigation--menu-open",
       )}
     >
-      <nav className="site-shell visuvate-nav relative z-[2] grid h-[4.5rem] grid-cols-[1fr_auto] items-center md:grid-cols-[1fr_auto_1fr]" aria-label="Navegação principal">
+      <nav className="site-shell visuvate-nav relative z-[2] grid h-[4.5rem] grid-cols-[1fr_auto] items-center lg:grid-cols-[1fr_auto_1fr]" aria-label="Navegação principal">
         <Link
           href="/"
           className="site-wordmark justify-self-start"
@@ -122,7 +76,7 @@ export function Navbar() {
           ANDREDEOMONDES<span>.DEV</span>
         </Link>
 
-        <div className="hidden items-center justify-self-center gap-8 md:flex">
+        <div className="hidden items-center justify-self-center gap-8 lg:flex">
           {navLinks.map((link) => {
             const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
             return (
@@ -133,25 +87,26 @@ export function Navbar() {
           })}
         </div>
 
-        <div className="navbar-actions hidden justify-self-end md:flex">
+        <div className="navbar-actions hidden justify-self-end lg:flex">
           <span className="navbar-status"><i /> disponível</span>
           <Link href="/#contato" className="navbar-contact">Vamos conversar ↗</Link>
         </div>
 
         <button
+          ref={menuButtonRef}
           type="button"
-          className="grid size-10 place-items-center justify-self-end rounded-full border border-line text-paper transition-colors hover:border-signal hover:text-signal md:hidden"
+          className="mobile-menu-trigger grid size-12 place-items-center justify-self-end rounded-full border border-line text-paper transition-colors hover:border-signal hover:text-signal lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-navigation"
           aria-label={open ? "Fechar menu" : "Abrir menu"}
           onClick={() => setOpen((value) => !value)}
         >
-          {open ? <X className="size-4" /> : <Menu className="size-4" />}
+          {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </nav>
 
       {open ? (
-        <div ref={mobileMenuRef} id="mobile-navigation" className="visuvate-mobile-menu md:hidden">
+        <div id="mobile-navigation" className="visuvate-mobile-menu lg:hidden">
           <div className="site-shell mobile-menu__inner">
             <div className="mobile-menu__links">
               {navLinks.map((link, index) => (

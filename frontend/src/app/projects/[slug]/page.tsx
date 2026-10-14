@@ -14,11 +14,19 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-import { getFallbackProject } from "@/content/projects";
+import { fallbackProjects, getFallbackProject } from "@/content/projects";
 import { ProjectImageLightbox } from "@/shared/components/editorial/project-image-lightbox";
 import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
+import { JsonLd } from "@/shared/components/seo/json-ld";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ slug: string }> };
+
+export function generateStaticParams() {
+  return fallbackProjects
+    .filter((project) => project.published)
+    .map((project) => ({ slug: project.slug }));
+}
 
 const factIcons: Record<string, LucideIcon> = {
   Papel: BriefcaseBusiness,
@@ -39,7 +47,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${project.title} — Estudo de caso`,
     description: project.description,
-    openGraph: project.image_url ? { images: [project.image_url] } : undefined,
+    alternates: { canonical: `/projects/${project.slug}` },
+    openGraph: {
+      type: "article",
+      url: `/projects/${project.slug}`,
+      title: `${project.title} — Estudo de caso`,
+      description: project.description,
+      images: project.image_url ? [project.image_url] : undefined,
+    },
   };
 }
 
@@ -70,6 +85,33 @@ export default async function ProjectCasePage({ params }: PageProps) {
 
   return (
     <article className="min-h-screen pt-16">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "CreativeWork",
+              "@id": `${absoluteUrl(`/projects/${project.slug}`)}#case-study`,
+              name: project.title,
+              headline: `${project.title} — estudo de caso`,
+              description: project.description,
+              url: absoluteUrl(`/projects/${project.slug}`),
+              image: project.image_url ? absoluteUrl(project.image_url) : undefined,
+              author: { "@type": "Person", name: SITE_NAME, url: absoluteUrl("/") },
+              keywords: project.tech_stack,
+              inLanguage: "pt-BR",
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Início", item: absoluteUrl("/") },
+                { "@type": "ListItem", position: 2, name: "Projetos", item: absoluteUrl("/projects") },
+                { "@type": "ListItem", position: 3, name: project.title, item: absoluteUrl(`/projects/${project.slug}`) },
+              ],
+            },
+          ],
+        }}
+      />
       <header className="relative overflow-hidden border-b border-line">
         <div className="technical-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
         <div className="site-shell relative py-14 sm:py-20">
@@ -169,7 +211,7 @@ export default async function ProjectCasePage({ params }: PageProps) {
           <div className="mt-10 grid gap-4 lg:grid-cols-2">
             {caseStudy.screenshots.map((screenshot, index) => (
               <div key={screenshot.src} className={index === 0 ? "lg:col-span-2" : undefined}>
-                <ProjectImageLightbox screenshot={screenshot} priority={index === 0} />
+                <ProjectImageLightbox screenshot={screenshot} />
               </div>
             ))}
           </div>

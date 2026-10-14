@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowDown, ArrowLeft, ArrowRight } from "lucide-react";
-import { getPublication, getPublicationNeighbors, publications, series } from "@/content/posts";
+import { getPublication, getPublicationNeighbors, publishedPublications, series } from "@/content/posts";
 import { getExerciseContent } from "@/lib/exercise-content";
 import { CarouselViewer } from "@/shared/components/editorial/carousel-viewer";
 import { ExerciseWorkbench } from "@/shared/components/editorial/exercise-workbench";
+import { JsonLd } from "@/shared/components/seo/json-ld";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return publications.map((post) => ({ slug: post.slug }));
+  return publishedPublications.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -21,7 +23,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: post.title,
     description: post.excerpt,
-    openGraph: { images: [post.images[0]] },
+    keywords: ["JavaScript", "backend", "tutorial", post.title, "exercícios de programação"],
+    alternates: { canonical: `/posts/${post.slug}` },
+    openGraph: {
+      type: "article",
+      url: `/posts/${post.slug}`,
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.publishedAt,
+      authors: [SITE_NAME],
+      tags: ["JavaScript", "Backend", "Engenharia de software"],
+      images: [{ url: post.images[0], alt: `Capa: ${post.title}` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [post.images[0]],
+    },
   };
 }
 
@@ -34,6 +53,37 @@ export default async function PublicationPage({ params }: PageProps) {
 
   return (
     <article className="min-h-screen pt-16">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BlogPosting",
+              "@id": `${absoluteUrl(`/posts/${post.slug}`)}#article`,
+              mainEntityOfPage: absoluteUrl(`/posts/${post.slug}`),
+              headline: post.title,
+              description: post.excerpt,
+              datePublished: post.publishedAt,
+              dateModified: post.publishedAt,
+              inLanguage: "pt-BR",
+              image: post.images.map(absoluteUrl),
+              author: { "@type": "Person", "@id": `${absoluteUrl("/")}#andre-deomondes`, name: SITE_NAME },
+              publisher: { "@type": "Person", "@id": `${absoluteUrl("/")}#andre-deomondes`, name: SITE_NAME },
+              isPartOf: { "@type": "Blog", "@id": `${absoluteUrl("/posts")}#blog` },
+              articleSection: "JavaScript",
+              keywords: ["JavaScript", "Backend", "Engenharia de software", post.title],
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Início", item: absoluteUrl("/") },
+                { "@type": "ListItem", position: 2, name: "Publicações", item: absoluteUrl("/posts") },
+                { "@type": "ListItem", position: 3, name: post.title, item: absoluteUrl(`/posts/${post.slug}`) },
+              ],
+            },
+          ],
+        }}
+      />
       <header className="border-b border-line">
         <div className="site-shell py-16 sm:py-24">
           <Link href={`/series/${series.slug}`} className="label inline-flex items-center gap-2 hover:text-signal">

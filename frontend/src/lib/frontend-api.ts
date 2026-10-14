@@ -2,6 +2,12 @@ import { headers } from "next/headers";
 import type { Project } from "@/types/supabase";
 
 async function getBaseUrl() {
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+
+  const vercelProductionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  if (vercelProductionUrl) return `https://${vercelProductionUrl}`;
+
   const headerStore = await headers();
   const host = headerStore.get("host");
 
@@ -18,7 +24,7 @@ async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const baseUrl = await getBaseUrl();
   const response = await fetch(`${baseUrl}${path}`, {
     ...init,
-    cache: "no-store",
+    next: { revalidate: 300 },
   });
 
   if (!response.ok) {

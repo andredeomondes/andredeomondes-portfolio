@@ -61,7 +61,7 @@ export function ProjectImageLightbox({
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-contain grayscale transition duration-500 group-hover:scale-[1.018] group-hover:contrast-110 group-focus-within:scale-[1.018] group-focus-within:contrast-110"
-              priority={priority}
+              fetchPriority={priority ? "high" : undefined}
             />
             <span className="absolute inset-0 border-0 border-signal/0 transition-all duration-300 group-hover:border-[3px] group-hover:border-signal/80 group-focus-within:border-[3px] group-focus-within:border-signal/80" />
             <span className="absolute right-3 top-3 inline-flex items-center gap-2 bg-ink px-3 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-paper opacity-0 transition-all duration-300 group-hover:opacity-100 group-focus-within:opacity-100">

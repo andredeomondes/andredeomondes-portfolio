@@ -50,7 +50,14 @@ export function EditorialAtmosphere({
       data-variant={variant}
       aria-hidden="true"
     >
-      <Image src={src} alt="" fill priority={priority} sizes="100vw" />
+      <Image
+        src={src}
+        alt=""
+        fill
+        fetchPriority={priority ? "high" : undefined}
+        loading={priority ? "eager" : "lazy"}
+        sizes="100vw"
+      />
       <span className="editorial-atmosphere__veil" />
       <span className="editorial-atmosphere__signal" />
     </div>
