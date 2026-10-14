@@ -38,7 +38,9 @@ export function SiteFooter() {
 
       <div className="site-footer__atmosphere" aria-hidden="true">
         <div className="site-footer__glass site-shell">
-          <span className="site-footer__glass-domain">andredeomondes.dev</span>
+          <span className="site-footer__glass-domain">
+            andredeomondes<span>.dev</span>
+          </span>
           <span className="site-footer__glass-role">Backend &amp; Applied AI Engineer</span>
         </div>
       </div>

@@ -1,10 +1,10 @@
-# Visual System — Monochrome Glass Engineering
+# Visual System — Monochrome Glass + Signal Orange
 
 Last updated: 2026-10-13
 
 ## World
 
-The portfolio is a black-and-white engineering publication viewed through precise optical glass. It combines documentary evidence, technical diagrams and editorial typography without a chromatic accent. White is the active signal on dark surfaces; black is the active signal on light surfaces.
+The portfolio is a black-and-white engineering publication viewed through precise optical glass. Documentary evidence, technical diagrams and editorial typography stay neutral; a restrained burnt orange appears only when the interface is active. On light surfaces the signal inverts to ink to preserve the editorial rhythm.
 
 ## Palette
 
@@ -14,8 +14,9 @@ The portfolio is a black-and-white engineering publication viewed through precis
 - Silver: `#b8b8b2`
 - Dim: `#9a9a94`
 - Rule: `rgba(244, 244, 240, 0.14)` or solid `#252525`
+- Signal orange: `#d95824`
 
-No orange or other chromatic brand accent is permitted in public-interface chrome, motion, focus, diagrams, forms, loaders or decorative imagery. Semantic states remain legible through contrast, icons and copy rather than hue alone.
+Signal orange is reserved for selected navigation, focus, progress, typing cursors, route scans, small status indicators, action underlines and the interactive grid trail. It should occupy roughly 5–10% of any dark composition and never become a large surface, image treatment or body-copy color. Semantic states remain legible through contrast, icons and copy rather than hue alone.
 
 ## Type
 
@@ -29,7 +30,7 @@ Light editorial chapters remain opaque paper for pacing. Their active signal inv
 
 ## Motion
 
-The focal interaction is the home engineering grid: the current cell becomes frosted white glass and movement leaves a short nine-cell trail that fades within 920ms. The pool is reused without component re-renders, stops offscreen with the hero and disappears under reduced-motion preferences.
+The focal interaction is the home engineering grid: the current cell becomes frosted signal-orange glass and movement leaves a short nine-cell trail that fades within 920ms. The pool is reused without component re-renders, stops offscreen with the hero and disappears under reduced-motion preferences.
 
 Route transitions, scroll reveals and architecture motion stay restrained, use transform/opacity/masks, and never delay reading. Persistent progress rails are not used.
 

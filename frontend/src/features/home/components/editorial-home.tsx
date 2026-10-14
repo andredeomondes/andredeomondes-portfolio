@@ -86,8 +86,8 @@ function Hero({ profile }: { profile: ProfileSettings }) {
           trailCell.style.setProperty("--home-grid-trail-y", `${previousCell.y}px`);
           trailCell.animate(
             [
-              { opacity: 0.42, transform: "scale(1)", backgroundColor: "rgba(244, 244, 240, 0.13)" },
-              { opacity: 0, transform: "scale(0.92)", backgroundColor: "rgba(244, 244, 240, 0)" },
+              { opacity: 0.48, transform: "scale(1)", backgroundColor: "rgba(217, 88, 36, 0.17)" },
+              { opacity: 0, transform: "scale(0.92)", backgroundColor: "rgba(217, 88, 36, 0)" },
             ],
             { duration: 920, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" },
           );

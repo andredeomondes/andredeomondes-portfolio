@@ -1,6 +1,6 @@
 # UI Registry
 
-## Baseline — Monochrome Glass Engineering
+## Baseline — Monochrome Glass + Signal Orange
 
 Established: 2026-10-12
 
@@ -13,12 +13,12 @@ Established: 2026-10-12
 | Border radius | None for editorial/public surfaces |
 | Text — primary | `text-paper` |
 | Text — secondary | `text-dim` (`#9a9a94`) |
-| Accent | `text-signal` / `bg-signal` (`#f4f4f0`) |
+| Accent | `text-signal` / `bg-signal` (`#d95824`), restricted to active system states |
 | UI labels | Geist Mono, uppercase, 0.14–0.17em tracking |
 | Display headings | Geist Sans, weight 600, tight negative tracking |
 | Content width | `.site-shell`, max 86rem |
 | Grid texture | 28px technical grid, low contrast |
-| Hover | Paper-white border/text on ink; ink inversion on paper |
+| Hover | Signal-orange border/text on ink; ink inversion on paper |
 | Shadow | Soft black depth plus a one-pixel inset white reflection on elevated glass only |
 
 ### Navigation
@@ -26,7 +26,7 @@ Established: 2026-10-12
 File: `src/shared/components/layout/navbar.tsx`
 Last updated: 2026-10-13
 
-Fixed navigation with two scroll-aware states: at the top it is an edge-to-edge translucent ink rail with a single bottom rule; after 24px it contracts into a floating monochrome glass panel with graphite border, 14px radius and restrained blur. The navigation owns the highest public-interface layer, above route scanlines, so page signals never cross its surface. The wordmark is always `ANDREDEOMONDES.DEV`, with `.DEV` in neutral silver. Desktop keeps a left identity / center navigation / right availability-and-CTA rhythm. Mobile follows the same top-to-compact transition; opening the menu temporarily restores the full-width rail and reveals a 100svh ink canvas with oversized ruled links, availability status and the paper-white contact action pinned to the reading flow. Body scrolling is locked while the menu is open, Escape closes it, and the navbar never displays a logo image.
+Fixed navigation with two scroll-aware states: at the top it is an edge-to-edge translucent ink rail with a single bottom rule; after 24px it contracts into a floating monochrome glass panel with graphite border, 14px radius and restrained blur. The navigation owns the highest public-interface layer, above route scanlines, so page signals never cross its surface. The wordmark is always `ANDREDEOMONDES.DEV`, with `.DEV` in signal orange. The current route uses the same orange in a one-pixel underline, while the availability dot uses it as a small live-system cue. Desktop keeps a left identity / center navigation / right availability-and-CTA rhythm. Mobile follows the same top-to-compact transition; opening the menu temporarily restores the full-width rail and reveals a 100svh ink canvas with oversized ruled links, availability status and the paper-white contact action pinned to the reading flow. Body scrolling is locked while the menu is open, Escape closes it, and the navbar never displays a logo image.
 
 ### Publication Card
 
@@ -51,12 +51,12 @@ Last updated: 2026-10-13
 | Text — primary | Space Grotesk display and paper-white directory copy |
 | Text — secondary | Geist Mono in muted gray for metadata |
 | Spacing | Large CTA canvas, shell-aligned atmospheric glass band, social rail and compact directory |
-| Hover state | Paper-white CTA fill, social arrow shift and white directory links |
+| Hover state | Paper-white CTA fill; signal-orange social and directory links |
 | Shadow | A restrained inset highlight and soft black depth only inside the glass band |
-| Accent usage | Monochrome throughout the footer; white is the only active signal |
+| Accent usage | Signal orange only on `.dev`, status dot and interactive hover states |
 
 **Pattern notes:**
-The footer closes every public route with a project CTA, followed by one restrained monochrome glass band, a four-cell social rail and a four-column directory. Soft white and neutral-gray light fields blur behind the glass while the domain and role stay crisp. The glass, social rail, CTA, directory and legal row all align to the same 86rem `.site-shell`, while only the atmospheric background remains full-bleed. On mobile the glass copy stacks, the social rail becomes 2×2 and the directory collapses progressively to one column.
+The footer closes every public route with a project CTA, followed by one restrained monochrome glass band, a four-cell social rail and a four-column directory. Soft white and neutral-gray light fields blur behind the glass while the domain and role stay crisp; orange is limited to the domain suffix and interaction feedback. The glass, social rail, CTA, directory and legal row all align to the same 86rem `.site-shell`, while only the atmospheric background remains full-bleed. On mobile the glass copy stacks, the social rail becomes 2×2 and the directory collapses progressively to one column.
 
 ### Editorial Sections
 
@@ -69,7 +69,7 @@ Interior pages keep ruled editorial sections. The home is the presentation-led e
 File: `src/features/home/components/editorial-home.tsx`
 Last updated: 2026-10-13
 
-The opening hero is a full-viewport black field. Andre's real monochrome portrait occupies the right side while the two-line name overlaps it from the left; the outlined surname retypes on a restrained 5.4s loop while the first name remains stable, preserving immediate identity. The 72px engineering grid drifts one cell horizontally every 12s. Fine-pointer movement lights the active glass cell in white and leaves up to nine progressively fading cells behind it, creating a short inspection trail without React re-renders. Both loops pause when the hero leaves the viewport or the document becomes hidden; reduced-motion mode freezes the grid, removes the trail, shows the complete surname and retains only the current hover feedback. After the global route loader exits, the original short mask entrance still reveals the portrait and name, while the bottom metadata rail holds role, location and the scroll action. Mobile keeps the same overlap with a reduced name scale so the surname never clips. The hero contains no descriptive paragraph.
+The opening hero is a full-viewport black field. Andre's real monochrome portrait occupies the right side while the two-line name overlaps it from the left; the outlined surname retypes on a restrained 5.4s loop while the first name remains stable, preserving immediate identity. The 72px engineering grid drifts one cell horizontally every 12s. Fine-pointer movement lights the active glass cell in signal orange and leaves up to nine progressively fading orange cells behind it, creating a short inspection trail without React re-renders. Both loops pause when the hero leaves the viewport or the document becomes hidden; reduced-motion mode freezes the grid, removes the trail, shows the complete surname and retains only the current hover feedback. After the global route loader exits, the original short mask entrance still reveals the portrait and name, while the bottom metadata rail holds role, location and the orange scroll action. Mobile keeps the same overlap with a reduced name scale so the surname never clips. The hero contains no descriptive paragraph.
 
 ### Home Kinetic Chapters
 
@@ -86,7 +86,7 @@ Last updated: 2026-10-13
 | Spacing | One narrative chapter per `min-height: 100svh` |
 | Hover state | Paper-white rules, contrast recovery on grayscale project images and directional icons |
 | Shadow | Glass panels use soft black depth and an inset white reflection |
-| Accent usage | Paper white for status, moving markers and action rules; ink inversion on light chapters |
+| Accent usage | Signal orange for status, moving markers and action rules on dark chapters; ink inversion on light chapters |
 
 **Pattern notes:**
 The home uses five full-viewport chapters: identity, practice, selected work, writing and contact. Copy stays factual and compact. Project screenshots are the proof surface; they stay monochrome and recover only contrast and scale on interaction. Technology names and official monochrome service icons run in a continuous offscreen-paused marquee. Icons remain paper white while labels inherit the current field color. Desktop projects use three columns; mobile uses a horizontal snap rail without a visible scrollbar.
@@ -118,7 +118,7 @@ Last updated: 2026-10-13
 | Spacing | Section rhythm `py-16 sm:py-24`; internal panels `p-5` to `p-8` |
 | Hover state | `text-signal`, screenshot scale `1.018`, signal frame and visible zoom action |
 | Shadow | Soft black depth on glass evidence panels only |
-| Accent usage | Paper white for numbering, architecture arrows and primary action |
+| Accent usage | Signal orange for numbering, architecture arrows and active actions; documentary images remain grayscale |
 
 **Pattern notes:**
 Recruiter-facing cases use a factual sequence: context, real screenshots, personal contribution, system architecture, technologies, production, quality and lessons. Screenshots preserve their source aspect ratio and always include captions. Clicking a screenshot opens an accessible in-page lightbox rather than navigating to the asset; Escape, the close control and backdrop dismiss it, body scroll is locked, and focus returns to the image trigger. Architecture uses horizontal ruled nodes on desktop and vertical nodes on mobile. Personal contribution remains visually separate from total product scope, especially for team projects. Hosting, providers and metrics appear only when confirmed.
@@ -157,10 +157,10 @@ Last updated: 2026-10-13
 | Spacing | `inline-flex`, `gap-1`; icon size follows `1em` |
 | Hover state | Inherits parent control state |
 | Shadow | None |
-| Accent usage | `text-signal` for diagrams and integrations; muted ink for the light stack section |
+| Accent usage | Signal orange for diagrams and integrations on dark surfaces; muted ink for the light stack section |
 
 **Pattern notes:**
-Use official monochrome brand marks for named technologies when available. Services without a bundled brand mark, such as AWS and Playwright, use a clear service-specific cloud or testing pictogram; Redis and the remaining named stack keep their official marks. Never introduce brand colors into the portfolio palette. Architecture nodes may show at most two marks when the node intentionally groups tools; chips and stack entries use one mark.
+Use official monochrome brand marks for named technologies when available. Services without a bundled brand mark, such as AWS and Playwright, use a clear service-specific cloud or testing pictogram; Redis and the remaining named stack keep their official marks. Do not introduce vendor brand colors: the only chromatic color is the system signal orange. Architecture nodes may show at most two marks when the node intentionally groups tools; chips and stack entries use one mark.
 
 ### Site Motion
 
@@ -169,7 +169,7 @@ Last updated: 2026-10-13
 
 | Property | Pattern |
 | --- | --- |
-| Focal entrance | Global pixel `AD` loader, paper-white route scanline and SplitText line masks |
+| Focal entrance | Global pixel `AD` loader, signal-orange route scanline and SplitText line masks |
 | Route continuity | Native View Transitions; persistent navigation, 180ms exit and 360ms entrance |
 | Section reveal | Temporary signal rule, masked heading lines and supporting copy with asymmetric timing |
 | List cadence | `0.045s` stagger, capped to visible ScrollTrigger batches |
@@ -197,14 +197,14 @@ Last updated: 2026-10-13
 | Property | Pattern |
 | --- | --- |
 | Background | Full-viewport ink `#050505` with a faint paper-white system grid |
-| Border | None; a 3px white progress rail closes the bottom edge |
+| Border | None; a 3px signal-orange progress rail closes the bottom edge |
 | Border radius | None |
-| Text — primary | Space Grotesk 650 domain wordmark; `.dev` in paper white |
+| Text — primary | Space Grotesk 650 domain wordmark; `.dev` in signal orange |
 | Text — secondary | None |
 | Spacing | Centered domain wordmark with a two-pixel cursor |
 | Hover state | None |
 | Shadow | None |
-| Accent usage | `.dev`, cursor and progress rail only |
+| Accent usage | Signal orange on `.dev`, cursor and progress rail only |
 
 **Pattern notes:**
 The loader is mounted by the root template, so it appears on the first visit and every route transition. It types `andredeomondes.dev` in the site's own Space Grotesk voice using a 17-step mask, then exits with a vertical clip in 920ms. It remains decorative and hidden from assistive technology. Reduced-motion mode shows the complete domain immediately and replaces the spatial exit with a 180ms fade.
@@ -224,7 +224,7 @@ Last updated: 2026-10-13
 | Spacing | 72–76svh title canvas; grid content keeps the standard site shell |
 | Hover state | Project grid glass increases its reflection and ink density |
 | Shadow | Soft black depth on glass cards; none on the hero image |
-| Accent usage | White scanline and active navigation only |
+| Accent usage | Signal-orange scanline and active navigation only |
 
 **Pattern notes:**
 Projects and Publications use different generated image assets, but share the same title-canvas anatomy. The raster drifts slowly under a dark veil while visible; the white inspection line crosses occasionally. In content grids the same asset becomes a heavily blurred, low-opacity atmosphere behind readable ink surfaces. Motion pauses offscreen and disappears under reduced-motion preferences.
@@ -242,9 +242,9 @@ Last updated: 2026-10-13
 | Text — primary | Space Grotesk legends and paper-white field values |
 | Text — secondary | Geist Mono uppercase labels; `#9a9a94` supporting copy |
 | Spacing | 1.5–2.5rem fieldset padding; 1.2rem field rhythm |
-| Hover state | Paper recovery on white next/submit action; white recovery on back action |
+| Hover state | Brighter signal orange on next/submit action; white recovery on back action |
 | Shadow | Soft downward black depth, no colored halo |
-| Accent usage | White progress, focus rule, consent control and primary action |
+| Accent usage | Signal orange for progress, focus rule, consent control and primary action |
 
 **Pattern notes:**
 The intake is a three-step embedded briefing: contact, project and scope. Every field has a visible label, server-mirrored validation and a nearby recovery message. Step changes move focus to the new legend; validation moves focus to the first invalid control. The final success state stays inside the same surface. Desktop uses a two-column form beside a sticky narrative, tablet and mobile stack it into the reading flow.
