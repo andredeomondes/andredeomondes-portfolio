@@ -58,9 +58,9 @@ export default function ResumePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#080912] text-white">
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-white/8 bg-[#080912]/90 px-6 py-3 backdrop-blur-md sm:px-8">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-white/46 hover:text-violet-400">
+    <div className="min-h-screen bg-ink text-white">
+      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-white/12 bg-ink/72 px-6 py-3 shadow-[0_1.5rem_4rem_rgba(0,0,0,0.2)] backdrop-blur-xl sm:px-8">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-white/46 transition-colors hover:text-white">
           <ArrowLeft className="size-4" /> Início
         </Link>
         <div className="flex items-center gap-2">
@@ -95,20 +95,20 @@ export default function ResumePage() {
           </div>
         ) : content ? (
           <div className="space-y-10">
-            <header className="rounded-[2rem] border border-white/8 bg-white/[0.03] p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-violet-300/70">
+            <header className="rounded-2xl border border-white/14 bg-white/[0.045] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
                 Currículo
               </p>
               <h1 className="mt-4 text-4xl font-bold tracking-[-0.04em] text-white">
                 {profile.name}
               </h1>
-              <p className="mt-2 text-sm text-violet-300">{profile.resumeHeadline}</p>
+              <p className="mt-2 text-sm text-white/72">{profile.resumeHeadline}</p>
               <p className="mt-5 max-w-2xl text-sm leading-7 text-white/56">
                 Visualize o currículo completo abaixo e escolha o formato que quiser para baixar.
               </p>
             </header>
 
-            <article className="rounded-[2rem] border border-white/8 bg-white/[0.03] p-8">
+            <article className="rounded-2xl border border-white/14 bg-white/[0.045] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl">
               <div className="space-y-6">
                 {blocks.map((block, index) => {
                   if (block.type === "h1") {
@@ -122,10 +122,10 @@ export default function ResumePage() {
                   if (block.type === "h2") {
                     return (
                       <div key={`${block.type}-${index}`} className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-300/78">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/66">
                           {block.text}
                         </p>
-                        <div className="mt-2 h-px w-24 bg-violet-400/30" />
+                        <div className="mt-2 h-px w-24 bg-white/24" />
                       </div>
                     );
                   }
@@ -143,7 +143,7 @@ export default function ResumePage() {
                       <div key={`${block.type}-${index}`} className="space-y-2">
                         {block.items.map((item) => (
                           <div key={item} className="flex gap-3 text-sm leading-7 text-white/78">
-                            <span className="mt-3 size-1.5 shrink-0 rounded-full bg-violet-400/80" />
+                            <span className="mt-3 size-1.5 shrink-0 rounded-full bg-white/75" />
                             <span>{item}</span>
                           </div>
                         ))}
@@ -161,11 +161,11 @@ export default function ResumePage() {
             </article>
           </div>
         ) : (
-          <div className="rounded-[2rem] border border-white/8 bg-white/[0.03] p-10 text-center">
+          <div className="rounded-2xl border border-white/14 bg-white/[0.045] p-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl">
             <p className="text-sm text-white/40">Nenhum currículo publicado no site ainda.</p>
             <Link
               href="/admin/resume"
-              className="mt-4 inline-flex rounded-full bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500"
+              className="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-white/85"
             >
               Ir para o admin
             </Link>

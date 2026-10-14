@@ -210,7 +210,7 @@ export const defaultSiteContent: SiteContent = {
   },
   branding: {
     siteTitle: "Andre Deomondes - Software Engineer",
-    accentColor: "#8b5cf6",
+    accentColor: "#f4f4f0",
     contactTitle: "Descreva o software que você quer criar.",
     contactDescription:
       "Envie a ideia no WhatsApp e, se quiser, leve uma imagem de referência junto.",

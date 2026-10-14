@@ -23,7 +23,7 @@ export function PublicationCard({
             fill
             priority={priority}
             sizes="(max-width: 640px) 100vw, 120px"
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+            className="object-cover grayscale transition duration-500 group-hover:scale-[1.025] group-hover:contrast-110"
           />
         </div>
 

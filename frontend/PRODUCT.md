@@ -34,7 +34,8 @@ O visitante percorre a apresentação profissional, abre estudos de caso de Drop
 ## Brand Commitments
 
 - Nome: Andre Deomondes.
-- Identidade visual monocromática em preto e branco, com laranja como sinal.
+- Identidade visual integralmente monocromática em preto, branco e cinzas neutros.
+- Glassmorphism funcional em superfícies elevadas, com blur contido, reflexo branco e profundidade preta; nunca como decoração indiscriminada.
 - Linguagem direta, técnica e humana; evitar aparência genérica, excesso de texto e clichês visuais de IA.
 - Estética editorial com referências discretas a pixels, sistemas e engenharia.
 - O retrato editorial em `public/brand/andre-editorial-v2.webp`, derivado da fotografia real com identidade preservada, é a imagem principal da home. O retrato documental original continua sendo a fonte de verdade da página Sobre.

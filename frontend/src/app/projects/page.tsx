@@ -33,7 +33,7 @@ export default async function ProjectsPage() {
             {projects.map((project, index) => (
               <Link key={project.id} href={`/projects/${project.slug}`} data-motion="card" className="index-card group p-5 sm:p-8">
                 <div data-motion="image" className="relative aspect-[16/10] overflow-hidden border border-line bg-panel">
-                  <Image src={project.image_url || "/clubeprogramacao.webp"} alt={project.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover object-top grayscale transition duration-500 group-hover:scale-[1.02] group-hover:grayscale-0" priority={index === 0} />
+                  <Image src={project.image_url || "/clubeprogramacao.webp"} alt={project.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover object-top grayscale transition duration-500 group-hover:scale-[1.02] group-hover:contrast-110" priority={index === 0} />
                   <span className="absolute left-4 top-4 inline-flex items-center gap-2 bg-signal px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ink">
                     <TechnologyIcon name={`${project.title} ${project.tags.join(" ")}`} className="text-xs" />
                     Case 0{index + 1}

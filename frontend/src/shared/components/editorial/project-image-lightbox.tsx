@@ -60,7 +60,7 @@ export function ProjectImageLightbox({
               alt={screenshot.alt}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain transition duration-500 group-hover:scale-[1.018] group-focus-within:scale-[1.018]"
+              className="object-contain grayscale transition duration-500 group-hover:scale-[1.018] group-hover:contrast-110 group-focus-within:scale-[1.018] group-focus-within:contrast-110"
               priority={priority}
             />
             <span className="absolute inset-0 border-0 border-signal/0 transition-all duration-300 group-hover:border-[3px] group-hover:border-signal/80 group-focus-within:border-[3px] group-focus-within:border-signal/80" />
@@ -108,7 +108,7 @@ export function ProjectImageLightbox({
                     alt={screenshot.alt}
                     fill
                     sizes="100vw"
-                    className="object-contain p-2 sm:p-5"
+                    className="object-contain p-2 grayscale sm:p-5"
                     priority
                   />
                 </div>

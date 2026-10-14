@@ -23,10 +23,19 @@ function Hero({ profile }: { profile: ProfileSettings }) {
   const heroRef = useRef<HTMLElement>(null);
   const pointerFrameRef = useRef<number | null>(null);
   const pointerPositionRef = useRef({ x: 0, y: 0 });
+  const activeCellRef = useRef<{ x: number; y: number } | null>(null);
+  const trailCellsRef = useRef<Array<HTMLSpanElement | null>>([]);
+  const trailCursorRef = useRef(0);
+  const reducedMotionRef = useRef(false);
 
   useEffect(() => {
     const hero = heroRef.current;
     if (!hero) return;
+    const trailCells = trailCellsRef.current;
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncReducedMotion = () => {
+      reducedMotionRef.current = reducedMotionQuery.matches;
+    };
 
     const syncActivity = (visible: boolean) => {
       hero.toggleAttribute("data-grid-active", visible && !document.hidden);
@@ -40,12 +49,16 @@ function Hero({ profile }: { profile: ProfileSettings }) {
     };
 
     observer.observe(hero);
+    syncReducedMotion();
     document.addEventListener("visibilitychange", onVisibilityChange);
+    reducedMotionQuery.addEventListener("change", syncReducedMotion);
 
     return () => {
       observer.disconnect();
       document.removeEventListener("visibilitychange", onVisibilityChange);
+      reducedMotionQuery.removeEventListener("change", syncReducedMotion);
       if (pointerFrameRef.current !== null) window.cancelAnimationFrame(pointerFrameRef.current);
+      trailCells.forEach((cell) => cell?.getAnimations().forEach((animation) => animation.cancel()));
     };
   }, []);
 
@@ -63,10 +76,29 @@ function Hero({ profile }: { profile: ProfileSettings }) {
       const offsetX = ((backgroundX % gridSize) + gridSize) % gridSize;
       const cellX = Math.floor((pointerPositionRef.current.x - rect.left - offsetX) / gridSize) * gridSize + offsetX;
       const cellY = Math.floor((pointerPositionRef.current.y - rect.top) / gridSize) * gridSize;
+      const previousCell = activeCellRef.current;
+
+      if (previousCell && (previousCell.x !== cellX || previousCell.y !== cellY)) {
+        const trailCell = trailCellsRef.current[trailCursorRef.current % trailCellsRef.current.length];
+        if (trailCell && !reducedMotionRef.current) {
+          trailCell.getAnimations().forEach((animation) => animation.cancel());
+          trailCell.style.setProperty("--home-grid-trail-x", `${previousCell.x}px`);
+          trailCell.style.setProperty("--home-grid-trail-y", `${previousCell.y}px`);
+          trailCell.animate(
+            [
+              { opacity: 0.42, transform: "scale(1)", backgroundColor: "rgba(244, 244, 240, 0.13)" },
+              { opacity: 0, transform: "scale(0.92)", backgroundColor: "rgba(244, 244, 240, 0)" },
+            ],
+            { duration: 920, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" },
+          );
+          trailCursorRef.current += 1;
+        }
+      }
 
       hero.style.setProperty("--home-grid-hover-x", `${cellX}px`);
       hero.style.setProperty("--home-grid-hover-y", `${cellY}px`);
       hero.setAttribute("data-grid-hover", "");
+      activeCellRef.current = { x: cellX, y: cellY };
       pointerFrameRef.current = null;
     });
   };
@@ -77,6 +109,7 @@ function Hero({ profile }: { profile: ProfileSettings }) {
       pointerFrameRef.current = null;
     }
     heroRef.current?.removeAttribute("data-grid-hover");
+    activeCellRef.current = null;
   };
 
   return (
@@ -88,6 +121,16 @@ function Hero({ profile }: { profile: ProfileSettings }) {
       onPointerMove={updateGridCell}
       onPointerLeave={clearGridCell}
     >
+      <div className="home-hero__grid-trail" aria-hidden="true">
+        {Array.from({ length: 9 }, (_, index) => (
+          <span
+            key={index}
+            ref={(node) => {
+              trailCellsRef.current[index] = node;
+            }}
+          />
+        ))}
+      </div>
       <span className="home-hero__grid-cell" aria-hidden="true" />
       <div className="home-hero__field" aria-hidden="true"><span>BUILD</span><span>SHIP</span><span>LEARN</span></div>
       <div className="site-shell home-stage-content home-hero__content">

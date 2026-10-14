@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     ["Público", fields.audience || "Não informado"], ["Integrações", fields.integrations || "Não informadas"],
     ["Prazo", fields.deadline], ["Investimento", fields.budget], ["Contato preferido", fields.preferredContact],
   ];
-  const htmlRows = rows.map(([label, value]) => `<tr><td style="padding:10px 14px;border-bottom:1px solid #242424;color:#ff5a1f;font:600 12px Arial;text-transform:uppercase;letter-spacing:.08em">${escapeHtml(label)}</td><td style="padding:10px 14px;border-bottom:1px solid #242424;color:#f4f4f0;font:15px Arial">${escapeHtml(value)}</td></tr>`).join("");
+  const htmlRows = rows.map(([label, value]) => `<tr><td style="padding:10px 14px;border-bottom:1px solid #242424;color:#f4f4f0;font:600 12px Arial;text-transform:uppercase;letter-spacing:.08em">${escapeHtml(label)}</td><td style="padding:10px 14px;border-bottom:1px solid #242424;color:#f4f4f0;font:15px Arial">${escapeHtml(value)}</td></tr>`).join("");
   const text = `${rows.map(([label, value]) => `${label}: ${value}`).join("\n")}\n\nContexto e funcionalidades:\n${fields.projectDetails}`;
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify(fields)));
   const idempotencyKey = `contact-${Array.from(new Uint8Array(digest)).slice(0, 16).map((byte) => byte.toString(16).padStart(2, "0")).join("")}`;
@@ -119,7 +119,7 @@ export async function POST(request: Request) {
         reply_to: fields.email,
         subject: `Novo briefing — ${fields.projectType} — ${fields.name}`,
         text,
-        html: `<div style="background:#050505;padding:32px;color:#f4f4f0"><div style="max-width:720px;margin:auto"><p style="color:#ff5a1f;font:600 12px Arial;text-transform:uppercase;letter-spacing:.12em">andredeomondes.dev / novo briefing</p><h1 style="font:600 32px Arial;margin:18px 0 28px">${escapeHtml(fields.objective)}</h1><table style="width:100%;border-collapse:collapse;background:#0c0c0c">${htmlRows}</table><div style="margin-top:24px;padding:20px;border:1px solid #242424"><strong style="color:#ff5a1f;font:600 12px Arial;text-transform:uppercase">Contexto e funcionalidades</strong><p style="font:15px/1.7 Arial;white-space:pre-wrap">${escapeHtml(fields.projectDetails)}</p></div></div></div>`,
+        html: `<div style="background:#050505;padding:32px;color:#f4f4f0"><div style="max-width:720px;margin:auto"><p style="color:#f4f4f0;font:600 12px Arial;text-transform:uppercase;letter-spacing:.12em">andredeomondes.dev / novo briefing</p><h1 style="font:600 32px Arial;margin:18px 0 28px">${escapeHtml(fields.objective)}</h1><table style="width:100%;border-collapse:collapse;background:#0c0c0c">${htmlRows}</table><div style="margin-top:24px;padding:20px;border:1px solid #242424"><strong style="color:#f4f4f0;font:600 12px Arial;text-transform:uppercase">Contexto e funcionalidades</strong><p style="font:15px/1.7 Arial;white-space:pre-wrap">${escapeHtml(fields.projectDetails)}</p></div></div></div>`,
       }),
     });
   } catch {

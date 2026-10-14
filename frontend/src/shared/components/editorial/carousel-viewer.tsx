@@ -70,7 +70,7 @@ export function CarouselViewer({ images, title }: { images: string[]; title: str
           fill
           priority={activeIndex === 0}
           sizes="(max-width: 1024px) 100vw, 760px"
-          className="object-contain"
+          className="object-contain grayscale"
         />
 
         <button type="button" onClick={showPrevious} className="absolute left-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center border border-paper/30 bg-ink/88 text-paper backdrop-blur transition-colors hover:border-signal hover:text-signal" aria-label="Ver card anterior">

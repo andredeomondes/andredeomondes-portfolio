@@ -44,7 +44,7 @@ const stackIcons = [
   { label: "Docker", icon: SiDocker, className: "text-[#2496ED]" },
 ];
 
-// IDE token colors — project palette: violet keywords, cyan ids, sky keys, orange strings, green values
+// Legacy IDE token map retained for the unused code-preview prototype.
 const KW = "text-[#7c3aed] dark:text-[#c084fc]"; // keyword
 const ID = "text-[#0891b2] dark:text-[#67e8f9]"; // identifier
 const KEY = "text-[#2563eb] dark:text-[#7dd3fc]"; // object key

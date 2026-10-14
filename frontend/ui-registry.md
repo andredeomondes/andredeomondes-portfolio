@@ -1,42 +1,42 @@
 # UI Registry
 
-## Baseline — Engineering Notebook
+## Baseline — Monochrome Glass Engineering
 
 Established: 2026-10-12
 
 | Property | Pattern |
 | --- | --- |
 | Page background | `bg-ink` (`#050505`) |
-| Panel background | `bg-panel` (`#0c0c0c`) |
+| Panel background | `bg-panel` as 72% ink glass over the active page atmosphere |
 | Light surface | `bg-paper` (`#f4f4f0`) |
 | Border | `border-line` (`#252525`), 1px |
 | Border radius | None for editorial/public surfaces |
 | Text — primary | `text-paper` |
 | Text — secondary | `text-dim` (`#9a9a94`) |
-| Accent | `text-signal` / `bg-signal` (`#ff5a1f`) |
+| Accent | `text-signal` / `bg-signal` (`#f4f4f0`) |
 | UI labels | Geist Mono, uppercase, 0.14–0.17em tracking |
 | Display headings | Geist Sans, weight 600, tight negative tracking |
 | Content width | `.site-shell`, max 86rem |
 | Grid texture | 28px technical grid, low contrast |
-| Hover | Signal-colored border/text; no floating glass cards |
-| Shadow | None |
+| Hover | Paper-white border/text on ink; ink inversion on paper |
+| Shadow | Soft black depth plus a one-pixel inset white reflection on elevated glass only |
 
 ### Navigation
 
 File: `src/shared/components/layout/navbar.tsx`
 Last updated: 2026-10-13
 
-Fixed navigation with two scroll-aware states: at the top it is an edge-to-edge translucent ink rail with a single bottom rule; after 24px it contracts into the floating matte-black panel with graphite border, 14px radius and restrained blur. The navigation owns the highest public-interface layer, above route scanlines and scroll progress, so page signals never cross its surface. The wordmark is always `ANDREDEOMONDES.DEV`, with only `.DEV` in signal orange. Desktop keeps a left identity / center navigation / right availability-and-CTA rhythm. Mobile follows the same top-to-compact transition; opening the menu temporarily restores the full-width rail and reveals a 100svh ink canvas with oversized ruled links, availability status and the signal-orange contact action pinned to the reading flow. Body scrolling is locked while the menu is open, Escape closes it, and the navbar never displays a logo image.
+Fixed navigation with two scroll-aware states: at the top it is an edge-to-edge translucent ink rail with a single bottom rule; after 24px it contracts into a floating monochrome glass panel with graphite border, 14px radius and restrained blur. The navigation owns the highest public-interface layer, above route scanlines, so page signals never cross its surface. The wordmark is always `ANDREDEOMONDES.DEV`, with `.DEV` in neutral silver. Desktop keeps a left identity / center navigation / right availability-and-CTA rhythm. Mobile follows the same top-to-compact transition; opening the menu temporarily restores the full-width rail and reveals a 100svh ink canvas with oversized ruled links, availability status and the paper-white contact action pinned to the reading flow. Body scrolling is locked while the menu is open, Escape closes it, and the navbar never displays a logo image.
 
 ### Publication Card
 
 File: `src/shared/components/editorial/publication-card.tsx`
 
-Horizontal ruled entry with a square carousel cover, unit metadata, large title and a square arrow control. On small screens the content becomes a single column without changing the visual language.
+Horizontal ruled entry with a square monochrome carousel cover, unit metadata, large title and a square arrow control. Hover recovers contrast and scale but never source color. On small screens the content becomes a single column without changing the visual language.
 
 ### Buttons
 
-Primary buttons use signal orange with black type. Secondary buttons use black with graphite border. All buttons are rectangular, monospaced and uppercase.
+Primary buttons use paper white with black type. Secondary buttons use black with graphite border. All buttons are rectangular, monospaced and uppercase.
 
 ### Site Footer
 
@@ -53,10 +53,10 @@ Last updated: 2026-10-13
 | Spacing | Large CTA canvas, shell-aligned atmospheric glass band, social rail and compact directory |
 | Hover state | Paper-white CTA fill, social arrow shift and white directory links |
 | Shadow | A restrained inset highlight and soft black depth only inside the glass band |
-| Accent usage | Monochrome throughout the footer; no signal-orange states |
+| Accent usage | Monochrome throughout the footer; white is the only active signal |
 
 **Pattern notes:**
-The footer closes every public route with a project CTA, followed by one restrained monochrome glass band, a four-cell social rail and a four-column directory. Soft white and neutral-gray light fields blur behind the glass while the domain and role stay crisp; the footer deliberately contains no orange accent. The glass, social rail, CTA, directory and legal row all align to the same 86rem `.site-shell`, while only the atmospheric background remains full-bleed. On mobile the glass copy stacks, the social rail becomes 2×2 and the directory collapses progressively to one column.
+The footer closes every public route with a project CTA, followed by one restrained monochrome glass band, a four-cell social rail and a four-column directory. Soft white and neutral-gray light fields blur behind the glass while the domain and role stay crisp. The glass, social rail, CTA, directory and legal row all align to the same 86rem `.site-shell`, while only the atmospheric background remains full-bleed. On mobile the glass copy stacks, the social rail becomes 2×2 and the directory collapses progressively to one column.
 
 ### Editorial Sections
 
@@ -69,7 +69,7 @@ Interior pages keep ruled editorial sections. The home is the presentation-led e
 File: `src/features/home/components/editorial-home.tsx`
 Last updated: 2026-10-13
 
-The opening hero is a full-viewport black field. Andre's real monochrome portrait occupies the right side while the two-line name overlaps it from the left; the outlined surname retypes on a restrained 5.4s loop while the first name remains stable, preserving immediate identity. The 72px engineering grid drifts one cell horizontally every 12s and a fine-pointer hover lights exactly one tracked cell with a translucent signal-orange inspection state. Both loops pause when the hero leaves the viewport or the document becomes hidden; reduced-motion mode freezes the grid, shows the complete surname and removes the cursor. After the global route loader exits, the original short mask entrance still reveals the portrait and name, while the bottom metadata rail holds role, location and the scroll action. Mobile keeps the same overlap with a reduced name scale so the surname never clips. The hero contains no descriptive paragraph.
+The opening hero is a full-viewport black field. Andre's real monochrome portrait occupies the right side while the two-line name overlaps it from the left; the outlined surname retypes on a restrained 5.4s loop while the first name remains stable, preserving immediate identity. The 72px engineering grid drifts one cell horizontally every 12s. Fine-pointer movement lights the active glass cell in white and leaves up to nine progressively fading cells behind it, creating a short inspection trail without React re-renders. Both loops pause when the hero leaves the viewport or the document becomes hidden; reduced-motion mode freezes the grid, removes the trail, shows the complete surname and retains only the current hover feedback. After the global route loader exits, the original short mask entrance still reveals the portrait and name, while the bottom metadata rail holds role, location and the scroll action. Mobile keeps the same overlap with a reduced name scale so the surname never clips. The hero contains no descriptive paragraph.
 
 ### Home Kinetic Chapters
 
@@ -84,24 +84,24 @@ Last updated: 2026-10-13
 | Text — primary | Space Grotesk display type, max 6rem, `-0.04em` tracking |
 | Text — secondary | Geist Mono for metadata; `text-dim` or 62% ink |
 | Spacing | One narrative chapter per `min-height: 100svh` |
-| Hover state | Signal-orange rules, color recovery on project images and directional icons |
-| Shadow | None |
-| Accent usage | Signal orange for status, moving markers and action rules only |
+| Hover state | Paper-white rules, contrast recovery on grayscale project images and directional icons |
+| Shadow | Glass panels use soft black depth and an inset white reflection |
+| Accent usage | Paper white for status, moving markers and action rules; ink inversion on light chapters |
 
 **Pattern notes:**
-The home uses five full-viewport chapters: identity, practice, selected work, writing and contact. Copy stays factual and compact. Project screenshots are the proof surface; they start monochrome and recover source color on interaction. Technology names and official monochrome service icons run in a continuous offscreen-paused marquee. Icons remain signal orange while labels inherit the current field color. Desktop projects use three columns; mobile uses a horizontal snap rail without a visible scrollbar.
+The home uses five full-viewport chapters: identity, practice, selected work, writing and contact. Copy stays factual and compact. Project screenshots are the proof surface; they stay monochrome and recover only contrast and scale on interaction. Technology names and official monochrome service icons run in a continuous offscreen-paused marquee. Icons remain paper white while labels inherit the current field color. Desktop projects use three columns; mobile uses a horizontal snap rail without a visible scrollbar.
 
 ### Carousel Viewer
 
 File: `src/shared/components/editorial/carousel-viewer.tsx`
 
-One 4:5 card is visible at a time inside a ruled technical frame. Previous/next controls stay over the image, while numbered controls and a live counter make position explicit. Keyboard arrows and horizontal touch gestures mirror the visible controls.
+One grayscale 4:5 card is visible at a time inside a ruled technical frame. Previous/next controls stay over the image, while numbered controls and a live counter make position explicit. Keyboard arrows and horizontal touch gestures mirror the visible controls.
 
 ### Exercise Workbench
 
 File: `src/shared/components/editorial/exercise-workbench.tsx`
 
-The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an always-visible resolution area. Resolution access is never hidden behind review, reveal or lock states; the code currently present in the unit is shown directly, with the starter as a safe fallback when an export cannot be parsed. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use signal orange; reading surfaces remain square, ruled, and matte black.
+The learning material is organized by exercise rather than by source file. A compact, categorized rail selects one problem at a time; on smaller screens it becomes a bounded scroll area so the active lesson stays close. Each exercise follows the same numbered learning sequence: enunciado, starter, concrete input/output examples, runnable test instructions, progressive hints, and an always-visible resolution area. Resolution access is never hidden behind review, reveal or lock states; the code currently present in the unit is shown directly, with the starter as a safe fallback when an export cannot be parsed. Test examples use ruled two-column rows, commands sit in ink panels with compact copy controls, and full test source stays collapsed until requested. The selected item and progress rule use paper white; reading surfaces remain square, ruled, and matte black.
 
 ### Project Case Study
 
@@ -117,8 +117,8 @@ Last updated: 2026-10-13
 | Text — secondary | `text-dim`, `text-ink/65` on light sections |
 | Spacing | Section rhythm `py-16 sm:py-24`; internal panels `p-5` to `p-8` |
 | Hover state | `text-signal`, screenshot scale `1.018`, signal frame and visible zoom action |
-| Shadow | None |
-| Accent usage | Signal orange for numbering, architecture arrows and primary action |
+| Shadow | Soft black depth on glass evidence panels only |
+| Accent usage | Paper white for numbering, architecture arrows and primary action |
 
 **Pattern notes:**
 Recruiter-facing cases use a factual sequence: context, real screenshots, personal contribution, system architecture, technologies, production, quality and lessons. Screenshots preserve their source aspect ratio and always include captions. Clicking a screenshot opens an accessible in-page lightbox rather than navigating to the asset; Escape, the close control and backdrop dismiss it, body scroll is locked, and focus returns to the image trigger. Architecture uses horizontal ruled nodes on desktop and vertical nodes on mobile. Personal contribution remains visually separate from total product scope, especially for team projects. Hosting, providers and metrics appear only when confirmed.
@@ -137,7 +137,7 @@ Last updated: 2026-10-12
 | Spacing | Portrait participates in the existing editorial hero grid |
 | Hover state | None |
 | Shadow | None |
-| Accent usage | Signal-orange location label over the lower-left corner |
+| Accent usage | Paper-white location label over the lower-left corner |
 
 **Pattern notes:**
 Profile photography remains documentary and monochrome. Use the original portrait without generated effects; the only overlay is a compact factual location label.
@@ -169,7 +169,7 @@ Last updated: 2026-10-13
 
 | Property | Pattern |
 | --- | --- |
-| Focal entrance | Global pixel `AD` loader, signal-orange route scanline and SplitText line masks |
+| Focal entrance | Global pixel `AD` loader, paper-white route scanline and SplitText line masks |
 | Route continuity | Native View Transitions; persistent navigation, 180ms exit and 360ms entrance |
 | Section reveal | Temporary signal rule, masked heading lines and supporting copy with asymmetric timing |
 | List cadence | `0.045s` stagger, capped to visible ScrollTrigger batches |
@@ -196,10 +196,10 @@ Last updated: 2026-10-13
 
 | Property | Pattern |
 | --- | --- |
-| Background | Full-viewport ink `#050505` with a faint orange system grid |
-| Border | None; a 3px orange progress rail closes the bottom edge |
+| Background | Full-viewport ink `#050505` with a faint paper-white system grid |
+| Border | None; a 3px white progress rail closes the bottom edge |
 | Border radius | None |
-| Text — primary | Space Grotesk 650 domain wordmark; `.dev` in signal orange |
+| Text — primary | Space Grotesk 650 domain wordmark; `.dev` in paper white |
 | Text — secondary | None |
 | Spacing | Centered domain wordmark with a two-pixel cursor |
 | Hover state | None |
@@ -216,18 +216,18 @@ Last updated: 2026-10-13
 
 | Property | Pattern |
 | --- | --- |
-| Background | Generated black editorial photography with a single burnt-orange material signal |
+| Background | Generated editorial photography rendered fully in grayscale |
 | Border | One-pixel graphite rule at the page-hero boundary |
 | Border radius | None |
 | Text — primary | Warm paper white; second title line uses a one-pixel outline |
 | Text — secondary | Warm white at 70% opacity |
 | Spacing | 72–76svh title canvas; grid content keeps the standard site shell |
-| Hover state | Project grid surfaces move from 91% to 96% opaque ink |
-| Shadow | None on the hero; imagery supplies depth |
-| Accent usage | Orange scanline and active navigation only |
+| Hover state | Project grid glass increases its reflection and ink density |
+| Shadow | Soft black depth on glass cards; none on the hero image |
+| Accent usage | White scanline and active navigation only |
 
 **Pattern notes:**
-Projects and Publications use different generated image assets, but share the same title-canvas anatomy. The raster drifts slowly under a dark veil while visible; the orange inspection line crosses occasionally. In content grids the same asset becomes a heavily blurred, low-opacity atmosphere behind readable ink surfaces. Motion pauses offscreen and disappears under reduced-motion preferences.
+Projects and Publications use different generated image assets, but share the same title-canvas anatomy. The raster drifts slowly under a dark veil while visible; the white inspection line crosses occasionally. In content grids the same asset becomes a heavily blurred, low-opacity atmosphere behind readable ink surfaces. Motion pauses offscreen and disappears under reduced-motion preferences.
 
 ### Project Intake Form
 
@@ -236,15 +236,15 @@ Last updated: 2026-10-13
 
 | Property | Pattern |
 | --- | --- |
-| Background | 96% ink panel over the contact chapter |
+| Background | 68% ink glass over the monochrome contact atmosphere |
 | Border | One-pixel `#343434` outer and sectional rules |
-| Border radius | None; only global navigation actions remain pill-shaped |
+| Border radius | None for the form; only global navigation actions remain pill-shaped |
 | Text — primary | Space Grotesk legends and paper-white field values |
 | Text — secondary | Geist Mono uppercase labels; `#9a9a94` supporting copy |
 | Spacing | 1.5–2.5rem fieldset padding; 1.2rem field rhythm |
-| Hover state | Paper recovery on orange next/submit action; white recovery on back action |
+| Hover state | Paper recovery on white next/submit action; white recovery on back action |
 | Shadow | Soft downward black depth, no colored halo |
-| Accent usage | Orange progress, focus rule, consent control and primary action |
+| Accent usage | White progress, focus rule, consent control and primary action |
 
 **Pattern notes:**
 The intake is a three-step embedded briefing: contact, project and scope. Every field has a visible label, server-mirrored validation and a nearby recovery message. Step changes move focus to the new legend; validation moves focus to the first invalid control. The final success state stays inside the same surface. Desktop uses a two-column form beside a sticky narrative, tablet and mobile stack it into the reading flow.
