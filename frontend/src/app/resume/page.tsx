@@ -34,10 +34,10 @@ export default function ResumePage() {
   return (
     <main className="min-h-screen bg-ink text-paper">
       <section className="border-b border-line">
-        <div className="site-shell grid min-h-[72svh] items-end gap-12 py-20 lg:grid-cols-[1.15fr_0.85fr] lg:py-28">
+        <div className="site-shell grid gap-12 py-24 sm:py-28 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
-            <h1 className="max-w-4xl text-balance text-5xl font-semibold leading-[0.94] tracking-[-0.04em] sm:text-7xl lg:text-[5.8rem]">
-              Currículo para leitura humana. Estruturado para ATS.
+            <h1 className="text-4xl font-semibold tracking-[-0.035em] sm:text-5xl lg:text-6xl">
+              Currículo
             </h1>
             <p className="mt-7 font-mono text-xs uppercase tracking-[0.14em] text-signal">
               Backend & Applied AI Engineer | Atualizado em outubro de 2026
