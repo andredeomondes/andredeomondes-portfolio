@@ -1,177 +1,135 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Download, FileDown, FileText, Loader2 } from "lucide-react";
+import { ArrowUpRight, Download, FileText } from "lucide-react";
 import Link from "next/link";
-import { parseResumeMarkdown } from "@/lib/resume-markdown";
-import { normalizeSiteContent } from "@/lib/site-content";
 
-async function downloadFile(format: "txt" | "docx" | "pdf") {
-  const response = await fetch(`/api/resume/download?format=${format}`);
+const resumes = [
+  {
+    language: "Português",
+    locale: "PT-BR",
+    title: "Currículo em português",
+    description:
+      "Versão para processos seletivos no Brasil, com experiência, stack, formação e produção técnica atualizadas.",
+    href: "/resume/andre-deomondes-curriculo-pt-br.pdf",
+    fileName: "andre-deomondes-curriculo-pt-br.pdf",
+  },
+  {
+    language: "English",
+    locale: "EN",
+    title: "Resume in English",
+    description:
+      "English version for international Backend Software Engineering and Applied AI opportunities.",
+    href: "/resume/andre-deomondes-resume-en.pdf",
+    fileName: "andre-deomondes-resume-en.pdf",
+  },
+] as const;
 
-  if (!response.ok) {
-    return;
-  }
-
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download =
-    format === "txt"
-      ? "andre-deomondes-cv.txt"
-      : format === "docx"
-        ? "andre-deomondes-cv.docx"
-        : "andre-deomondes-cv.pdf";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
+const atsPrinciples = [
+  "Uma coluna e ordem de leitura linear",
+  "Texto selecionável e fontes incorporadas",
+  "Títulos de seção reconhecidos por ATS",
+  "Palavras-chave dentro de contexto real",
+  "Sem foto, gráficos ou barras de habilidade",
+];
 
 export default function ResumePage() {
-  const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [downloading, setDownloading] = useState<"txt" | "docx" | "pdf" | null>(null);
-  const [profile, setProfile] = useState(() => normalizeSiteContent({}).profile);
-  const blocks = useMemo(() => parseResumeMarkdown(content), [content]);
-
-  useEffect(() => {
-    Promise.all([
-      fetch("/api/resume?mode=site").then((response) => response.json()),
-      fetch("/api/settings").then((response) => response.json()),
-    ])
-      .then(([resumeData, settings]) => {
-        if (resumeData?.content) {
-          setContent(resumeData.content);
-        }
-        setProfile(normalizeSiteContent(settings ?? {}).profile);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  async function handleDownload(format: "txt" | "docx" | "pdf") {
-    setDownloading(format);
-    await downloadFile(format);
-    setDownloading(null);
-  }
-
   return (
-    <div className="min-h-screen bg-ink text-white">
-      <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-white/12 bg-ink/72 px-6 py-3 shadow-[0_1.5rem_4rem_rgba(0,0,0,0.2)] backdrop-blur-xl sm:px-8">
-        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-white/46 transition-colors hover:text-white">
-          <ArrowLeft className="size-4" /> Início
-        </Link>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => void handleDownload("pdf")}
-            disabled={downloading !== null}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-white/20 hover:text-white disabled:opacity-40"
-          >
-            <FileDown className="size-3.5" /> {downloading === "pdf" ? "Baixando..." : "PDF"}
-          </button>
-          <button
-            onClick={() => void handleDownload("docx")}
-            disabled={downloading !== null}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-white/20 hover:text-white disabled:opacity-40"
-          >
-            <FileText className="size-3.5" /> {downloading === "docx" ? "Baixando..." : ".docx"}
-          </button>
-          <button
-            onClick={() => void handleDownload("txt")}
-            disabled={downloading !== null}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1.5 text-xs font-medium text-white/70 transition-colors hover:border-white/20 hover:text-white disabled:opacity-40"
-          >
-            <Download className="size-3.5" /> {downloading === "txt" ? "Baixando..." : ".txt"}
-          </button>
-        </div>
-      </nav>
-
-      <div className="mx-auto max-w-4xl px-6 py-12 sm:px-8 lg:px-12">
-        {loading ? (
-          <div className="flex items-center justify-center py-32">
-            <Loader2 className="size-6 animate-spin text-white/40" />
+    <main className="min-h-screen bg-ink text-paper">
+      <section className="border-b border-line">
+        <div className="site-shell grid min-h-[72svh] items-end gap-12 py-20 lg:grid-cols-[1.15fr_0.85fr] lg:py-28">
+          <div>
+            <h1 className="max-w-4xl text-balance text-5xl font-semibold leading-[0.94] tracking-[-0.04em] sm:text-7xl lg:text-[5.8rem]">
+              Currículo para leitura humana. Estruturado para ATS.
+            </h1>
+            <p className="mt-7 font-mono text-xs uppercase tracking-[0.14em] text-signal">
+              Backend & Applied AI Engineer | Atualizado em outubro de 2026
+            </p>
+            <p className="mt-8 max-w-2xl text-base leading-8 text-dim sm:text-lg">
+              Experiência profissional, projetos em produção, arquitetura, dados, cloud, qualidade e IA aplicada em uma apresentação direta e verificável.
+            </p>
           </div>
-        ) : content ? (
-          <div className="space-y-10">
-            <header className="rounded-2xl border border-white/14 bg-white/[0.045] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
-                Currículo
-              </p>
-              <h1 className="mt-4 text-4xl font-bold tracking-[-0.04em] text-white">
-                {profile.name}
-              </h1>
-              <p className="mt-2 text-sm text-white/72">{profile.resumeHeadline}</p>
-              <p className="mt-5 max-w-2xl text-sm leading-7 text-white/56">
-                Visualize o currículo completo abaixo e escolha o formato que quiser para baixar.
-              </p>
-            </header>
 
-            <article className="rounded-2xl border border-white/14 bg-white/[0.045] p-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-              <div className="space-y-6">
-                {blocks.map((block, index) => {
-                  if (block.type === "h1") {
-                    return (
-                      <h2 key={`${block.type}-${index}`} className="text-3xl font-semibold tracking-[-0.04em] text-white">
-                        {block.text}
-                      </h2>
-                    );
-                  }
-
-                  if (block.type === "h2") {
-                    return (
-                      <div key={`${block.type}-${index}`} className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/66">
-                          {block.text}
-                        </p>
-                        <div className="mt-2 h-px w-24 bg-white/24" />
-                      </div>
-                    );
-                  }
-
-                  if (block.type === "h3") {
-                    return (
-                      <p key={`${block.type}-${index}`} className="text-base font-semibold text-white">
-                        {block.text}
-                      </p>
-                    );
-                  }
-
-                  if (block.type === "ul") {
-                    return (
-                      <div key={`${block.type}-${index}`} className="space-y-2">
-                        {block.items.map((item) => (
-                          <div key={item} className="flex gap-3 text-sm leading-7 text-white/78">
-                            <span className="mt-3 size-1.5 shrink-0 rounded-full bg-white/75" />
-                            <span>{item}</span>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <p key={`${block.type}-${index}`} className="text-sm leading-7 text-white/72">
-                      {block.text}
-                    </p>
-                  );
-                })}
-              </div>
-            </article>
-          </div>
-        ) : (
-          <div className="rounded-2xl border border-white/14 bg-white/[0.045] p-10 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.07),0_28px_80px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-            <p className="text-sm text-white/40">Nenhum currículo publicado no site ainda.</p>
+          <div className="border border-line bg-panel p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_24px_64px_rgba(0,0,0,0.28)] sm:p-8">
+            <h2 className="text-lg font-semibold tracking-[-0.02em] text-paper">
+              Perfil atual
+            </h2>
+            <p className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-paper">
+              Andre Deomondes
+            </p>
+            <p className="mt-2 text-sm leading-7 text-dim">
+              Backend Software Engineer na AEX, desenvolvedor full stack em projetos de consultoria e autor da série JavaScript Core.
+            </p>
             <Link
-              href="/admin/resume"
-              className="mt-4 inline-flex rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-white/85"
+              href="/projects"
+              className="mt-7 inline-flex items-center gap-2 border-b border-paper/30 pb-1 font-mono text-xs uppercase tracking-[0.13em] text-paper transition-colors hover:border-signal hover:text-signal"
             >
-              Ir para o admin
+              Ver evidências dos projetos
+              <ArrowUpRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </section>
+
+      <section className="border-b border-line py-16 sm:py-24">
+        <div className="site-shell">
+          <h2 className="text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+            Escolha o idioma
+          </h2>
+
+          <div className="mt-10 grid border-l border-t border-line lg:grid-cols-2">
+            {resumes.map((resume) => (
+              <article key={resume.locale} className="border-b border-r border-line p-6 sm:p-9">
+                <div className="flex items-start justify-between gap-6">
+                  <FileText className="size-7 text-paper" strokeWidth={1.35} aria-hidden="true" />
+                  <span className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-dim">
+                    {resume.locale} · PDF · A4
+                  </span>
+                </div>
+                <p className="mt-12 font-mono text-xs uppercase tracking-[0.14em] text-dim">
+                  {resume.language}
+                </p>
+                <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em]">
+                  {resume.title}
+                </h3>
+                <p className="mt-4 max-w-xl text-sm leading-7 text-dim">
+                  {resume.description}
+                </p>
+                <a
+                  href={resume.href}
+                  download={resume.fileName}
+                  className="mt-8 inline-flex min-h-12 items-center gap-3 bg-paper px-5 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-signal hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+                >
+                  <Download className="size-4" aria-hidden="true" />
+                  Baixar PDF
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-paper py-16 text-ink sm:py-24">
+        <div className="site-shell grid gap-12 lg:grid-cols-[0.82fr_1.18fr]">
+          <div>
+            <h2 className="text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
+              Compatível sem parecer genérico.
+            </h2>
+            <p className="mt-6 max-w-xl text-sm leading-7 text-ink/65">
+              O documento preserva a identidade visual do portfólio apenas na hierarquia, tipografia e linha de sinal. A estrutura continua simples para leitura por recrutadores e sistemas automatizados.
+            </p>
+          </div>
+
+          <div className="border-t border-ink/20">
+            {atsPrinciples.map((principle) => (
+              <div
+                key={principle}
+                className="flex items-center justify-between gap-8 border-b border-ink/20 py-5"
+              >
+                <span className="text-sm font-medium sm:text-base">{principle}</span>
+                <span className="size-2 shrink-0 bg-ink" aria-hidden="true" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

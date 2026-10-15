@@ -199,12 +199,12 @@ export const defaultSiteContent: SiteContent = {
     ],
   },
   resume: {
-    targetRole: "Full Stack Software Engineer",
+    targetRole: "Backend Software Engineer / Applied AI Engineer",
     summary:
-      "Desenvolvedor Full Stack e Mobile com experiência em produtos web, aplicativos e sistemas internos orientados a desempenho, usabilidade e escalabilidade.",
-    focusTopics: ["React", "Next.js", "TypeScript", "Node.js", "Java", "Arquitetura", "Produtos Digitais"],
+      "Engenheiro de Backend e Desenvolvedor Full Stack com experiência em produtos web em produção, APIs REST, automações e serviços de IA aplicada, conectando arquitetura, dados, observabilidade, testes e deploy.",
+    focusTopics: ["Node.js", "TypeScript", "Python", "FastAPI", "PostgreSQL", "Redis", "AWS", "Arquitetura de Backend", "IA aplicada"],
     softSkills: ["Comunicação", "Colaboração", "Resolução de problemas", "Pensamento analítico", "Ownership", "Adaptabilidade"],
-    keywords: ["Full Stack", "Next.js", "TypeScript", "Node.js", "APIs", "Arquitetura de Software", "PostgreSQL", "AWS", "React Native"],
+    keywords: ["Backend Software Engineer", "Applied AI Engineer", "Node.js", "TypeScript", "Python", "FastAPI", "APIs REST", "PostgreSQL", "Redis", "AWS", "Docker", "CI/CD", "Playwright"],
     defaultProjectIds: [],
     sections: defaultResumeSections,
   },

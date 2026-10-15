@@ -289,7 +289,8 @@ export function HeroSection({
                 Ver Projetos
               </ShimmerLink>
               <a
-                href="/api/resume/download?format=pdf"
+                href="/resume/andre-deomondes-curriculo-pt-br.pdf"
+                download="andre-deomondes-curriculo-pt-br.pdf"
                 className="inline-flex h-12 items-center gap-2 text-sm font-medium text-[#0b1020]/82 transition-colors hover:text-[#0b1020] dark:text-white/82 dark:hover:text-white"
               >
                 <Download className="size-4" />

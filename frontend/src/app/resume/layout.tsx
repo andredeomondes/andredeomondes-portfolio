@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Currículo",
-  description: "Currículo de Andre Deomondes: experiência em backend, IA aplicada, frontend, cloud, dados e qualidade de software.",
+  description: "Currículos ATS em português e inglês de Andre Deomondes: Backend Software Engineer, IA aplicada, cloud, dados e qualidade de software.",
   alternates: { canonical: "/resume" },
   openGraph: {
     url: "/resume",
     title: "Currículo — Andre Deomondes",
-    description: "Experiência em backend, IA aplicada, frontend, cloud, dados e qualidade de software.",
+    description: "Baixe as versões PT-BR e EN do currículo ATS de Andre Deomondes.",
   },
 };
 

@@ -209,6 +209,26 @@ Last updated: 2026-10-14
 **Pattern notes:**
 Keep navigation usable before any motion library is available. Decorative entrance motion must never hide the LCP element. Breakpoint changes need matching Tailwind visibility classes, CSS media queries and an E2E assertion. The public shell stays fully semantic and crawlable before hydration; dynamic effects enhance it only after input.
 
+### Resume Download Page
+
+File: `src/app/resume/page.tsx`
+Last updated: 2026-10-15
+
+| Property | Pattern |
+| --- | --- |
+| Background | Alternating `bg-ink` and `bg-paper` editorial fields |
+| Border | `border-line` on dark surfaces; `border-ink/20` on paper |
+| Border radius | None on document choices and ATS evidence rows |
+| Text - primary | `text-paper` on ink; `text-ink` on paper |
+| Text - secondary | `text-dim` or `text-ink/65` |
+| Spacing | `site-shell`, generous vertical chapters, compact document metadata |
+| Hover state | Download action inverts from paper to `bg-signal`; evidence link shifts to signal |
+| Shadow | Structural glass shadow only on the current-profile panel |
+| Accent usage | Signal orange only for role/update metadata and interactive states |
+
+**Pattern notes:**
+The resume route presents two equal language choices without embedding the PDFs, keeping the page fast and mobile-friendly. Download links point to stable static files. The first viewport introduces the ATS purpose and current role; the paper chapter explains compatibility in plain language. The route inherits the global navigation and footer instead of creating a second page-level navigation.
+
 ### Route Loader
 
 File: `src/shared/components/motion/route-loader.tsx`
