@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // e2e runs use their own build dir so they never touch a developer's running `next dev`.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
   compress: true,
   images: {
