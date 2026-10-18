@@ -31,6 +31,7 @@ const imageNames: Record<number, string[]> = {
   16: ["01-capa.webp", "02-ancoras.webp", "03-flags.webp", "04-operacoes.webp", "05-grupos-nomeados.webp", "06-legibilidade.webp", "07-encerramento.webp"],
   17: ["01-capa.webp", "02-named-default.webp", "03-namespace.webp", "04-reexport.webp", "05-avaliacao-cache.webp", "06-dependencia-circular.webp", "07-encerramento.webp"],
   18: ["01-capa.webp", "02-error-first.webp", "03-double-callback.webp", "04-serie-paralelo.webp", "05-callback-hell.webp", "06-timeout-retry.webp", "07-encerramento.webp"],
+  19: ["01-capa.webp", "02-estados.webp", "03-executor.webp", "04-encadeamento.webp", "05-erros-finally.webp", "06-callback-para-promise.webp", "07-encerramento.webp"],
 };
 
 const entries: Omit<Publication, "images">[] = [
@@ -249,6 +250,18 @@ const entries: Omit<Publication, "images">[] = [
     code: `readFile(path, (err, result) => {\n  if (err) return callback(err)\n  return callback(null, result)\n})`,
     takeaways: ["O contrato tradicional do Node é callback(err, result).", "Retorne depois de concluir para evitar double callback.", "Promisify cria uma ponte segura para APIs legadas."],
     exercisePath: "unit-18-callbacks",
+  },
+  {
+    unit: 19,
+    slug: "19-javascript-promises",
+    title: "Promises",
+    statement: "Um resultado futuro precisa de um contrato previsível.",
+    excerpt: "Estados, executor, encadeamento, propagação de erros e a ponte entre callbacks e Promises.",
+    publishedAt: "2026-10-17",
+    readTime: "8 min",
+    code: `return fetchUser(id)\n  .then(user => fetchOrders(user.id))\n  .then(orders => summarize(orders))\n  .catch(handleError)`,
+    takeaways: ["Uma Promise sai de pending apenas uma vez.", "Cada then cria uma nova Promise e deve retornar operações internas.", "Rejeições e throws percorrem a cadeia até o próximo catch."],
+    exercisePath: "unit-19-promises",
   },
 ];
 
