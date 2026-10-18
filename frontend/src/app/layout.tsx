@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { JetBrains_Mono, Silkscreen } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/shared/components/layout/navbar";
 import { SiteFooter } from "@/shared/components/layout/site-footer";
@@ -7,19 +7,16 @@ import { SiteMotion } from "@/shared/components/motion/site-motion";
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 
-const geist = Geist({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  weight: ["300", "400", "500", "700", "800"],
+  variable: "--font-jetbrains",
 });
 
-const geistMono = Geist_Mono({
+const silkscreen = Silkscreen({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
+  weight: "400",
+  variable: "--font-pixel",
 });
 
 export const metadata: Metadata = {
@@ -88,7 +85,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#050505",
+  themeColor: "#070707",
   colorScheme: "dark",
 };
 
@@ -99,7 +96,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className="dark h-full antialiased">
-      <body id="top" className={`${geist.variable} ${geistMono.variable} ${spaceGrotesk.variable} min-h-full flex flex-col bg-background`}>
+      <body id="top" className={`${jetbrainsMono.variable} ${silkscreen.variable} min-h-full flex flex-col bg-background`}>
         <JsonLd
           data={{
             "@context": "https://schema.org",

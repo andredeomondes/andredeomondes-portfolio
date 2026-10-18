@@ -1,39 +1,37 @@
-# Visual System — Monochrome Glass + Signal Orange
+# Visual System — Clean Tech + 8-bit Accents
 
-Last updated: 2026-10-13
+Last updated: 2026-10-17 · Source: `docs/superpowers/specs/2026-10-17-redesign-8bit-design.md`
 
 ## World
 
-The portfolio is a black-and-white engineering publication viewed through precise optical glass. Documentary evidence, technical diagrams and editorial typography stay neutral; a restrained burnt orange appears only when the interface is active. On light surfaces the signal inverts to ink to preserve the editorial rhythm.
+A clean, animated engineering studio in the spirit of Visuvate, signed with restrained retro details: pixel type on a few key words, block cursors, pixel reveals and glitch. Game nostalgia is seasoning, never the theme — no arcade title screens, score HUDs or sprites.
 
 ## Palette
 
-- Ink: `#050505`
-- Glass ink: `rgba(12, 12, 12, 0.68–0.76)`
-- Paper: `#f4f4f0`
-- Silver: `#b8b8b2`
-- Dim: `#9a9a94`
-- Rule: `rgba(244, 244, 240, 0.14)` or solid `#252525`
-- Signal orange: `#d95824`
+- Background: `#070707` (`--color-ink`)
+- Panel: `#0e0e0e` (`--color-panel`)
+- Foreground: `#f3f3ef` (`--color-paper`)
+- Muted: `#8b8b86` (`--color-dim`)
+- Line: `rgba(255,255,255,.08)` (`--color-line`)
+- JS yellow: `#f7df1e` (`--color-signal` / `--color-js`)
+- Status OK only: `#22c55e`
 
-Signal orange is reserved for selected navigation, focus, progress, typing cursors, route scans, small status indicators, action underlines and the interactive grid trail. It should occupy roughly 5–10% of any dark composition and never become a large surface, image treatment or body-copy color. Semantic states remain legible through contrast, icons and copy rather than hue alone.
+Yellow is the single accent: pixel highlight words, cursor, active status, active nav, focus, progress bars and the IDE glow. It stays within 5–10% of any screen and is never a large surface or body-copy color. The whole site is dark; there are no light "paper" chapters.
 
 ## Type
 
-Space Grotesk owns names, display statements and project titles. Geist Sans owns explanatory copy. Geist Mono is reserved for code, measurements, metadata and state. Display tracking never exceeds `-0.04em`; body copy stays within a readable measure.
+JetBrains Mono (300–800) carries everything. Headings use 800 with `-0.045em` tracking. Silkscreen (`font-pixel`) is reserved for 1–2 highlight words per heading, short labels and the marquee — never a full sentence, never below 11px. Headings mix both on one line, the key word in pixel (and optionally yellow): "Sistemas que **rodam** em **produção**".
 
 ## Material
 
-Glass is structural. Use it for navigation, interactive evidence cards, forms, overlays and the footer atmosphere where it explains elevation or grouping. The recipe is translucent ink, 14–24px backdrop blur, a one-pixel white inset reflection and a soft downward black shadow. Do not wrap every section in a rounded glass card.
-
-Light editorial chapters remain opaque paper for pacing. Their active signal inverts to ink.
-
-## Motion
-
-The focal interaction is the home engineering grid: the current cell becomes frosted signal-orange glass and movement leaves a short nine-cell trail that fades within 920ms. The pool is reused without component re-renders, stops offscreen with the hero and disappears under reduced-motion preferences.
-
-Route transitions, scroll reveals and architecture motion stay restrained, use transform/opacity/masks, and never delay reading. Persistent progress rails are not used.
+14px radius on panels and cards, 10px on buttons, 1px `--color-line` borders. Glass (14px blur) only on the pill navbar and overlays; everything else is opaque. A 48px grid texture, radially masked, appears only in the home hero. Pixel details: 3×3 logo mark with a yellow center, `■` bullets, block cursor, block progress bars.
 
 ## Images
 
-Documentary portraits, decorative atmospheres and rendered project screenshots remain monochrome. Screenshot hover and lightbox states may recover contrast and scale, never chromatic color; the original source files remain untouched.
+The portrait is shown normally — full color, no filter; hover is a light `scale(1.03)` only. Project screenshots start grayscale under a scattered pixel cover; on hover the pixels clear in blocks and the image recovers color.
+
+## Motion
+
+GSAP + ScrollTrigger for scroll-linked sequences, `motion/react` for component micro-interactions. Animate only transform, opacity, clip-path and mask. Loops pause offscreen and in hidden tabs. Under `prefers-reduced-motion: reduce` every loop stops and content shows its final state. Main text is visible within ~1s and content stays readable without JavaScript.
+
+Signature moments: masked word-rise on the hero title; the live IDE (typed code, incoming requests, latency bars) that straightens on scroll; the Silkscreen stack marquee; the manifesto lighting up word by word; pixel reveal on screenshots; attribute bars filling block by block; and the looping "Vamos construir algo que roda." finale (8-bit hop wave, glyph scramble with glitch, cycling build status, block progress bar, sliding "RODA ▶" bands). Route changes use a short pixel-mask view transition (≤300ms), never a fullscreen loader.
