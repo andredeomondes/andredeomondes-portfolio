@@ -1,23 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { publications, series } from "@/content/posts";
 import type { ProfileSettings } from "@/lib/site-content";
 import { HomeHero } from "@/features/home/components/home-hero";
-import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
+import { Manifesto } from "@/features/home/components/manifesto";
+import { PixelRevealCard } from "@/shared/components/editorial/pixel-reveal-card";
 import type { Project } from "@/types/supabase";
 
-const stack = ["Node.js", "Fastify", "Python", "FastAPI", "PostgreSQL", "Redis", "AWS", "React", "TypeScript", "Playwright"];
+const stack = ["Node.js", "TypeScript", "Python", "FastAPI", "LangChain", "PostgreSQL", "Redis", "AWS", "Astro", "React", "Playwright"];
 
-const disciplines = [
-  { name: "Backend", detail: "APIs, regras de negócio e integrações" },
-  { name: "IA aplicada", detail: "Agentes, contexto e automação real" },
-  { name: "Produto", detail: "Da interface à operação" },
-  { name: "Cloud", detail: "Deploy, dados e observabilidade" },
-];
 
 function Marquee({ reverse = false }: { reverse?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -35,58 +29,34 @@ function Marquee({ reverse = false }: { reverse?: boolean }) {
   return (
     <div ref={ref} className="home-marquee" role="region" aria-label={`Tecnologias: ${stack.join(", ")}`}>
       <div className={reverse ? "home-marquee__track home-marquee__track--reverse" : "home-marquee__track"} aria-hidden="true">
-        {repeated.map((item, index) => <span key={`${item}-${index}`}><TechnologyIcon name={item} className="home-marquee__icon" />{item}</span>)}
+        {repeated.map((item, index) => <span key={`${item}-${index}`}>{item}</span>)}
       </div>
     </div>
   );
 }
 
-function Practice() {
-  return (
-    <section id="atuacao" className="home-stage home-practice" data-home-section>
-      <div className="home-stage-content flex min-h-[100svh] flex-col justify-between">
-        <div className="site-shell home-practice__head">
-          <h2 className="home-display">
-            <span className="home-scroll-word" data-direction="left">DO CÓDIGO</span>
-            <span className="home-scroll-word home-display--outline" data-direction="right">À PRODUÇÃO.</span>
-          </h2>
-        </div>
-        <div className="home-practice__disciplines">
-          <div className="site-shell grid md:grid-cols-4">
-            {disciplines.map((item, index) => (
-              <div key={item.name} className="home-practice__discipline">
-                <span>0{index + 1}</span><h3>{item.name}</h3><p>{item.detail}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <Marquee />
-      </div>
-    </section>
-  );
-}
+const MANIFESTO =
+  "Mostro o trabalho antes de explicar a competência. APIs, pagamentos, agentes de IA e deploy: cada projeto aqui está em produção, com o raciocínio documentado.";
 
 function Work({ projects }: { projects: Project[] }) {
   const visible = projects.slice(0, 3);
   return (
     <section className="home-stage home-work" data-home-section>
-      <div className="site-shell home-stage-content flex min-h-[100svh] flex-col py-20 pt-28">
-        <div className="home-work__heading">
-          <h2>Produtos reais.<br /><span>Responsabilidade real.</span></h2>
-          <Link href="/projects">Ver todos <ArrowRight className="size-4" /></Link>
+      <div className="site-shell home-stage-content home-work__inner">
+        <div className="section-head">
+          <h2>Projetos em <span className="font-pixel">produção</span></h2>
+          <Link href="/projects">0{visible.length} cases <ArrowRight className="size-4" /></Link>
         </div>
-        <div className="home-work__grid">
+        <div className="work-bento">
           {visible.map((project, index) => (
-            <Link key={project.id} href={`/projects/${project.slug}`} className="home-project">
-              <div className="home-project__image" data-home-project-image>
-                {project.image_url ? <Image src={project.image_url} alt="" fill sizes="(max-width: 767px) 78vw, 33vw" className="object-cover" /> : null}
-              </div>
-              <div className="home-project__meta">
-                <span>0{index + 1}</span>
-                <div><h3>{project.title}</h3><p>{project.tags.slice(0, 3).join(" · ")}</p></div>
-                <ArrowUpRight className="size-5" />
-              </div>
-            </Link>
+            <PixelRevealCard
+              key={project.id}
+              href={`/projects/${project.slug}`}
+              image={project.image_url ?? ""}
+              title={project.title}
+              summary={project.description}
+              index={index + 1}
+            />
           ))}
         </div>
       </div>
@@ -147,15 +117,6 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
           gsap.from(content, { clipPath: "inset(9% 0 0 0)", scale: 0.975, transformOrigin: "center top", ease: "none", scrollTrigger: { trigger: section, start: "top 92%", end: "top 38%", scrub: 0.7 } });
         });
 
-        gsap.utils.toArray<HTMLElement>(".home-scroll-word").forEach((word) => {
-          const direction = word.dataset.direction === "right" ? 1 : -1;
-          gsap.fromTo(word, { xPercent: direction * 7 }, { xPercent: direction * -7, ease: "none", scrollTrigger: { trigger: word.closest("section"), start: "top bottom", end: "bottom top", scrub: 0.55 } });
-        });
-
-        gsap.utils.toArray<HTMLElement>("[data-home-project-image] img").forEach((image, index) => {
-          gsap.fromTo(image, { yPercent: -5 - index }, { yPercent: 5 + index, ease: "none", scrollTrigger: { trigger: image.closest(".home-project"), start: "top bottom", end: "bottom top", scrub: 0.5 } });
-        });
-
         gsap.utils.toArray<HTMLElement>(".home-publication-row").forEach((row, index) => {
           gsap.from(row, { xPercent: index % 2 === 0 ? -5 : 5, autoAlpha: 0.3, ease: "none", scrollTrigger: { trigger: row, start: "top 92%", end: "top 62%", scrub: 0.4 } });
         });
@@ -183,7 +144,7 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
 
   return (
     <div ref={rootRef} data-home-motion className="home-experience">
-      <HomeHero profile={profile} /><Practice /><Work projects={projects} /><Writing />
+      <HomeHero profile={profile} /><Marquee /><Manifesto text={MANIFESTO} highlights={["produção,", "documentado."]} /><Work projects={projects} /><Writing />
     </div>
   );
 }
