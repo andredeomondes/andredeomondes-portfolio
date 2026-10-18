@@ -33,7 +33,6 @@ export function InteractiveGridPattern({
   useEffect(() => {
     if (!loop) return
 
-    const total = horizontal * vertical
     let wave = 0
 
     const interval = setInterval(() => {

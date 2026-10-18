@@ -163,13 +163,13 @@ export default function LiquidEther({
     const zero2 = new THREE.Vector2(0, 0);
 
     // ── FBOs ──
-    let vel0 = makeFBO(simW, simH);
-    let vel1 = makeFBO(simW, simH);
-    let vv0 = makeFBO(simW, simH); // viscous ping
-    let vv1 = makeFBO(simW, simH); // viscous pong
-    let divFBO = makeFBO(simW, simH);
-    let p0 = makeFBO(simW, simH);
-    let p1 = makeFBO(simW, simH);
+    const vel0 = makeFBO(simW, simH);
+    const vel1 = makeFBO(simW, simH);
+    const vv0 = makeFBO(simW, simH); // viscous ping
+    const vv1 = makeFBO(simW, simH); // viscous pong
+    const divFBO = makeFBO(simW, simH);
+    const p0 = makeFBO(simW, simH);
+    const p1 = makeFBO(simW, simH);
     const allFBOs = () => [vel0, vel1, vv0, vv1, divFBO, p0, p1];
 
     // ── Passes — created ONCE ──

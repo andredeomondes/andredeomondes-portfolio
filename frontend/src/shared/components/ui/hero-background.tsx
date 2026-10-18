@@ -16,7 +16,8 @@ function Noise({
     if (!c) return;
     const ctx = c.getContext("2d", { alpha: true });
     if (!ctx) return;
-    let f = 0, id = 0, S = 1024;
+    const S = 1024;
+    let f = 0, id = 0;
     const resize = () => { c.width = S; c.height = S; c.style.width = "100vw"; c.style.height = "100vh"; };
     const draw = () => {
       const img = ctx.createImageData(S, S);

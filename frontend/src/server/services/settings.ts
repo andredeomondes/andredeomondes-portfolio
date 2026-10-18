@@ -1,7 +1,7 @@
 import { createAdminClient, createClient } from "@/lib/supabase/server";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { revalidateTag, unstable_cache } from "next/cache";
-import type { SiteSetting } from "@/types/supabase";
+import type { Json, SiteSetting } from "@/types/supabase";
 
 const TABLE = "site_settings";
 
@@ -40,7 +40,7 @@ export async function upsertSettings(settings: Record<string, unknown>) {
   const supabase = await createAdminClient();
   const rows = Object.entries(settings).map(([key, value]) => ({
     key,
-    value,
+    value: value as Json,
     updated_at: new Date().toISOString(),
   }));
   const { error } = await supabase.from(TABLE).upsert(rows, { onConflict: "key" });

@@ -35,3 +35,6 @@ next-env.d.ts
 # package manager lock (using pnpm)
 package-lock.json
 .env*.local
+
+# brainstorming companion mockups
+.superpowers/

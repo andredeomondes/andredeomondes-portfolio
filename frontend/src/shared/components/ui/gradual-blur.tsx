@@ -87,7 +87,7 @@ export function GradualBlur({
 
     return Array.from({ length: divCount }, (_, i) => {
       const idx = i + 1;
-      let progress = curveF(idx / divCount);
+      const progress = curveF(idx / divCount);
       const blurValue = exponential
         ? Math.pow(2, progress * 4) * 0.0625 * currentStrength
         : 0.0625 * (progress * divCount + 1) * currentStrength;

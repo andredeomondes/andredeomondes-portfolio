@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react"
 import {
   motion,
   useMotionTemplate,
@@ -10,6 +10,8 @@ import {
 import { useTheme } from "next-themes"
 
 import { cn } from "@/lib/utils"
+
+const subscribeNoop = () => () => {}
 
 interface MagicCardBaseProps {
   children?: React.ReactNode
@@ -73,9 +75,11 @@ export function MagicCard(props: MagicCardProps) {
   const glowBlur = isOrbMode(props) ? (props.glowBlur ?? 60) : 60
   const glowOpacity = isOrbMode(props) ? (props.glowOpacity ?? 0.9) : 0.9
   const { theme, systemTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => setMounted(true), [])
+  const mounted = useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false
+  )
 
   const isDarkTheme = useMemo(() => {
     if (!mounted) return true

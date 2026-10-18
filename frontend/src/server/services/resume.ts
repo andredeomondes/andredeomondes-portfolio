@@ -7,7 +7,7 @@ import {
 } from "@/lib/site-content";
 import { getSettings, upsertSettings } from "@/server/services/settings";
 import { listProjects } from "@/server/services/projects";
-import type { Resume } from "@/types/supabase";
+import type { Json, Resume } from "@/types/supabase";
 
 const TABLE = "resume";
 const PUBLISHED_RESUME_CONTENT_KEY = "published_resume_content";
@@ -29,7 +29,7 @@ export async function getResume(): Promise<Resume | null> {
 export async function getResumeForSite() {
   const [resume, settings] = await Promise.all([
     getResume(),
-    getSettings().catch(() => ({})),
+    getSettings().catch((): Record<string, unknown> => ({})),
   ]);
 
   const publishedContent =
@@ -84,7 +84,7 @@ export async function saveATSResult(id: string, result: unknown) {
   const supabase = await createAdminClient();
   const { error } = await supabase
     .from(TABLE)
-    .update({ ats_feedback: result, ats_score: (result as { score?: number }).score ?? null, updated_at: new Date().toISOString() })
+    .update({ ats_feedback: result as Json, ats_score: (result as { score?: number }).score ?? null, updated_at: new Date().toISOString() })
     .eq("id", id);
   if (error) throw new Error(error.message);
 }
