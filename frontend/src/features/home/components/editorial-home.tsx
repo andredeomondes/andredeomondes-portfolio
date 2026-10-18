@@ -70,7 +70,7 @@ function Writing() {
   const latest = publications.slice(-3).reverse();
   return (
     <section className="home-stage home-writing" data-home-section>
-      <div className="site-shell home-stage-content flex min-h-[100svh] flex-col justify-center py-24">
+      <div className="site-shell home-stage-content flex flex-col justify-center py-24">
         <div className="home-writing__head">
           <h2>O que aprendo,<br />eu <span className="font-pixel">documento</span>.</h2>
           <div><strong>{String(series.publishedUnits).padStart(2, "0")}</strong><p>unidades publicadas</p></div>

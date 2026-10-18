@@ -80,7 +80,7 @@ export function Navbar() {
           onClick={() => setOpen(false)}
         >
           <PixelMark />
-          andredeomondes<span>.dev</span>
+          <span className="site-wordmark__name">andredeomondes<span className="site-wordmark__tld">.dev</span></span>
         </Link>
 
         <div className="hidden items-center justify-self-center gap-8 lg:flex">

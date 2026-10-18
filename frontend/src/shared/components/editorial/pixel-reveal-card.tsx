@@ -4,8 +4,15 @@ import Link from "next/link";
 const COLUMNS = 16;
 const ROWS = 10;
 
-// Deterministic so server and client render the same cover.
+// Deterministic so server and client render the same cover; an avalanche hash
+// avoids the column stripes a linear formula produces on a 16-wide grid.
 const CELLS = Array.from({ length: COLUMNS * ROWS }, (_, cell) => cell);
+
+function hash(cell: number, seed: number) {
+  let h = Math.imul(cell + 1, 374761393) + Math.imul(seed + 1, 668265263);
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return (h ^ (h >>> 16)) >>> 0;
+}
 
 export function PixelRevealCard({
   href,
@@ -30,8 +37,8 @@ export function PixelRevealCard({
         {CELLS.map((cell) => (
           <i
             key={cell}
-            className={(cell * 37 + index * 11) % 100 < 45 ? "is-on" : undefined}
-            style={{ transitionDelay: `${(cell * 53 + index * 17) % 350}ms` }}
+            className={hash(cell, index) % 100 < 45 ? "is-on" : undefined}
+            style={{ transitionDelay: `${hash(cell, index + 7) % 350}ms` }}
           />
         ))}
       </span>

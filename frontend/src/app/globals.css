@@ -704,9 +704,6 @@ not a decorative card preset. */
     white-space: nowrap;
   }
 
-  .site-wordmark span {
-    color: #8b8b86;
-  }
 
   .pixel-mark {
     display: grid;
@@ -761,7 +758,7 @@ not a decorative card preset. */
   }
 
   @media (max-width: 1023px) {
-    .site-wordmark span,
+    .site-wordmark .site-wordmark__tld,
     .navbar-contact__long {
       display: none;
     }
@@ -1380,7 +1377,6 @@ not a decorative card preset. */
 
 .home-stage {
   position: relative;
-  min-height: 100svh;
   overflow: hidden;
   border-bottom: 1px solid #252525;
   scroll-margin-top: 4.5rem;
@@ -2434,10 +2430,7 @@ not a decorative card preset. */
 
 }
 
-/* Final monochrome material pass: all interactive chrome shares the same glass logic. */
-.site-wordmark span {
-  color: #f7df1e;
-}
+/* Final material pass: interactive chrome. */
 
 .navbar-contact:hover,
 .navbar-contact:focus-visible {
@@ -3237,4 +3230,8 @@ html.js .manifesto__word.is-key.is-lit {
   .attribute-bar {
     grid-template-columns: 96px minmax(0, 1fr) 32px;
   }
+}
+
+.site-wordmark .site-wordmark__tld {
+  color: #8b8b86;
 }
