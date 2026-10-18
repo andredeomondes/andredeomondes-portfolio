@@ -1,22 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  Activity,
-  ArrowLeft,
-  ArrowUpRight,
-  BriefcaseBusiness,
-  Check,
-  Clock3,
-  Cloud,
-  Handshake,
-  Layers3,
-  Users,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { fallbackProjects, getFallbackProject } from "@/content/projects";
 import { ProjectImageLightbox } from "@/shared/components/editorial/project-image-lightbox";
-import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
@@ -27,16 +14,6 @@ export function generateStaticParams() {
     .filter((project) => project.published)
     .map((project) => ({ slug: project.slug }));
 }
-
-const factIcons: Record<string, LucideIcon> = {
-  Papel: BriefcaseBusiness,
-  Modelo: Handshake,
-  Equipe: Users,
-  Duração: Clock3,
-  Status: Activity,
-  Produto: Layers3,
-  Infraestrutura: Cloud,
-};
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -58,16 +35,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function NumberedList({ items }: { items: string[] }) {
+function pad(value: number) {
+  return String(value).padStart(2, "0");
+}
+
+function SquareList({ items, muted = false }: { items: string[]; muted?: boolean }) {
   return (
-    <ul className="border-t border-line">
-      {items.map((item, index) => (
-        <li key={item} data-motion="item" className="grid grid-cols-[34px_1fr] gap-3 border-b border-line py-4 text-sm leading-7 text-paper">
-          <span className="font-mono text-[10px] text-signal">{String(index + 1).padStart(2, "0")}</span>
-          {item}
-        </li>
-      ))}
+    <ul className={muted ? "square-list square-list--muted" : "square-list"}>
+      {items.map((item) => <li key={item}>{item}</li>)}
     </ul>
+  );
+}
+
+function SectionHead({ title, accent, note, id }: { title?: string; accent: string; note: string; id?: string }) {
+  return (
+    <div className="section-head case-head">
+      <h2 id={id}>{title ? <>{title} </> : null}<span className="font-pixel">{accent}</span></h2>
+      <small className="font-pixel">{note}</small>
+    </div>
   );
 }
 
@@ -76,7 +61,12 @@ export default async function ProjectCasePage({ params }: PageProps) {
   const project = getFallbackProject(slug);
   if (!project || !project.published) notFound();
 
+  const published = fallbackProjects.filter((item) => item.published);
+  const position = published.findIndex((item) => item.slug === project.slug);
+  const next = published[(position + 1) % published.length];
   const caseStudy = project.case_study;
+  const words = project.title.split(" ");
+  const accentWord = words.length > 1 ? words.pop() : null;
   const overview = [
     { label: "Problema", text: project.overview_problema },
     { label: "Solução", text: project.overview_solucao },
@@ -84,7 +74,7 @@ export default async function ProjectCasePage({ params }: PageProps) {
   ];
 
   return (
-    <article className="min-h-screen pt-16">
+    <article className="page-shell case">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -112,285 +102,128 @@ export default async function ProjectCasePage({ params }: PageProps) {
           ],
         }}
       />
-      <header className="relative overflow-hidden border-b border-line">
-        <div className="technical-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
-        <div className="site-shell relative py-14 sm:py-20">
-          <Link href="/projects" className="label inline-flex items-center gap-2 transition-colors hover:text-signal">
-            <ArrowLeft className="size-3" /> Projetos
-          </Link>
-
-          <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
-            <div>
-              <p className="label text-signal">{caseStudy.kicker} / Estudo de caso</p>
-              <h1 className="mt-5 max-w-5xl text-[clamp(3.4rem,8vw,7.5rem)] font-semibold leading-[0.86] tracking-[-0.075em] text-paper">
-                {project.title}
-              </h1>
+      <header className="site-shell case-hero">
+        <p className="case-hero__crumb"><Link href="/projects">Projetos</Link> / <b>{pad(position + 1)}</b></p>
+        <span className="case-hero__kicker"><i aria-hidden="true" />{caseStudy.kicker}</span>
+        <h1>
+          <span className="case-hero__num font-pixel" aria-hidden="true">{pad(position + 1)}</span>
+          {words.join(" ")}
+          {accentWord ? <> <span className="font-pixel case-hero__accent">{accentWord}</span></> : null}
+        </h1>
+        <p className="case-hero__lead">{project.description} {caseStudy.role_summary}</p>
+        <dl className="case-facts" data-testid="project-facts">
+          {caseStudy.facts.map((fact) => (
+            <div key={fact.label}>
+              <dt className="font-pixel">{fact.label.toUpperCase()}</dt>
+              <dd>{fact.value}</dd>
             </div>
-            <div className="border-l border-line pl-6">
-              <p className="text-lg leading-8 text-paper">{project.description}</p>
-              <p className="mt-5 text-sm leading-7 text-dim">{caseStudy.role_summary}</p>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            {project.live_url ? (
-              <a href={project.live_url} target="_blank" rel="noreferrer" className="button-primary">
-                Visitar produto <ArrowUpRight className="size-4" />
-              </a>
-            ) : null}
-            <a href="#minha-contribuicao" className="button-secondary">Ver minha contribuição</a>
-          </div>
+          ))}
+        </dl>
+        <div className="case-hero__actions">
+          {project.live_url ? (
+            <a href={project.live_url} target="_blank" rel="noreferrer" className="hero__button hero__button--primary">Ver site no ar ↗</a>
+          ) : null}
+          <a href="#arquitetura" className="hero__button">Arquitetura ↓</a>
         </div>
       </header>
 
-      <section className="border-b border-line" aria-label="Informações principais do projeto">
-        <div className="site-shell grid border-x border-line sm:grid-cols-2 lg:grid-cols-4">
-          {caseStudy.facts.map((fact) => {
-            const FactIcon = factIcons[fact.label] ?? Layers3;
-
-            return (
-              <div key={fact.label} data-motion="card" className="border-b border-line p-5 last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="label">{fact.label}</p>
-                  <FactIcon className="size-4 text-signal" strokeWidth={1.5} aria-hidden="true" />
-                </div>
-                <p className="mt-3 text-sm font-medium text-paper">{fact.value}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      <nav className="border-b border-line bg-ink" aria-label="Seções do estudo de caso">
-        <div className="site-shell flex gap-6 overflow-x-auto py-4">
-          {[
-            ["visao-geral", "Visão geral"],
-            ["telas", "Telas"],
-            ["minha-contribuicao", "Contribuição"],
-            ["arquitetura", "Arquitetura"],
-            ["tecnologias", "Tecnologias"],
-            ["operacao", "Deploy"],
-            ["qualidade", "Qualidade"],
-          ].map(([href, label]) => (
-            <a key={href} href={`#${href}`} className="shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-dim transition-colors hover:text-signal">
-              {label}
-            </a>
-          ))}
-        </div>
-      </nav>
-
-      <section id="visao-geral" className="site-shell scroll-mt-24 py-16 sm:py-24">
-        <div className="section-heading">
-          <div>
-            <p className="label text-signal">01 / Contexto</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Do problema à entrega.</h2>
-          </div>
-          <p className="max-w-md text-sm leading-7 text-dim">O case descreve entregas verificáveis. Nenhuma métrica foi estimada ou criada para preencher a narrativa.</p>
-        </div>
-
-        <div className="mt-10 grid gap-px border border-line bg-line lg:grid-cols-3">
+      <section className="site-shell case-section" aria-labelledby="contexto">
+        <SectionHead id="contexto" title="Do problema à" accent="entrega" note="CONTEXTO" />
+        <div className="case-triple">
           {overview.map((item, index) => (
-            <section key={item.label} data-motion="card" className="bg-ink p-6 sm:p-8">
-              <p className="label text-signal">{String(index + 1).padStart(2, "0")} / {item.label}</p>
-              <p className="mt-6 text-base leading-8 text-dim">{item.text}</p>
-            </section>
+            <div key={item.label} className="case-card">
+              <h3><span className="font-pixel">{pad(index + 1)}</span>{item.label}</h3>
+              <p>{item.text}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      <section id="telas" className="scroll-mt-24 border-y border-line bg-paper text-ink">
-        <div className="site-shell py-16 sm:py-24">
-          <div className="section-heading">
-            <div>
-              <p className="label text-ink/60">02 / Produto real</p>
-              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Telas e fluxos.</h2>
-            </div>
-            <p className="max-w-md text-sm leading-7 text-ink/65">Capturas reais do produto, preservadas sem mockups gerados ou números tratados como resultado.</p>
-          </div>
-
-          <div className="mt-10 grid gap-4 lg:grid-cols-2">
-            {caseStudy.screenshots.map((screenshot, index) => (
-              <div key={screenshot.src} className={index === 0 ? "lg:col-span-2" : undefined}>
-                <ProjectImageLightbox screenshot={screenshot} />
-              </div>
-            ))}
-          </div>
+      <section className="site-shell case-section" aria-labelledby="telas">
+        <SectionHead id="telas" title="As" accent="telas" note={`${pad(caseStudy.screenshots.length)} CAPTURAS · CLIQUE PARA AMPLIAR`} />
+        <div className="case-screens">
+          {caseStudy.screenshots.map((screenshot, index) => (
+            <ProjectImageLightbox key={screenshot.src} screenshot={screenshot} priority={index === 0} />
+          ))}
         </div>
       </section>
 
-      <section id="minha-contribuicao" className="site-shell scroll-mt-24 py-16 sm:py-24">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-20">
-          <div>
-            <p className="label text-signal">03 / Responsabilidade</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Minha contribuição.</h2>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-dim">{caseStudy.contribution_intro}</p>
-            <div className="mt-8">
-              <NumberedList items={caseStudy.contributions} />
-            </div>
+      <section className="site-shell case-section" aria-labelledby="minha-contribuicao">
+        <SectionHead id="minha-contribuicao" title="O que eu" accent="fiz" note="CONTRIBUIÇÃO PESSOAL" />
+        <div className="case-split">
+          <div className="case-split__intro">
+            <strong>{caseStudy.contribution_intro}</strong>
+            <p>Abaixo, a minha contribuição separada do escopo total do produto.</p>
+            <h3 className="font-pixel">ESCOPO DO PRODUTO</h3>
+            <SquareList items={caseStudy.product_scope} muted />
           </div>
-
-          <aside className="border border-line bg-panel p-6 sm:p-8">
-            <p className="label">Escopo do produto</p>
-            <ul className="mt-7 space-y-5">
-              {caseStudy.product_scope.map((item) => (
-                <li key={item} data-motion="item" className="flex gap-3 text-sm leading-7 text-dim">
-                  <Check className="mt-1.5 size-3.5 shrink-0 text-signal" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </aside>
+          <SquareList items={caseStudy.contributions} />
         </div>
       </section>
 
-      <section id="arquitetura" className="relative scroll-mt-24 overflow-hidden border-y border-line bg-panel">
-        <div className="technical-grid pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
-        <div className="site-shell relative py-16 sm:py-24">
-          <div className="section-heading">
-            <div>
-              <p className="label text-signal">04 / Sistema</p>
-              <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Arquitetura em alto nível.</h2>
-            </div>
-            <p className="max-w-md text-sm leading-7 text-dim">Uma visão intencionalmente simples das partes confirmadas do sistema, sem expor detalhes sensíveis ou presumir serviços não informados.</p>
+      <section className="site-shell case-section" aria-labelledby="arquitetura">
+        <SectionHead id="arquitetura" accent="Arquitetura" note={`${pad(caseStudy.architecture_lanes.length)} CAMADAS`} />
+        <div className="case-arch" data-testid="architecture-panel">
+          <div className="live-ide__bar">
+            <span className="live-ide__dots" aria-hidden="true"><i /><i /><i /></span>
+            <span className="live-ide__tab is-active">architecture.map</span>
+            <span>{project.slug}</span>
+            <span className="live-ide__meta"><span className="live-ide__live">● em produção</span></span>
           </div>
-
-          <div className="mt-12 space-y-5">
+          <div className="case-arch__lanes" style={{ gridTemplateColumns: `repeat(${caseStudy.architecture_lanes.length}, minmax(0, 1fr))` }}>
             {caseStudy.architecture_lanes.map((lane, laneIndex) => (
-              <div key={lane.label} data-motion="lane" className="border border-line bg-ink/90 p-5 sm:p-6">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-[10px] text-signal">L{String(laneIndex + 1).padStart(2, "0")}</span>
-                  <h3 className="font-mono text-[10px] uppercase tracking-[0.15em] text-paper">{lane.label}</h3>
-                </div>
-                <div className="mt-5 flex flex-col md:flex-row md:items-stretch">
-                  {lane.nodes.map((node, nodeIndex) => (
-                    <div key={`${lane.label}-${node.title}`} className="contents">
-                      <div data-motion="node" className="min-w-0 flex-1 border border-line bg-panel p-4">
-                        <div className="flex items-start gap-3">
-                          <span className="grid size-8 shrink-0 place-items-center border border-line text-signal">
-                            <TechnologyIcon name={`${node.title} ${node.detail}`} className="text-sm" maxIcons={2} />
-                          </span>
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold text-paper">{node.title}</p>
-                            <p className="mt-1.5 text-xs leading-5 text-dim">{node.detail}</p>
-                          </div>
-                        </div>
-                      </div>
-                      {nodeIndex < lane.nodes.length - 1 ? (
-                        <span data-motion="link" className="grid h-8 shrink-0 place-items-center font-mono text-sm text-signal md:h-auto md:w-10" aria-hidden="true">
-                          <span className="md:hidden">↓</span><span className="hidden md:inline">→</span>
-                        </span>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
+              <div key={lane.label} className="case-arch__lane">
+                <h3 className="font-pixel">{lane.label.toUpperCase()} <b>{pad(laneIndex + 1)}</b></h3>
+                {lane.nodes.map((node) => (
+                  <div key={node.title} className="case-arch__node">
+                    <strong>{node.title}</strong>
+                    <span>{node.detail}</span>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="tecnologias" className="site-shell scroll-mt-24 py-16 sm:py-24">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-20">
-          <div>
-            <p className="label text-signal">05 / Implementação</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Tecnologias utilizadas.</h2>
-            <div className="mt-10 grid gap-px border border-line bg-line sm:grid-cols-2">
-              {caseStudy.technology_groups.map((group, index) => (
-                <section
-                  key={group.label}
-                  data-motion="card"
-                  className={`bg-ink p-6 ${caseStudy.technology_groups.length % 2 === 1 && index === caseStudy.technology_groups.length - 1 ? "sm:col-span-2" : ""}`}
-                >
-                  <h3 className="label text-paper">{group.label}</h3>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {group.items.map((item) => (
-                      <span key={item} className="inline-flex items-center gap-2 border border-line px-3 py-2 font-mono text-[10px] uppercase tracking-[0.11em] text-dim">
-                        <TechnologyIcon name={item} className="text-xs text-paper" />
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </section>
-              ))}
+      <section className="site-shell case-section" aria-labelledby="tecnologias">
+        <SectionHead id="tecnologias" accent="Stack" note={`${pad(caseStudy.technology_groups.length)} GRUPOS`} />
+        <div className="case-groups">
+          {caseStudy.technology_groups.map((group) => (
+            <div key={group.label} className="case-group">
+              <h3 className="font-pixel">{group.label.toUpperCase()}</h3>
+              <div>{group.items.map((item) => <span key={item}>{item}</span>)}</div>
             </div>
-          </div>
-
-          <aside className="border-l border-line pl-6 sm:pl-8">
-            <p className="label">Integrações confirmadas</p>
-            <ul className="mt-6">
-              {caseStudy.integrations.map((integration) => (
-                <li key={integration} data-motion="item" className="flex items-center gap-3 border-b border-line py-4 text-sm text-paper">
-                  <span className="grid size-7 place-items-center border border-line text-signal">
-                    <TechnologyIcon name={integration} className="text-xs" />
-                  </span>
-                  {integration}
-                </li>
-              ))}
-            </ul>
-          </aside>
+          ))}
         </div>
       </section>
 
-      <section id="operacao" className="scroll-mt-24 border-t border-line bg-panel">
-        <div className="site-shell grid gap-12 py-16 sm:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-          <div>
-            <p className="label text-signal">06 / Produção</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">Hospedagem, deploy e operação.</h2>
-            <p className="mt-6 max-w-md text-sm leading-7 text-dim">Como as partes confirmadas do produto chegam e permanecem em produção.</p>
-          </div>
-          <ul className="border-t border-line">
-            {caseStudy.operations.map((item, index) => (
-              <li key={item} data-motion="item" className="grid grid-cols-[34px_1fr] gap-4 border-b border-line py-5 text-sm leading-7 text-paper">
-                <span className="font-mono text-[10px] text-signal">{String(index + 1).padStart(2, "0")}</span>
-                {item}
-              </li>
-            ))}
-          </ul>
+      <section className="site-shell case-section" aria-label="Integrações, qualidade e operação">
+        <div className="case-triple">
+          <div className="case-card"><h3><span className="font-pixel">01</span>Integrações</h3><SquareList items={caseStudy.integrations} muted /></div>
+          <div className="case-card"><h3><span className="font-pixel">02</span>Qualidade</h3><SquareList items={caseStudy.quality} muted /></div>
+          <div className="case-card"><h3><span className="font-pixel">03</span>Operação</h3><SquareList items={caseStudy.operations} muted /></div>
         </div>
       </section>
 
-      <section id="qualidade" className="scroll-mt-24 border-y border-line bg-paper text-ink">
-        <div className="site-shell grid gap-12 py-16 sm:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-          <div>
-            <p className="label text-ink/60">07 / Engenharia</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Qualidade faz parte da entrega.</h2>
-            <p className="mt-6 max-w-md text-sm leading-7 text-ink/65">Práticas aplicadas no projeto, descritas sem atribuir notas ou resultados que não foram informados.</p>
-          </div>
-          <ul className="border-t border-ink/15">
-            {caseStudy.quality.map((item, index) => (
-              <li key={item} data-motion="item" className="grid grid-cols-[34px_1fr] gap-4 border-b border-ink/15 py-5 text-sm leading-7">
-                <span className="font-mono text-[10px] font-semibold">{String(index + 1).padStart(2, "0")}</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {project.aprendizados.length > 0 ? (
+        <section className="site-shell case-section" aria-labelledby="aprendizados">
+          <SectionHead id="aprendizados" title="O que este projeto" accent="evidencia" note="APRENDIZADOS" />
+          <SquareList items={project.aprendizados} />
+        </section>
+      ) : null}
 
-      <section className="site-shell py-16 sm:py-24">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
-          <div>
-            <p className="label text-signal">08 / Aprendizados</p>
-            <h2 className="mt-4 text-4xl font-semibold tracking-[-0.05em] text-paper sm:text-5xl">O que este projeto evidencia.</h2>
-          </div>
-          <NumberedList items={project.aprendizados} />
+      {next && next.slug !== project.slug ? (
+        <div className="site-shell">
+          <Link href={`/projects/${next.slug}`} className="case-next">
+            <span>
+              <small className="font-pixel">Próximo case · {pad(published.indexOf(next) + 1)}</small>
+              <strong>{next.title}</strong>
+            </span>
+            <ArrowUpRight className="case-next__arrow" aria-hidden="true" />
+          </Link>
         </div>
-
-        <div className="mt-16 flex flex-col items-start justify-between gap-8 border-t border-line pt-10 sm:flex-row sm:items-end">
-          <div>
-            <p className="label">Próximo passo</p>
-            <p className="mt-3 max-w-xl text-2xl font-semibold tracking-[-0.04em] text-paper">Veja o produto em funcionamento ou continue pelos outros estudos de caso.</p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/projects" className="button-secondary">Outros projetos</Link>
-            {project.live_url ? (
-              <a href={project.live_url} target="_blank" rel="noreferrer" className="button-primary">
-                Abrir produto <ArrowUpRight className="size-4" />
-              </a>
-            ) : null}
-          </div>
-        </div>
-      </section>
+      ) : null}
     </article>
   );
 }
