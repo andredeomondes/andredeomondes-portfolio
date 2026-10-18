@@ -5,12 +5,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { PixelMark } from "@/shared/components/brand/pixel-mark";
 
 const navLinks = [
+  { href: "/", label: "Início" },
   { href: "/projects", label: "Projetos" },
-  { href: "/posts", label: "Publicações" },
+  { href: "/series/javascript-core", label: "JS Core" },
   { href: "/about", label: "Sobre" },
 ];
+
+function isActive(pathname: string, href: string) {
+  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Navbar() {
   const pathname = usePathname();
@@ -73,14 +79,15 @@ export function Navbar() {
           className="site-wordmark justify-self-start"
           onClick={() => setOpen(false)}
         >
-          ANDREDEOMONDES<span>.DEV</span>
+          <PixelMark />
+          andredeomondes<span>.dev</span>
         </Link>
 
         <div className="hidden items-center justify-self-center gap-8 lg:flex">
           {navLinks.map((link) => {
-            const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
+            const active = isActive(pathname, link.href);
             return (
-              <Link key={link.href} href={link.href} aria-current={active ? "page" : undefined} className={cn("nav-link", active && "text-signal")}>
+              <Link key={link.href} href={link.href} aria-current={active ? "page" : undefined} className="nav-link">
                 {link.label}
               </Link>
             );
@@ -88,14 +95,13 @@ export function Navbar() {
         </div>
 
         <div className="navbar-actions hidden justify-self-end lg:flex">
-          <span className="navbar-status"><i /> disponível</span>
-          <Link href="/#contato" className="navbar-contact">Vamos conversar ↗</Link>
+          <Link href="/#contato" className="navbar-contact"><i aria-hidden="true" /><span className="navbar-contact__long">Disponível ·&nbsp;</span>Contato</Link>
         </div>
 
         <button
           ref={menuButtonRef}
           type="button"
-          className="mobile-menu-trigger grid size-12 place-items-center justify-self-end rounded-full border border-line text-paper transition-colors hover:border-signal hover:text-signal lg:hidden"
+          className="mobile-menu-trigger grid size-10 place-items-center justify-self-end rounded-[10px] border border-line text-paper transition-colors hover:border-signal hover:text-signal lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-navigation"
           aria-label={open ? "Fechar menu" : "Abrir menu"}
@@ -113,18 +119,18 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  aria-current={pathname === link.href || pathname.startsWith(`${link.href}/`) ? "page" : undefined}
+                  aria-current={isActive(pathname, link.href) ? "page" : undefined}
                   onClick={() => setOpen(false)}
                   className="mobile-menu__link"
                 >
-                  {link.label}<span className="font-mono text-xs text-dim">0{index + 1}</span>
+                  {link.label}<span className="font-pixel text-xs text-dim">0{index + 1}</span>
                 </Link>
               ))}
             </div>
 
             <div className="mobile-menu__footer">
               <span className="mobile-menu__status"><i /> Disponível para novos projetos</span>
-              <Link href="/#contato" onClick={() => setOpen(false)} className="mobile-menu__contact">Vamos conversar ↗</Link>
+              <Link href="/#contato" onClick={() => setOpen(false)} className="mobile-menu__contact">Contato ↗</Link>
             </div>
           </div>
         </div>

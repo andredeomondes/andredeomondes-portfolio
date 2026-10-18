@@ -12,7 +12,7 @@ test.describe("navegação responsiva", () => {
 
     const menu = page.locator("#mobile-navigation");
     await expect(menu).toBeVisible();
-    await expect(menu.getByRole("link", { name: /Publicações/ })).toBeVisible();
+    await expect(menu.getByRole("link", { name: /JS Core/ })).toBeVisible();
     await expect(page.locator("body")).toHaveCSS("overflow", "hidden");
 
     await page.keyboard.press("Escape");
@@ -32,6 +32,19 @@ test.describe("breakpoints da navegação", () => {
     await page.setViewportSize({ width: 1024, height: 768 });
     await page.goto("/projects");
     await expect(page.getByRole("button", { name: "Abrir menu" })).toBeHidden();
-    await expect(page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "Publicações" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: "JS Core" })).toBeVisible();
+  });
+
+  test("links da navegação e foco amarelo", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/");
+    const nav = page.getByRole("navigation", { name: "Navegação principal" });
+    for (const name of ["Início", "Projetos", "JS Core", "Sobre"]) await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Início", exact: true })).toHaveAttribute("aria-current", "page");
+    await expect(nav.getByRole("link", { name: /Contato/ })).toHaveAttribute("href", "/#contato");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Tab");
+    const outline = await page.evaluate(() => getComputedStyle(document.activeElement!).outlineColor);
+    expect(outline).toBe("rgb(247, 223, 30)");
   });
 });
