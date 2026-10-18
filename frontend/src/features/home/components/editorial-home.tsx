@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { publications, series } from "@/content/posts";
 import type { ProfileSettings } from "@/lib/site-content";
+import { HomeHero } from "@/features/home/components/home-hero";
 import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
 import type { Project } from "@/types/supabase";
 
@@ -17,145 +18,6 @@ const disciplines = [
   { name: "Produto", detail: "Da interface à operação" },
   { name: "Cloud", detail: "Deploy, dados e observabilidade" },
 ];
-
-function Hero({ profile }: { profile: ProfileSettings }) {
-  const heroRef = useRef<HTMLElement>(null);
-  const pointerFrameRef = useRef<number | null>(null);
-  const pointerPositionRef = useRef({ x: 0, y: 0 });
-  const activeCellRef = useRef<{ x: number; y: number } | null>(null);
-  const trailCellsRef = useRef<Array<HTMLSpanElement | null>>([]);
-  const trailCursorRef = useRef(0);
-  const reducedMotionRef = useRef(false);
-
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const trailCells = trailCellsRef.current;
-    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const syncReducedMotion = () => {
-      reducedMotionRef.current = reducedMotionQuery.matches;
-    };
-
-    const syncActivity = (visible: boolean) => {
-      hero.toggleAttribute("data-grid-active", visible && !document.hidden);
-    };
-    const observer = new IntersectionObserver(([entry]) => syncActivity(entry.isIntersecting), {
-      rootMargin: "8% 0px",
-    });
-    const onVisibilityChange = () => {
-      const rect = hero.getBoundingClientRect();
-      syncActivity(rect.bottom > 0 && rect.top < window.innerHeight);
-    };
-
-    observer.observe(hero);
-    syncReducedMotion();
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    reducedMotionQuery.addEventListener("change", syncReducedMotion);
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", onVisibilityChange);
-      reducedMotionQuery.removeEventListener("change", syncReducedMotion);
-      if (pointerFrameRef.current !== null) window.cancelAnimationFrame(pointerFrameRef.current);
-      trailCells.forEach((cell) => cell?.getAnimations().forEach((animation) => animation.cancel()));
-    };
-  }, []);
-
-  const updateGridCell = (event: ReactPointerEvent<HTMLElement>) => {
-    const hero = heroRef.current;
-    if (!hero || event.pointerType === "touch") return;
-
-    pointerPositionRef.current = { x: event.clientX, y: event.clientY };
-    if (pointerFrameRef.current !== null) return;
-
-    pointerFrameRef.current = window.requestAnimationFrame(() => {
-      const rect = hero.getBoundingClientRect();
-      const gridSize = 72;
-      const backgroundX = Number.parseFloat(getComputedStyle(hero, "::before").backgroundPositionX) || 0;
-      const offsetX = ((backgroundX % gridSize) + gridSize) % gridSize;
-      const cellX = Math.floor((pointerPositionRef.current.x - rect.left - offsetX) / gridSize) * gridSize + offsetX;
-      const cellY = Math.floor((pointerPositionRef.current.y - rect.top) / gridSize) * gridSize;
-      const previousCell = activeCellRef.current;
-
-      if (previousCell && (previousCell.x !== cellX || previousCell.y !== cellY)) {
-        const trailCell = trailCellsRef.current[trailCursorRef.current % trailCellsRef.current.length];
-        if (trailCell && !reducedMotionRef.current) {
-          trailCell.getAnimations().forEach((animation) => animation.cancel());
-          trailCell.style.setProperty("--home-grid-trail-x", `${previousCell.x}px`);
-          trailCell.style.setProperty("--home-grid-trail-y", `${previousCell.y}px`);
-          trailCell.animate(
-            [
-              { opacity: 0.48, transform: "scale(1)", backgroundColor: "rgba(217, 88, 36, 0.17)" },
-              { opacity: 0, transform: "scale(0.92)", backgroundColor: "rgba(217, 88, 36, 0)" },
-            ],
-            { duration: 920, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" },
-          );
-          trailCursorRef.current += 1;
-        }
-      }
-
-      hero.style.setProperty("--home-grid-hover-x", `${cellX}px`);
-      hero.style.setProperty("--home-grid-hover-y", `${cellY}px`);
-      hero.setAttribute("data-grid-hover", "");
-      activeCellRef.current = { x: cellX, y: cellY };
-      pointerFrameRef.current = null;
-    });
-  };
-
-  const clearGridCell = () => {
-    if (pointerFrameRef.current !== null) {
-      window.cancelAnimationFrame(pointerFrameRef.current);
-      pointerFrameRef.current = null;
-    }
-    heroRef.current?.removeAttribute("data-grid-hover");
-    activeCellRef.current = null;
-  };
-
-  return (
-    <section
-      ref={heroRef}
-      className="home-stage home-hero"
-      data-home-section
-      data-grid-active=""
-      onPointerMove={updateGridCell}
-      onPointerLeave={clearGridCell}
-    >
-      <div className="home-hero__grid-trail" aria-hidden="true">
-        {Array.from({ length: 9 }, (_, index) => (
-          <span
-            key={index}
-            ref={(node) => {
-              trailCellsRef.current[index] = node;
-            }}
-          />
-        ))}
-      </div>
-      <span className="home-hero__grid-cell" aria-hidden="true" />
-      <div className="home-hero__field" aria-hidden="true"><span>BUILD</span><span>SHIP</span><span>LEARN</span></div>
-      <div className="site-shell home-stage-content home-hero__content">
-        <div className="home-hero__portrait" data-home-photo>
-          <Image src="/brand/andre-editorial-v2.webp" alt="Retrato de Andre Deomondes" fill fetchPriority="high" loading="eager" sizes="(max-width: 767px) 88vw, 42vw" className="object-cover object-top" />
-          <span className="home-hero__portrait-shade" />
-        </div>
-        <div className="home-hero__title" aria-label={profile.name}>
-          <h1>
-            <span className="home-hero-title-mask"><span className="home-hero-title-line">ANDRE</span></span>
-            <span className="home-hero-title-mask">
-              <span className="home-hero-title-line home-hero-title-line--outline">
-                <span className="home-hero-title-loop">DEOMONDES</span>
-              </span>
-            </span>
-          </h1>
-        </div>
-        <div className="home-hero__bottom home-hero-support">
-          <p>Backend &amp; Applied AI Engineer</p>
-          <p>{profile.location}</p>
-          <a href="#atuacao" aria-label="Explorar: avançar para atuação">Explorar <ArrowDown className="size-4" /></a>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function Marquee({ reverse = false }: { reverse?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -290,9 +152,6 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
           gsap.fromTo(word, { xPercent: direction * 7 }, { xPercent: direction * -7, ease: "none", scrollTrigger: { trigger: word.closest("section"), start: "top bottom", end: "bottom top", scrub: 0.55 } });
         });
 
-        const portrait = root.querySelector<HTMLElement>("[data-home-photo] img");
-        if (portrait) gsap.fromTo(portrait, { scale: 1.08, yPercent: -3 }, { scale: 1.01, yPercent: 4, ease: "none", scrollTrigger: { trigger: ".home-hero", start: "top top", end: "bottom top", scrub: 0.6 } });
-
         gsap.utils.toArray<HTMLElement>("[data-home-project-image] img").forEach((image, index) => {
           gsap.fromTo(image, { yPercent: -5 - index }, { yPercent: 5 + index, ease: "none", scrollTrigger: { trigger: image.closest(".home-project"), start: "top bottom", end: "bottom top", scrub: 0.5 } });
         });
@@ -324,7 +183,7 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
 
   return (
     <div ref={rootRef} data-home-motion className="home-experience">
-      <Hero profile={profile} /><Practice /><Work projects={projects} /><Writing />
+      <HomeHero profile={profile} /><Practice /><Work projects={projects} /><Writing />
     </div>
   );
 }

@@ -95,7 +95,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="dark h-full antialiased">
+    <html lang="pt-BR" className="dark h-full antialiased" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body id="top" className={`${jetbrainsMono.variable} ${silkscreen.variable} min-h-full flex flex-col bg-background`}>
         <JsonLd
           data={{
