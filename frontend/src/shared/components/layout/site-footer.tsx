@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, ArrowUpRight, MessageCircle } from "lucide-react";
 import { FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { ProjectIntakeForm } from "@/features/contact/components/project-intake-form";
+import { RodaFinale } from "@/shared/components/layout/roda-finale";
 
 const exploreLinks = [
   { href: "/projects", label: "Projetos" },
@@ -25,25 +27,15 @@ export function SiteFooter() {
 
   return (
     <footer className="site-footer">
-      <div className="site-footer__cta site-shell">
-        <div>
-          <h2>PRODUTOS DIGITAIS.<br /><span>ENGENHARIA REAL.</span></h2>
-          <p>Backend, interfaces, IA aplicada e operação reunidos em produtos que precisam funcionar fora da apresentação.</p>
-        </div>
-        <div className="site-footer__cta-actions">
-          <Link href="/projects">Ver projetos</Link>
-          <Link href="/#contato">Iniciar projeto</Link>
-        </div>
-      </div>
+      <RodaFinale />
 
-      <div className="site-footer__atmosphere" aria-hidden="true">
-        <div className="site-footer__glass site-shell">
-          <span className="site-footer__glass-domain">
-            andredeomondes<span>.dev</span>
-          </span>
-          <span className="site-footer__glass-role">Backend &amp; Applied AI Engineer</span>
+      <section id="contato" className="site-footer__contact-form site-shell" aria-labelledby="contato-title">
+        <div className="site-footer__contact-intro">
+          <h2 id="contato-title">Conte o que você quer <span className="font-pixel">construir</span></h2>
+          <p>Responda um briefing curto. Eu recebo o contexto completo no e-mail e retorno sem tirar você do site.</p>
         </div>
-      </div>
+        <ProjectIntakeForm />
+      </section>
 
       <div className="site-footer__socials site-shell">
         {socialLinks.map((link) => {
@@ -59,7 +51,7 @@ export function SiteFooter() {
 
       <div className="site-footer__directory site-shell">
         <div className="site-footer__identity">
-          <Link href="/" className="site-footer__brand">ANDREDEOMONDES<span>.DEV</span></Link>
+          <Link href="/" className="site-footer__brand">andredeomondes<span>.dev</span></Link>
           <p>Backend &amp; Applied AI Engineer</p>
           <p>Salvador · Bahia · Brasil</p>
         </div>

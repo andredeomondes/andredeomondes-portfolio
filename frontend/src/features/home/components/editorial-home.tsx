@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
 import { publications, series } from "@/content/posts";
-import { ProjectIntakeForm } from "@/features/contact/components/project-intake-form";
 import type { ProfileSettings } from "@/lib/site-content";
 import { TechnologyIcon } from "@/shared/components/editorial/technology-icon";
 import type { Project } from "@/types/supabase";
@@ -256,28 +255,6 @@ function Writing() {
   );
 }
 
-function Contact({ profile }: { profile: ProfileSettings }) {
-  return (
-    <section id="contato" className="home-stage home-contact" data-home-section>
-      <div className="site-shell home-stage-content home-contact__layout">
-        <div className="home-contact__intro">
-          <p className="home-contact__availability"><span /> {profile.availability}</p>
-          <div>
-            <h2 className="home-display">O PROJETO<br /><span className="home-display--outline">COMEÇA AQUI.</span></h2>
-            <p className="home-contact__lead">Responda um briefing curto. Eu recebo o contexto completo no e-mail e retorno sem tirar você do site.</p>
-          </div>
-          <div className="home-contact__links">
-            <a href={profile.social.github} target="_blank" rel="noreferrer">GitHub</a>
-            <a href={profile.social.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-            <span>{profile.location}</span>
-          </div>
-        </div>
-        <ProjectIntakeForm />
-      </div>
-    </section>
-  );
-}
-
 export function EditorialHome({ profile, projects }: { profile: ProfileSettings; projects: Project[] }) {
   const rootRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -347,7 +324,7 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
 
   return (
     <div ref={rootRef} data-home-motion className="home-experience">
-      <Hero profile={profile} /><Practice /><Work projects={projects} /><Writing /><Contact profile={profile} />
+      <Hero profile={profile} /><Practice /><Work projects={projects} /><Writing />
     </div>
   );
 }
