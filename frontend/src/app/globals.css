@@ -3123,3 +3123,118 @@ html.js .manifesto__word.is-key.is-lit {
     transition: none;
   }
 }
+
+/* ── Home: JS Core publications (dark) ── */
+.home-writing__head h2 .font-pixel {
+  color: #f7df1e;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.home-publication-row > span:first-child {
+  color: #f7df1e;
+  font-family: var(--font-pixel), monospace;
+}
+
+/* ── Home: about teaser ── */
+.about-teaser__layout {
+  display: grid;
+  max-width: 1080px;
+  gap: 3rem;
+  align-items: center;
+  padding-block: clamp(5rem, 12vw, 9rem);
+}
+
+@media (min-width: 861px) {
+  .about-teaser__layout {
+    grid-template-columns: 1fr 1.1fr;
+  }
+}
+
+.about-teaser__portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: #0a0a0a;
+}
+
+.about-teaser__portrait img {
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-teaser__portrait:hover img {
+  transform: scale(1.03);
+}
+
+.about-teaser h2 {
+  font-size: clamp(1.75rem, 4vw, 3.25rem);
+  line-height: 1.02;
+}
+
+.about-teaser h2 .font-pixel {
+  color: #f7df1e;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.about-teaser p {
+  max-width: 48ch;
+  margin-top: 1.1rem;
+  color: #8b8b86;
+  font-size: 0.85rem;
+  line-height: 1.75;
+}
+
+.about-teaser__link {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  margin-top: 1.75rem;
+  color: #f3f3ef;
+  font-size: 0.75rem;
+}
+
+/* ── Attribute bars ── */
+.attribute-bars {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.6rem;
+}
+
+.attribute-bar {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) 40px;
+  gap: 0.75rem;
+  align-items: center;
+  color: #8b8b86;
+  font-size: 0.6875rem;
+}
+
+.attribute-bar__blocks {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 2px;
+  height: 10px;
+}
+
+.attribute-bar__blocks i {
+  background: #1f1f1f;
+  transition: background 0.2s;
+}
+
+.attribute-bar__blocks i.on {
+  background: #f3f3ef;
+}
+
+.attribute-bar__value {
+  color: #f3f3ef;
+  text-align: right;
+}
+
+@media (max-width: 860px) {
+  .attribute-bar {
+    grid-template-columns: 96px minmax(0, 1fr) 32px;
+  }
+}

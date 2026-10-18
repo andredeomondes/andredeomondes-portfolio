@@ -24,6 +24,12 @@ export interface ProfileSettings {
   heroDescription: string;
   resumeHeadline: string;
   social: SocialLinks;
+  attributes: AttributeItem[];
+}
+
+export interface AttributeItem {
+  label: string;
+  value: number;
 }
 
 export interface ExperienceItem {
@@ -122,6 +128,13 @@ export const defaultSiteContent: SiteContent = {
     heroDescription:
       "Projeto backends, produtos digitais e sistemas com IA aplicada — e documento o raciocínio entre o problema e o código.",
     resumeHeadline: "Backend & Applied AI Engineer",
+    // Placeholder values pending Andre's definition (spec §9).
+    attributes: [
+      { label: "Backend", value: 90 },
+      { label: "Applied AI", value: 75 },
+      { label: "Produto", value: 70 },
+      { label: "Cloud", value: 65 },
+    ],
     social: {
       github: "https://github.com/andredeomondes",
       linkedin: "https://linkedin.com/in/andredeomondes",
@@ -237,6 +250,18 @@ function asBoolean(value: unknown, fallback: boolean) {
   return typeof value === "boolean" ? value : fallback;
 }
 
+function asAttributes(value: unknown, fallback: AttributeItem[]): AttributeItem[] {
+  if (!Array.isArray(value)) return fallback;
+  const items = value.flatMap((item) => {
+    const record = asRecord(item);
+    const label = typeof record?.label === "string" ? record.label.trim() : "";
+    const raw = record?.value;
+    const valid = typeof raw === "number" && Number.isInteger(raw) && raw >= 0 && raw <= 100;
+    return label && valid ? [{ label, value: raw }] : [];
+  });
+  return items.length === value.length && items.length > 0 ? items : fallback;
+}
+
 function asStringArray(value: unknown, fallback: string[]) {
   if (!Array.isArray(value)) return fallback;
   return value.filter((item): item is string => typeof item === "string");
@@ -340,6 +365,7 @@ export function normalizeSiteContent(settings: Record<string, unknown>): SiteCon
         profileInput?.heroDescription,
         defaultSiteContent.profile.heroDescription
       ),
+      attributes: asAttributes(profileInput?.attributes, defaultSiteContent.profile.attributes),
       resumeHeadline: asString(
         profileInput?.resumeHeadline,
         defaultSiteContent.profile.resumeHeadline

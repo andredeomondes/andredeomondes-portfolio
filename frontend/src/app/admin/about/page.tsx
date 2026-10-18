@@ -190,6 +190,20 @@ export default function AdminAboutPage() {
                 <div className="md:col-span-2">
                   <Field label="Bio longa" value={profile.longBio} onChange={(value) => setProfile((current) => ({ ...current, longBio: value }))} multiline />
                 </div>
+                {profile.attributes.map((attribute, index) => (
+                  <div key={index} className="grid grid-cols-[1fr_6rem] gap-3">
+                    <Field
+                      label={`Atributo ${index + 1}`}
+                      value={attribute.label}
+                      onChange={(value) => setProfile((current) => ({ ...current, attributes: current.attributes.map((item, i) => (i === index ? { ...item, label: value } : item)) }))}
+                    />
+                    <Field
+                      label="0–100"
+                      value={attribute.value}
+                      onChange={(value) => setProfile((current) => ({ ...current, attributes: current.attributes.map((item, i) => (i === index ? { ...item, value: Math.max(0, Math.min(100, Math.round(Number(value) || 0))) } : item)) }))}
+                    />
+                  </div>
+                ))}
               </div>
             </SectionCard>
 

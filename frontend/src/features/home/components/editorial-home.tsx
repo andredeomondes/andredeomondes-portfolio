@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { publications, series } from "@/content/posts";
 import type { ProfileSettings } from "@/lib/site-content";
+import Image from "next/image";
+import { AttributeBars } from "@/shared/components/editorial/attribute-bars";
 import { HomeHero } from "@/features/home/components/home-hero";
 import { Manifesto } from "@/features/home/components/manifesto";
 import { PixelRevealCard } from "@/shared/components/editorial/pixel-reveal-card";
@@ -70,7 +72,7 @@ function Writing() {
     <section className="home-stage home-writing" data-home-section>
       <div className="site-shell home-stage-content flex min-h-[100svh] flex-col justify-center py-24">
         <div className="home-writing__head">
-          <h2>O que aprendo,<br /><span>eu documento.</span></h2>
+          <h2>O que aprendo,<br />eu <span className="font-pixel">documento</span>.</h2>
           <div><strong>{String(series.publishedUnits).padStart(2, "0")}</strong><p>unidades publicadas</p></div>
         </div>
         <div className="home-writing__list">
@@ -82,7 +84,24 @@ function Writing() {
         </div>
         <div className="home-writing__action"><Link href={`/series/${series.slug}`}>Abrir a série completa <ArrowRight className="size-4" /></Link></div>
       </div>
-      <Marquee reverse />
+    </section>
+  );
+}
+
+function AboutTeaser({ profile }: { profile: ProfileSettings }) {
+  return (
+    <section className="home-stage about-teaser" data-home-section>
+      <div className="site-shell home-stage-content about-teaser__layout">
+        <div className="about-teaser__portrait">
+          <Image src="/brand/andre-editorial-v2.webp" alt="Retrato de Andre Deomondes" fill sizes="(max-width: 860px) 100vw, 45vw" className="object-cover object-top" />
+        </div>
+        <div>
+          <h2>O engenheiro<br />por trás do <span className="font-pixel">código</span></h2>
+          <p>{profile.shortBio}</p>
+          <AttributeBars items={profile.attributes} />
+          <Link href="/about" className="about-teaser__link">Mais sobre mim <ArrowRight className="size-4" /></Link>
+        </div>
+      </div>
     </section>
   );
 }
@@ -144,7 +163,7 @@ export function EditorialHome({ profile, projects }: { profile: ProfileSettings;
 
   return (
     <div ref={rootRef} data-home-motion className="home-experience">
-      <HomeHero profile={profile} /><Marquee /><Manifesto text={MANIFESTO} highlights={["produção,", "documentado."]} /><Work projects={projects} /><Writing />
+      <HomeHero profile={profile} /><Marquee /><Manifesto text={MANIFESTO} highlights={["produção,", "documentado."]} /><Work projects={projects} /><Writing /><AboutTeaser profile={profile} />
     </div>
   );
 }
