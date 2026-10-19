@@ -703,3 +703,118 @@
     flex: none;
   }
 }
+
+/* Where the search term was cited inside the unit */
+.post-card__match {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(255, 212, 59, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 212, 59, 0.04);
+}
+
+.post-card__match-where {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--sodium);
+  font-size: 0.7rem;
+}
+
+.post-card__match-where svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+.post-card__match-text {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #c9c9ce;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.post-card__match mark {
+  padding: 0 0.15em;
+  border-radius: 3px;
+  background: rgba(255, 212, 59, 0.22);
+  color: var(--paper);
+}
+
+/* Pagination */
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.pager__pages {
+  display: flex;
+  gap: 0.35rem;
+  list-style: none;
+}
+
+.pager__page,
+.pager__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.8rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: #d6d6da;
+  font-size: 0.85rem;
+  transition-property: border-color, color, background-color, transform;
+  transition-duration: 0.15s;
+}
+
+.pager__page:hover,
+.pager__step:hover:not(:disabled) {
+  border-color: rgba(255, 212, 59, 0.45);
+  color: var(--paper);
+}
+
+.pager__page:active,
+.pager__step:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.pager__page.is-active {
+  border-color: var(--sodium);
+  background: rgba(255, 212, 59, 0.12);
+  color: var(--sodium);
+}
+
+.pager__step:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.pager__step svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pager__status {
+  flex-basis: 100%;
+  color: var(--fog);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+/* The explorer has its own clear button */
+.explorer__search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
