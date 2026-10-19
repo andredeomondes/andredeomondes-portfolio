@@ -2,93 +2,82 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, ArrowUpRight, MessageCircle } from "lucide-react";
-import { FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
-import { ProjectIntakeForm } from "@/features/contact/components/project-intake-form";
-import { RodaFinale } from "@/shared/components/layout/roda-finale";
+import { useSite } from "@/shared/components/shell/site-provider";
+import { ContactPanel } from "@/shared/components/shell/contact-launcher";
+import { Magnetic } from "@/shared/components/fx/magnetic";
+import { LightSweep } from "@/shared/components/layout/light-sweep";
 
-const exploreLinks = [
-  { href: "/projects", label: "Projetos" },
-  { href: "/posts", label: "Publicações" },
-  { href: "/about", label: "Sobre" },
-  { href: "/resume", label: "Currículo" },
-];
-
-const socialLinks = [
-  { href: "https://github.com/andredeomondes", label: "GitHub", icon: FaGithub, external: true },
-  { href: "https://linkedin.com/in/andredeomondes", label: "LinkedIn", icon: FaLinkedinIn, external: true },
-  { href: "https://instagram.com/andredeomondes.dev", label: "Instagram", icon: FaInstagram, external: true },
-  { href: "/#contato", label: "Briefing", icon: MessageCircle, external: false },
+const columns = [
+  {
+    title: "Site",
+    links: [
+      { href: "/projects", label: "Projetos" },
+      { href: "/series/javascript-core", label: "Série JavaScript Core" },
+      { href: "/posts", label: "Publicações" },
+      { href: "/about", label: "Sobre" },
+      { href: "/resume", label: "Currículo" },
+    ],
+  },
+  {
+    title: "Projetos",
+    links: [
+      { href: "/projects/drop-aki-tcg", label: "Drop Aki TCG" },
+      { href: "/projects/amr-mobile", label: "AMR Mobile" },
+      { href: "/projects/caji-agent", label: "CajiAgent" },
+    ],
+  },
 ];
 
 export function SiteFooter() {
   const pathname = usePathname();
+  const { index, setPaletteOpen } = useSite();
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="site-footer">
-      <RodaFinale />
-
-      <section id="contato" className="site-footer__contact-form site-shell" aria-labelledby="contato-title">
-        <div className="site-footer__contact-intro">
-          <h2 id="contato-title">Conte o que você quer <span className="font-pixel">construir</span></h2>
-          <p>Responda um briefing curto. Eu recebo o contexto completo no e-mail e retorno sem tirar você do site.</p>
-        </div>
-        <ProjectIntakeForm />
-      </section>
-
-      <div className="site-footer__socials site-shell">
-        {socialLinks.map((link) => {
-          const Icon = link.icon;
-          const content = <><span><Icon aria-hidden="true" />{link.label}</span><ArrowRight aria-hidden="true" /></>;
-          return link.external ? (
-            <a key={link.href} href={link.href} target="_blank" rel="noreferrer">{content}</a>
-          ) : (
-            <Link key={link.href} href={link.href}>{content}</Link>
-          );
-        })}
-      </div>
-
-      <div className="site-footer__directory site-shell">
-        <div className="site-footer__identity">
-          <Link href="/" className="site-footer__brand">andredeomondes<span>.dev</span></Link>
-          <p>Backend &amp; Applied AI Engineer</p>
-          <p>Salvador · Bahia · Brasil</p>
-        </div>
-
-        <div className="site-footer__directory-group">
-          <nav aria-label="Explorar o site">
-            <p>Navegação</p>
-            {exploreLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
-          </nav>
-
-          <nav aria-label="Projetos em destaque">
-            <p>Projetos</p>
-            <Link href="/projects/drop-aki-tcg">Drop Aki TCG</Link>
-            <Link href="/projects/amr-mobile">AMR Mobile</Link>
-            <Link href="/projects/caji-agent">CajiAgent</Link>
-          </nav>
-
-          <nav aria-label="Conteúdo técnico">
-            <p>Conteúdo</p>
-            <Link href="/series/javascript-core">JavaScript Core</Link>
-            <Link href="/posts">Publicações</Link>
-            <Link href="/posts/01-javascript-tipos-coercao#exercicios">Exercícios</Link>
-          </nav>
-
-          <div className="site-footer__contact-data">
-            <p>Contato</p>
-            <a href="mailto:andredeomondes.dev@gmail.com">andredeomondes.dev@gmail.com</a>
-            <span>Atendimento remoto</span>
-            <span>Brasil · projetos globais</span>
-            <Link href="/#contato">Enviar briefing <ArrowUpRight aria-hidden="true" /></Link>
+    <footer className="footer">
+      <section className="footer__finale rail-cell" aria-labelledby="finale-title">
+        <LightSweep />
+        <h2 id="finale-title" className="footer__title">
+          Vamos construir algo
+          <br />
+          <span className="footer__title-muted">que roda em produção.</span>
+        </h2>
+        <div className="footer__finale-grid">
+          <p className="footer__lead">
+            Projetos de backend, IA aplicada e produtos completos. Escolha o assunto e a mensagem já sai pronta, sem formulário.
+          </p>
+          <div id="contato" className="footer__contact">
+            <ContactPanel headingId="footer-contact-title" />
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="site-footer__legal site-shell">
-        <p>© 2026 Andre Deomondes. Todos os direitos reservados.</p>
-        <a href="#top" aria-label="Voltar ao topo">Voltar ao topo ↑</a>
+      <div className="footer__base rail-cell">
+        <div className="footer__brand">
+          <span className="nav__mark" aria-hidden="true" />
+          <div>
+            <strong>{index.contact.name}</strong>
+            <p>Backend &amp; Applied AI Engineer · {index.contact.location}</p>
+          </div>
+        </div>
+        {columns.map((column) => (
+          <nav key={column.title} aria-label={column.title} className="footer__column">
+            <p>{column.title}</p>
+            {column.links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
+          </nav>
+        ))}
+        <div className="footer__column">
+          <p>Atalho</p>
+          <Magnetic>
+            <button type="button" className="footer__kbd" onClick={() => setPaletteOpen(true)}>
+              Abrir busca <kbd>⌘K</kbd>
+            </button>
+          </Magnetic>
+        </div>
+      </div>
+      <div className="footer__legal rail-cell">
+        <p>© 2026 Andre Deomondes</p>
+        <a href="#top">Voltar ao topo</a>
       </div>
     </footer>
   );

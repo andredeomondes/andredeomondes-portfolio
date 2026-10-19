@@ -3,138 +3,142 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Menu, Search, X } from "lucide-react";
+import { motionTokens, springs } from "@/lib/motion";
 import { cn } from "@/shared/lib/utils";
-import { PixelMark } from "@/shared/components/brand/pixel-mark";
+import { ScrambleText } from "@/shared/components/fx/scramble";
+import { useSite } from "@/shared/components/shell/site-provider";
 
 const navLinks = [
-  { href: "/", label: "Início" },
   { href: "/projects", label: "Projetos" },
   { href: "/series/javascript-core", label: "JS Core" },
+  { href: "/posts", label: "Publicações" },
   { href: "/about", label: "Sobre" },
 ];
 
 function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export function Navbar() {
   const pathname = usePathname();
+  const reduce = useReducedMotion();
+  const { setPaletteOpen, setContactOpen } = useSite();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const syncNavigationState = () => setCompact(window.scrollY > 24);
-
-    syncNavigationState();
-    window.addEventListener("scroll", syncNavigationState, { passive: true });
-    return () => window.removeEventListener("scroll", syncNavigationState);
+    const sync = () => setCompact(window.scrollY > 40);
+    sync();
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => window.removeEventListener("scroll", sync);
   }, []);
 
   useEffect(() => {
-    const desktopBreakpoint = window.matchMedia("(min-width: 1024px)");
-    const closeMenuOnDesktop = (event: MediaQueryListEvent) => {
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const close = (event: MediaQueryListEvent) => {
       if (event.matches) setOpen(false);
     };
-
-    desktopBreakpoint.addEventListener("change", closeMenuOnDesktop);
-    return () => desktopBreakpoint.removeEventListener("change", closeMenuOnDesktop);
+    desktop.addEventListener("change", close);
+    return () => desktop.removeEventListener("change", close);
   }, []);
 
   useEffect(() => {
     if (!open) return;
-
-    const previousOverflow = document.body.style.overflow;
-    const menuButton = menuButtonRef.current;
-    const firstLink = document.querySelector<HTMLAnchorElement>("#mobile-navigation a");
-    const closeOnEscape = (event: KeyboardEvent) => {
+    const previous = document.body.style.overflow;
+    const button = menuButtonRef.current;
+    const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") setOpen(false);
     };
-
     document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", closeOnEscape);
-    firstLink?.focus();
-
+    window.addEventListener("keydown", onKey);
+    window.setTimeout(() => document.querySelector<HTMLAnchorElement>("#mobile-navigation a")?.focus(), 40);
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", closeOnEscape);
-      menuButton?.focus();
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
+      button?.focus();
     };
   }, [open]);
 
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <header
-      className={cn(
-        "site-navigation fixed inset-x-0 top-0 z-[70]",
-        compact && "site-navigation--compact",
-        open && "site-navigation--menu-open",
-      )}
-    >
-      <nav className="site-shell visuvate-nav relative z-[2] grid h-[4.5rem] grid-cols-[1fr_auto] items-center lg:grid-cols-[1fr_auto_1fr]" aria-label="Navegação principal">
-        <Link
-          href="/"
-          className="site-wordmark justify-self-start"
-          onClick={() => setOpen(false)}
-        >
-          <PixelMark />
-          <span className="site-wordmark__name">andredeomondes<span className="site-wordmark__tld">.dev</span></span>
+    <header className={cn("nav", compact && "nav--compact", open && "nav--open")}>
+      <nav className="nav__bar" aria-label="Navegação principal">
+        <Link href="/" className="nav__brand" onClick={() => setOpen(false)} aria-label="Andre Deomondes, início">
+          <span className="nav__mark" aria-hidden="true" />
+          <span className="nav__name">Andre Deomondes</span>
         </Link>
 
-        <div className="hidden items-center justify-self-center gap-8 lg:flex">
-          {navLinks.map((link) => {
-            const active = isActive(pathname, link.href);
-            return (
-              <Link key={link.href} href={link.href} aria-current={active ? "page" : undefined} className="nav-link">
-                {link.label}
+        <ul className="nav__links">
+          {navLinks.map((link) => (
+            <li key={link.href}>
+              <Link href={link.href} aria-current={isActive(pathname, link.href) ? "page" : undefined} className="nav__link">
+                <ScrambleText text={link.label} />
               </Link>
-            );
-          })}
-        </div>
+            </li>
+          ))}
+        </ul>
 
-        <div className="navbar-actions hidden justify-self-end lg:flex">
-          <Link href="/#contato" className="navbar-contact"><i aria-hidden="true" /><span className="navbar-contact__long">Disponível ·&nbsp;</span>Contato</Link>
+        <div className="nav__actions">
+          <button type="button" className="nav__search" onClick={() => setPaletteOpen(true)} aria-label="Buscar no site">
+            <Search aria-hidden="true" />
+            <span className="nav__search-label">Buscar</span>
+            <kbd>⌘K</kbd>
+          </button>
+          <button type="button" className="nav__cta" onClick={() => setContactOpen(true)}>
+            Falar comigo
+          </button>
+          <button
+            ref={menuButtonRef}
+            type="button"
+            className="nav__menu"
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
+            aria-label={open ? "Fechar menu" : "Abrir menu"}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+          </button>
         </div>
-
-        <button
-          ref={menuButtonRef}
-          type="button"
-          className="mobile-menu-trigger grid size-10 place-items-center justify-self-end rounded-[10px] border border-line text-paper transition-colors hover:border-signal hover:text-signal lg:hidden"
-          aria-expanded={open}
-          aria-controls="mobile-navigation"
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
       </nav>
 
-      {open ? (
-        <div id="mobile-navigation" className="visuvate-mobile-menu lg:hidden">
-          <div className="site-shell mobile-menu__inner">
-            <div className="mobile-menu__links">
-              {navLinks.map((link, index) => (
-                <Link
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            id="mobile-navigation"
+            className="nav__sheet"
+            initial={reduce ? { opacity: 0 } : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth }}
+          >
+            <ul>
+              {[{ href: "/", label: "Início" }, ...navLinks, { href: "/resume", label: "Currículo" }].map((link, index) => (
+                <motion.li
                   key={link.href}
-                  href={link.href}
-                  aria-current={isActive(pathname, link.href) ? "page" : undefined}
-                  onClick={() => setOpen(false)}
-                  className="mobile-menu__link"
+                  initial={reduce ? false : { opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ...springs.gentle, delay: reduce ? 0 : 0.05 + index * 0.04 }}
                 >
-                  {link.label}<span className="font-pixel text-xs text-dim">0{index + 1}</span>
-                </Link>
+                  <Link
+                    href={link.href}
+                    aria-current={link.href === "/" ? (pathname === "/" ? "page" : undefined) : isActive(pathname, link.href) ? "page" : undefined}
+                    onClick={() => setOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                </motion.li>
               ))}
-            </div>
-
-            <div className="mobile-menu__footer">
-              <span className="mobile-menu__status"><i /> Disponível para novos projetos</span>
-              <Link href="/#contato" onClick={() => setOpen(false)} className="mobile-menu__contact">Contato ↗</Link>
-            </div>
-          </div>
-        </div>
-      ) : null}
+            </ul>
+            <button type="button" className="nav__sheet-cta" onClick={() => { setOpen(false); setContactOpen(true); }}>
+              Falar comigo
+            </button>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </header>
   );
 }

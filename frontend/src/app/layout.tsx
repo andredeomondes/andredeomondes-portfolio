@@ -1,22 +1,28 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Silkscreen } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/shared/components/layout/navbar";
 import { SiteFooter } from "@/shared/components/layout/site-footer";
-import { SiteMotion } from "@/shared/components/motion/site-motion";
+import { SmoothScroll } from "@/shared/components/shell/smooth-scroll";
+import { SiteProvider } from "@/shared/components/shell/site-provider";
+import { CommandPalette } from "@/shared/components/shell/command-palette";
+import { ContactLauncher } from "@/shared/components/shell/contact-launcher";
+import { Toaster } from "@/shared/components/ui/sonner";
+import { normalizeSiteContent } from "@/lib/site-content";
+import { buildSiteIndex } from "@/lib/site-index";
+import { getCachedPublicSettings } from "@/server/services/settings";
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo";
 
-const jetbrainsMono = JetBrains_Mono({
+const geist = Geist({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "800"],
-  variable: "--font-jetbrains",
+  variable: "--font-geist",
 });
 
-const silkscreen = Silkscreen({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--font-pixel",
+  weight: ["400", "500", "700"],
+  variable: "--font-mono-code",
 });
 
 export const metadata: Metadata = {
@@ -85,21 +91,24 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#070707",
+  themeColor: "#060708",
   colorScheme: "dark",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getCachedPublicSettings().catch(() => ({}));
+  const index = buildSiteIndex(normalizeSiteContent(settings).profile);
+
   return (
     <html lang="pt-BR" className="dark h-full antialiased" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
-      <body id="top" className={`${jetbrainsMono.variable} ${silkscreen.variable} min-h-full flex flex-col bg-background`}>
+      <body id="top" className={`${geist.variable} ${jetbrainsMono.variable} min-h-full flex flex-col bg-background`}>
         <JsonLd
           data={{
             "@context": "https://schema.org",
@@ -128,10 +137,16 @@ export default function RootLayout({
             ],
           }}
         />
-        <Navbar />
-        <SiteMotion />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <SiteProvider index={index}>
+          <div className="rails" aria-hidden="true" />
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+          <CommandPalette />
+          <ContactLauncher />
+          <SmoothScroll />
+          <Toaster position="bottom-center" />
+        </SiteProvider>
       </body>
     </html>
   );
