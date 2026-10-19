@@ -7,7 +7,7 @@ import { SmoothScroll } from "@/shared/components/shell/smooth-scroll";
 import { SiteProvider } from "@/shared/components/shell/site-provider";
 import { CommandPalette } from "@/shared/components/shell/command-palette";
 import { ContactLauncher } from "@/shared/components/shell/contact-launcher";
-import { Toaster } from "@/shared/components/ui/sonner";
+import { ToastProvider } from "@/shared/components/shell/toast";
 import { normalizeSiteContent } from "@/lib/site-content";
 import { buildSiteIndex } from "@/lib/site-index";
 import { getCachedPublicSettings } from "@/server/services/settings";
@@ -138,6 +138,7 @@ export default async function RootLayout({
           }}
         />
         <SiteProvider index={index}>
+          <ToastProvider>
           <div className="rails" aria-hidden="true" />
           <Navbar />
           <main className="flex-1">{children}</main>
@@ -145,7 +146,7 @@ export default async function RootLayout({
           <CommandPalette />
           <ContactLauncher />
           <SmoothScroll />
-          <Toaster position="bottom-center" />
+          </ToastProvider>
         </SiteProvider>
       </body>
     </html>

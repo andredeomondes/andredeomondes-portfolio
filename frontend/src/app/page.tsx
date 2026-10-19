@@ -4,6 +4,7 @@ import { Hero } from "@/features/home/components/hero";
 import { WorkGallery } from "@/features/home/components/work-gallery";
 import { Capabilities } from "@/features/home/components/capabilities";
 import { CourseStrip } from "@/features/home/components/course-strip";
+import { Finale } from "@/features/home/components/finale";
 
 export const revalidate = 300;
 
@@ -31,6 +32,7 @@ export default function Home() {
       <WorkGallery items={work} />
       <Capabilities />
       <CourseStrip units={units} published={series.publishedUnits} total={series.totalUnits} />
+      <Finale />
     </>
   );
 }

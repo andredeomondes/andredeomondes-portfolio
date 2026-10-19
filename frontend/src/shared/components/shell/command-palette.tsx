@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { toast } from "sonner";
+import { useToast } from "@/shared/components/shell/toast";
 import { ArrowUpRight, BookOpen, Copy, FileDown, FolderGit2, Home, MessageCircle, Search, User } from "lucide-react";
 import { FaGithub, FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 import { motionTokens, springs } from "@/lib/motion";
@@ -29,6 +29,7 @@ function pad(value: number) {
 export function PaletteBody({ inline = false, onDone }: { inline?: boolean; onDone?: () => void }) {
   const router = useRouter();
   const { index, setContactOpen } = useSite();
+  const toast = useToast();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
 
@@ -46,7 +47,7 @@ export function PaletteBody({ inline = false, onDone }: { inline?: boolean; onDo
   };
   const copyEmail = async () => {
     const ok = await copyText(index.contact.email);
-    toast(ok ? "E-mail copiado" : "Não foi possível copiar", { description: index.contact.email });
+    toast(ok ? "E-mail copiado" : "Não foi possível copiar", index.contact.email);
     onDone?.();
   };
 

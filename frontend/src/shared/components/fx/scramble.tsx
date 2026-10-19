@@ -54,10 +54,12 @@ export function DecodeText({ text, className, delayMs = 150 }: { text: string; c
     const id = window.setTimeout(play, delayMs);
     return () => window.clearTimeout(id);
   }, [delayMs, play]);
+  // The final text reserves the layout; the scrambled copy is overlaid so glyph widths never shift it.
   return (
-    <span className={className}>
+    <span className={`decode ${className ?? ""}`}>
       <span className="sr-only">{text}</span>
-      <span aria-hidden="true">{output}</span>
+      <span className="decode__sizer" aria-hidden="true">{text}</span>
+      <span className="decode__fx" aria-hidden="true">{output}</span>
     </span>
   );
 }

@@ -6,6 +6,7 @@
 @import "../styles/pages.css";
 @import "../styles/blog.css";
 @import "../styles/about.css";
+@import "../styles/contact.css";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -1,21 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "motion/react";
-import { toast } from "sonner";
-import { ArrowUpRight, Copy, Mail, MessageCircle, X } from "lucide-react";
+import { ArrowUpRight, Copy, Mail, X } from "lucide-react";
 import { FaGithub, FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 import { motionTokens, springs } from "@/lib/motion";
 import { useSite } from "@/shared/components/shell/site-provider";
+import { useToast } from "@/shared/components/shell/toast";
 import { CONTACT_TOPICS, copyText, mailtoUrl, topicMessage, whatsappUrl, type ContactTopicId } from "@/shared/components/shell/contact-actions";
 import { cn } from "@/shared/lib/utils";
 
-function useSalvadorTime() {
+export function useSalvadorTime() {
   const [time, setTime] = useState<string | null>(null);
   useEffect(() => {
-    const format = () =>
-      new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bahia" }).format(new Date());
+    const format = () => new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit", timeZone: "America/Bahia" }).format(new Date());
     const first = window.setTimeout(() => setTime(format()), 0);
     const id = window.setInterval(() => setTime(format()), 30_000);
     return () => {
@@ -41,174 +39,170 @@ function useIsSmallScreen() {
   return small;
 }
 
-/** The contact panel body. Rendered inside the floating launcher and inline in the footer. */
-export function ContactPanel({ onClose, headingId = "contact-title" }: { onClose?: () => void; headingId?: string }) {
+/** Raycast-style contact sheet: topic tabs on top, a keyboard-navigable action list below. */
+function ContactSheet({ onClose }: { onClose: () => void }) {
   const { index } = useSite();
+  const toast = useToast();
   const time = useSalvadorTime();
   const [topic, setTopic] = useState<ContactTopicId>("freela");
+  const listRef = useRef<HTMLUListElement>(null);
   const message = topicMessage(topic);
 
   const copyEmail = async () => {
     const ok = await copyText(index.contact.email);
-    toast(ok ? "E-mail copiado" : "Não foi possível copiar", { description: index.contact.email });
+    toast(ok ? "E-mail copiado" : "Não foi possível copiar", index.contact.email);
+  };
+
+  // Arrow keys move between actions like a command list.
+  const onListKey = (event: React.KeyboardEvent) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    const items = [...(listRef.current?.querySelectorAll<HTMLElement>("[data-action]") ?? [])];
+    const current = items.indexOf(document.activeElement as HTMLElement);
+    const next = event.key === "ArrowDown" ? (current + 1) % items.length : (current - 1 + items.length) % items.length;
+    items[next]?.focus();
+    event.preventDefault();
   };
 
   return (
-    <div className="contact-panel">
-      <div className="contact-panel__head">
+    <div className="contact-sheet">
+      <div className="contact-sheet__head">
         <div>
-          <h2 id={headingId} className="contact-panel__title">Fale comigo</h2>
-          <p className="contact-panel__status">
-            <span className="contact-panel__dot" aria-hidden="true" />
+          <h2 id="contact-title" className="contact-sheet__title">Falar com o Andre</h2>
+          <p className="contact-sheet__status">
+            <span className="contact-sheet__dot" aria-hidden="true" />
             {index.contact.availability}
-            {time ? <span className="contact-panel__time"> · {time} em Salvador</span> : null}
+            {time ? <span className="tabular"> · {time} em Salvador</span> : null}
           </p>
         </div>
-        {onClose ? (
-          <button type="button" className="icon-button" onClick={onClose} aria-label="Fechar contato">
-            <X aria-hidden="true" />
-          </button>
-        ) : null}
+        <button type="button" className="icon-button" onClick={onClose} aria-label="Fechar contato">
+          <X aria-hidden="true" />
+        </button>
       </div>
 
-      <fieldset className="contact-panel__topics">
-        <legend>Sobre o que vamos conversar?</legend>
-        <div>
-          {CONTACT_TOPICS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={cn("chip", topic === item.id && "is-active")}
-              aria-pressed={topic === item.id}
-              onClick={() => setTopic(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-      </fieldset>
+      <div className="contact-sheet__tabs" role="group" aria-label="Assunto da mensagem">
+        {CONTACT_TOPICS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={cn("contact-sheet__tab", topic === item.id && "is-active")}
+            aria-pressed={topic === item.id}
+            onClick={() => setTopic(item.id)}
+          >
+            {topic === item.id ? <motion.span layoutId="contact-tab" className="contact-sheet__tab-bg" transition={springs.snappy} /> : null}
+            <span className="contact-sheet__tab-label">{item.label}</span>
+          </button>
+        ))}
+      </div>
 
-      <p className="contact-panel__preview" aria-live="polite">“{message}”</p>
-
-      <div className="contact-panel__actions">
-        <a className="contact-action contact-action--primary" href={whatsappUrl(index.contact, message)} target="_blank" rel="noreferrer">
-          <FaWhatsapp aria-hidden="true" />
-          <span>
-            <strong>Enviar no WhatsApp</strong>
-            <small>Resposta mais rápida</small>
-          </span>
-          <ArrowUpRight className="contact-action__trail" aria-hidden="true" />
-        </a>
-        <div className="contact-action contact-action--split">
-          <a href={mailtoUrl(index.contact, message)}>
-            <Mail aria-hidden="true" />
-            <span>
+      <ul ref={listRef} className="contact-sheet__list" onKeyDown={onListKey}>
+        <li>
+          <a data-action className="contact-row contact-row--primary" href={whatsappUrl(index.contact, message)} target="_blank" rel="noreferrer">
+            <span className="contact-row__icon contact-row__icon--ok"><FaWhatsapp aria-hidden="true" /></span>
+            <span className="contact-row__text">
+              <strong>Enviar no WhatsApp</strong>
+              <small>“{message}”</small>
+            </span>
+            <ArrowUpRight className="contact-row__trail" aria-hidden="true" />
+          </a>
+        </li>
+        <li>
+          <a data-action className="contact-row" href={mailtoUrl(index.contact, message)}>
+            <span className="contact-row__icon"><Mail aria-hidden="true" /></span>
+            <span className="contact-row__text">
               <strong>Enviar e-mail</strong>
               <small>{index.contact.email}</small>
             </span>
           </a>
-          <button type="button" onClick={() => void copyEmail()} aria-label="Copiar e-mail">
-            <Copy aria-hidden="true" />
+        </li>
+        <li>
+          <button data-action type="button" className="contact-row" onClick={() => void copyEmail()}>
+            <span className="contact-row__icon"><Copy aria-hidden="true" /></span>
+            <span className="contact-row__text">
+              <strong>Copiar e-mail</strong>
+              <small>Para colar onde preferir</small>
+            </span>
           </button>
-        </div>
-        <div className="contact-panel__socials">
-          <a href={index.contact.linkedin} target="_blank" rel="noreferrer"><FaLinkedinIn aria-hidden="true" /> LinkedIn</a>
-          <a href={index.contact.github} target="_blank" rel="noreferrer"><FaGithub aria-hidden="true" /> GitHub</a>
-        </div>
-      </div>
+        </li>
+        <li>
+          <a data-action className="contact-row" href={index.contact.linkedin} target="_blank" rel="noreferrer">
+            <span className="contact-row__icon"><FaLinkedinIn aria-hidden="true" /></span>
+            <span className="contact-row__text"><strong>LinkedIn</strong></span>
+            <ArrowUpRight className="contact-row__trail" aria-hidden="true" />
+          </a>
+        </li>
+        <li>
+          <a data-action className="contact-row" href={index.contact.github} target="_blank" rel="noreferrer">
+            <span className="contact-row__icon"><FaGithub aria-hidden="true" /></span>
+            <span className="contact-row__text"><strong>GitHub</strong></span>
+            <ArrowUpRight className="contact-row__trail" aria-hidden="true" />
+          </a>
+        </li>
+      </ul>
+
+      <p className="contact-sheet__foot"><kbd>↑</kbd><kbd>↓</kbd> navegar · <kbd>esc</kbd> fechar</p>
     </div>
   );
 }
 
-/** Floating "Falar comigo" button + anchored panel (desktop) or draggable bottom sheet (mobile). */
+/** Contact dialog opened from the navbar, ⌘K or the home finale: centered on desktop, bottom sheet on mobile. */
 export function ContactLauncher() {
-  const pathname = usePathname();
   const { contactOpen, setContactOpen } = useSite();
   const reduce = useReducedMotion();
   const small = useIsSmallScreen();
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const wasOpen = useRef(false);
-  const [tucked, setTucked] = useState(false);
-
-  // Hide the floating trigger while the footer's inline contact panel is on screen.
-  useEffect(() => {
-    const target = document.getElementById("contato");
-    if (!target) return;
-    const observer = new IntersectionObserver(([entry]) => setTucked(entry.isIntersecting), { threshold: 0.2 });
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, [pathname]);
+  const restoreFocus = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    if (contactOpen) {
-      wasOpen.current = true;
-      const onKey = (event: KeyboardEvent) => {
-        if (event.key === "Escape") setContactOpen(false);
-      };
-      window.addEventListener("keydown", onKey);
-      window.setTimeout(() => document.querySelector<HTMLElement>(".launcher-surface .chip")?.focus(), 60);
-      return () => window.removeEventListener("keydown", onKey);
-    }
-    if (wasOpen.current) triggerRef.current?.focus();
+    if (!contactOpen) return;
+    restoreFocus.current = document.activeElement as HTMLElement | null;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setContactOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const focusTimer = window.setTimeout(() => document.querySelector<HTMLElement>(".contact-sheet [data-action]")?.focus(), 60);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.clearTimeout(focusTimer);
+      restoreFocus.current?.focus?.();
+    };
   }, [contactOpen, setContactOpen]);
-
-  if (pathname.startsWith("/admin")) return null;
 
   const onDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.y > 110 || info.velocity.y > 600) setContactOpen(false);
   };
 
   return (
-    <>
-      <motion.button
-        ref={triggerRef}
-        type="button"
-        className={cn("launcher-trigger", tucked && !contactOpen && "is-tucked")}
-        aria-hidden={tucked && !contactOpen ? true : undefined}
-        tabIndex={tucked && !contactOpen ? -1 : 0}
-        aria-expanded={contactOpen}
-        aria-controls="contact-launcher"
-        onClick={() => setContactOpen(!contactOpen)}
-        whileTap={reduce ? undefined : { scale: motionTokens.scale.press }}
-      >
-        <span className="launcher-trigger__dot" aria-hidden="true" />
-        <MessageCircle aria-hidden="true" />
-        Falar comigo
-      </motion.button>
-
-      <AnimatePresence>
-        {contactOpen ? (
-          <>
-            {small ? (
-              <motion.div
-                className="overlay overlay--sheet"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setContactOpen(false)}
-              />
-            ) : null}
-            <motion.div
-              id="contact-launcher"
-              role="dialog"
-              aria-modal={small}
-              aria-labelledby="launcher-contact-title"
-              className={cn("launcher-surface", small ? "launcher-surface--sheet" : "launcher-surface--panel")}
-              initial={reduce ? { opacity: 0 } : small ? { y: "100%" } : { opacity: 0, y: 16, scale: 0.96, filter: "blur(6px)" }}
-              animate={reduce ? { opacity: 1 } : small ? { y: 0 } : { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-              exit={reduce ? { opacity: 0 } : small ? { y: "100%" } : { opacity: 0, y: 10, scale: 0.98, filter: "blur(4px)" }}
-              transition={reduce ? { duration: motionTokens.duration.fast } : small ? springs.sheet : springs.snappy}
-              drag={small && !reduce ? "y" : false}
-              dragConstraints={{ top: 0, bottom: 0 }}
-              dragElastic={{ top: 0, bottom: 0.6 }}
-              onDragEnd={onDragEnd}
-            >
-              {small ? <span className="launcher-surface__grip" aria-hidden="true" /> : null}
-              <ContactPanel headingId="launcher-contact-title" onClose={() => setContactOpen(false)} />
-            </motion.div>
-          </>
-        ) : null}
-      </AnimatePresence>
-    </>
+    <AnimatePresence>
+      {contactOpen ? (
+        <motion.div
+          className={cn("overlay", small && "overlay--sheet")}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: motionTokens.duration.fast }}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setContactOpen(false);
+          }}
+        >
+          <motion.div
+            id="contact-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="contact-title"
+            className={cn("contact-surface", small && "contact-surface--sheet")}
+            initial={reduce ? { opacity: 0 } : small ? { y: "100%" } : { opacity: 0, scale: 0.96, y: -12, filter: "blur(6px)" }}
+            animate={reduce ? { opacity: 1 } : small ? { y: 0 } : { opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
+            exit={reduce ? { opacity: 0 } : small ? { y: "100%" } : { opacity: 0, scale: 0.98, y: -6, filter: "blur(4px)" }}
+            transition={reduce ? { duration: motionTokens.duration.fast } : small ? springs.sheet : springs.snappy}
+            drag={small && !reduce ? "y" : false}
+            dragConstraints={{ top: 0, bottom: 0 }}
+            dragElastic={{ top: 0, bottom: 0.6 }}
+            onDragEnd={onDragEnd}
+          >
+            {small ? <span className="contact-surface__grip" aria-hidden="true" /> : null}
+            <ContactSheet onClose={() => setContactOpen(false)} />
+          </motion.div>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
   );
 }

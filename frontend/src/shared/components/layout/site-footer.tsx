@@ -3,9 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSite } from "@/shared/components/shell/site-provider";
-import { ContactPanel } from "@/shared/components/shell/contact-launcher";
-import { Magnetic } from "@/shared/components/fx/magnetic";
-import { LightSweep } from "@/shared/components/layout/light-sweep";
 
 const columns = [
   {
@@ -28,6 +25,7 @@ const columns = [
   },
 ];
 
+/** Quiet global footer. The big contact moment lives only on the home finale. */
 export function SiteFooter() {
   const pathname = usePathname();
   const { index, setPaletteOpen } = useSite();
@@ -35,23 +33,6 @@ export function SiteFooter() {
 
   return (
     <footer className="footer">
-      <section className="footer__finale rail-cell" aria-labelledby="finale-title">
-        <LightSweep />
-        <h2 id="finale-title" className="footer__title">
-          Vamos construir algo
-          <br />
-          <span className="footer__title-muted">que roda em produção.</span>
-        </h2>
-        <div className="footer__finale-grid">
-          <p className="footer__lead">
-            Projetos de backend, IA aplicada e produtos completos. Escolha o assunto e a mensagem já sai pronta, sem formulário.
-          </p>
-          <div id="contato" className="footer__contact">
-            <ContactPanel headingId="footer-contact-title" />
-          </div>
-        </div>
-      </section>
-
       <div className="footer__base rail-cell">
         <div className="footer__brand">
           <span className="nav__mark" aria-hidden="true" />
@@ -67,12 +48,12 @@ export function SiteFooter() {
           </nav>
         ))}
         <div className="footer__column">
-          <p>Atalho</p>
-          <Magnetic>
-            <button type="button" className="footer__kbd" onClick={() => setPaletteOpen(true)}>
-              Abrir busca <kbd>⌘K</kbd>
-            </button>
-          </Magnetic>
+          <p>Em qualquer página</p>
+          <button type="button" className="footer__kbd" onClick={() => setPaletteOpen(true)}>
+            Abrir o console <kbd>⌘K</kbd>
+          </button>
+          <a href={index.contact.github} target="_blank" rel="noreferrer">GitHub</a>
+          <a href={index.contact.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
         </div>
       </div>
       <div className="footer__legal rail-cell">
