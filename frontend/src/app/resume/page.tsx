@@ -95,7 +95,7 @@ export default function ResumePage() {
                 <a
                   href={resume.href}
                   download={resume.fileName}
-                  className="mt-8 inline-flex min-h-12 items-center gap-3 bg-paper px-5 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-signal hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+                  className="mt-8 inline-flex min-h-12 items-center gap-3 rounded-[10px] bg-paper px-5 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:bg-signal hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
                 >
                   <Download className="size-4" aria-hidden="true" />
                   Baixar PDF
@@ -106,25 +106,25 @@ export default function ResumePage() {
         </div>
       </section>
 
-      <section className="bg-paper py-16 text-ink sm:py-24">
+      <section className="border-t border-line py-16 sm:py-24">
         <div className="site-shell grid gap-12 lg:grid-cols-[0.82fr_1.18fr]">
           <div>
             <h2 className="text-3xl font-semibold tracking-[-0.035em] sm:text-5xl">
               Compatível sem parecer genérico.
             </h2>
-            <p className="mt-6 max-w-xl text-sm leading-7 text-ink/65">
+            <p className="mt-6 max-w-xl text-sm leading-7 text-dim">
               O documento preserva a identidade visual do portfólio apenas na hierarquia, tipografia e linha de sinal. A estrutura continua simples para leitura por recrutadores e sistemas automatizados.
             </p>
           </div>
 
-          <div className="border-t border-ink/20">
+          <div className="border-t border-line">
             {atsPrinciples.map((principle) => (
               <div
                 key={principle}
-                className="flex items-center justify-between gap-8 border-b border-ink/20 py-5"
+                className="flex items-center justify-between gap-8 border-b border-line py-5"
               >
                 <span className="text-sm font-medium sm:text-base">{principle}</span>
-                <span className="size-2 shrink-0 bg-ink" aria-hidden="true" />
+                <span className="size-2 shrink-0 bg-signal" aria-hidden="true" />
               </div>
             ))}
           </div>

@@ -87,7 +87,12 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
   const progress = ((activeIndex + 1) / content.exercises.length) * 100;
 
   return (
-    <section className="mt-20 border border-line bg-panel" aria-labelledby="exercise-workbench-title">
+    <section className="exercise-workbench mt-20 border border-line bg-panel" data-testid="exercise-workbench" aria-labelledby="exercise-workbench-title">
+      <div className="live-ide__bar" aria-hidden="true">
+        <span className="live-ide__dots"><i /><i /><i /></span>
+        <span className="live-ide__tab is-active">exercises.js</span>
+        <span>exercises.test.js</span>
+      </div>
       <header className="border-b border-line">
         <div className="grid gap-7 p-5 sm:p-7 lg:grid-cols-[1fr_360px] lg:items-end">
           <div>
@@ -126,7 +131,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                         type="button"
                         onClick={() => selectExercise(index)}
                         aria-current={selected ? "step" : undefined}
-                        className={`grid min-h-14 grid-cols-[28px_minmax(0,1fr)] items-center gap-2 border px-3 text-left transition-[color,background-color,border-color,transform] ${selected ? "border-signal bg-signal text-ink" : "border-transparent text-dim hover:translate-x-1 hover:border-line hover:bg-ink hover:text-paper"}`}
+                        className={`grid min-h-14 grid-cols-[28px_minmax(0,1fr)] items-center gap-2 border px-3 text-left transition-[color,background-color,border-color,transform] ${selected ? "border-signal bg-ink text-signal" : "border-transparent text-dim hover:translate-x-1 hover:border-line hover:bg-ink hover:text-paper"}`}
                       >
                         <span className="font-mono text-[10px] tabular-nums">{String(item.number).padStart(2, "0")}</span>
                         <span className="truncate font-mono text-[10px] tracking-[-0.01em]">{item.identifier}</span>
@@ -213,7 +218,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                 </div>
                 <div className="min-w-0">
                   <div className="min-w-0 border border-line">
-                    <div className="border-b border-line bg-paper p-5 text-ink">
+                    <div className="border-b border-line bg-ink p-5 text-paper">
                       <p className="text-sm font-semibold">Como utilizar este teste</p>
                       <ol className="mt-4 space-y-3 text-sm leading-6">
                         <li className="grid grid-cols-[24px_1fr] gap-2"><span className="font-mono text-xs">01</span><span>Implemente a função usando exatamente o nome e os parâmetros do enunciado.</span></li>
@@ -290,7 +295,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
                 </div>
                 <div>
                   <div>
-                    <div className="mb-4 border border-line bg-paper p-4 text-sm leading-7 text-ink transition-colors hover:border-signal">
+                    <div className="mb-4 rounded-[10px] border border-line bg-ink p-4 text-sm leading-7 text-dim transition-colors hover:border-signal">
                       Esta área permanece livre em todos os exercícios. O código atual da unidade aparece abaixo para comparação com os testes e casos esperados.
                     </div>
                     <CodePanel code={exercise.solution || exercise.starter} label="código disponível" />

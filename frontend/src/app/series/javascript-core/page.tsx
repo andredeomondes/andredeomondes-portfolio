@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { publishedPublications, series } from "@/content/posts";
 
 export const metadata: Metadata = {
@@ -10,58 +10,55 @@ export const metadata: Metadata = {
   openGraph: { url: "/series/javascript-core", title: "JavaScript Core — do fundamento ao backend", description: series.description },
 };
 
+function pad(value: number) {
+  return String(value).padStart(2, "0");
+}
+
 export default function JavaScriptCoreSeriesPage() {
+  const upcoming = Array.from(
+    { length: Math.max(0, series.totalUnits - publishedPublications.length) },
+    (_, index) => publishedPublications.length + index + 1,
+  );
+
   return (
-    <div className="min-h-screen pt-16">
-      <header className="border-b border-line">
-        <div className="site-shell grid lg:grid-cols-[1fr_360px]">
-          <div className="py-20 sm:py-28 lg:border-r lg:border-line lg:pr-14">
-            <p className="label">Série 01 · Em andamento</p>
-            <h1 className="mt-7 text-[clamp(4rem,10vw,9rem)] font-semibold leading-[0.82] tracking-[-0.08em] text-paper">
-              JAVASCRIPT<br /><span className="text-outline">CORE.</span>
-            </h1>
-            <p className="mt-8 max-w-2xl text-lg leading-8 text-dim">{series.description}</p>
+    <div className="page-shell">
+      <header className="site-shell page-intro series-intro">
+        <p className="page-intro__eyebrow"><b aria-hidden="true">●</b> SÉRIE 01 · EM ANDAMENTO</p>
+        <h1>JavaScript <span className="font-pixel">Core</span></h1>
+        <p>{series.description}</p>
+        <div className="series-progress" aria-label={`${series.publishedUnits} de ${series.totalUnits} unidades publicadas`}>
+          <span className="font-pixel">{pad(series.publishedUnits)}<small>/{series.totalUnits}</small></span>
+          <div className="roda__progress series-progress__bar" aria-hidden="true">
+            <i style={{ width: `${(series.publishedUnits / series.totalUnits) * 100}%` }} />
           </div>
-          <aside className="flex flex-col justify-end py-14 lg:pl-10">
-            <p className="font-mono text-7xl font-semibold tracking-[-0.08em] text-signal">{series.publishedUnits}<span className="text-2xl text-dim">/{series.totalUnits}</span></p>
-            <p className="label mt-3">Unidades preparadas</p>
-            <div className="mt-8 h-1 bg-line"><div className="h-full bg-signal" style={{ width: `${(series.publishedUnits / series.totalUnits) * 100}%` }} /></div>
-          </aside>
         </div>
       </header>
 
-      <section className="site-shell py-16 sm:py-24">
-        <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
-          <div>
-            <p className="label">Como navegar</p>
-            <p className="mt-4 text-sm leading-7 text-dim">
-              A ordem cria uma linha de raciocínio, mas cada texto funciona sozinho. Comece pelo assunto que resolve o problema de hoje.
-            </p>
-          </div>
-          <ol className="border-t border-line">
-            {publishedPublications.map((post) => (
-              <li key={post.slug} data-motion="item">
-                <Link href={`/posts/${post.slug}`} className="group grid gap-4 border-b border-line py-6 sm:grid-cols-[64px_1fr_auto] sm:items-center">
-                  <span className="font-mono text-sm text-signal">{String(post.unit).padStart(2, "0")}</span>
-                  <div>
-                    <h2 className="text-xl font-semibold tracking-[-0.035em] text-paper sm:text-2xl">{post.title}</h2>
-                    <p className="mt-1 text-sm text-dim">{post.statement}</p>
-                  </div>
-                  <span className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-dim group-hover:text-signal">
-                    <Check className="size-3" /> disponível <ArrowRight className="size-3" />
-                  </span>
-                </Link>
-              </li>
-            ))}
-            {Array.from({ length: series.totalUnits - publishedPublications.length }, (_, index) => publishedPublications.length + index + 1).map((unit) => (
-              <li key={unit} data-motion="item" className="grid gap-4 border-b border-line py-6 opacity-40 sm:grid-cols-[64px_1fr_auto] sm:items-center">
-                <span className="font-mono text-sm text-dim">{String(unit).padStart(2, "0")}</span>
-                <span className="text-xl font-semibold tracking-[-0.035em] text-paper">Próxima unidade</span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-dim">em produção</span>
-              </li>
-            ))}
-          </ol>
-        </div>
+      <section className="site-shell series-list-wrap" aria-label="Unidades da série">
+        <ol className="series-list">
+          {publishedPublications.map((post) => (
+            <li key={post.slug} data-testid="unit-item">
+              <Link href={`/posts/${post.slug}`} className="series-row">
+                <span className="series-row__num font-pixel">{pad(post.unit)}</span>
+                <span className="series-row__text">
+                  <strong>{post.title}</strong>
+                  <span>{post.statement}</span>
+                </span>
+                <span className="series-row__status is-live" data-testid="unit-status">Publicada</span>
+                <ArrowRight className="series-row__arrow" aria-hidden="true" />
+              </Link>
+            </li>
+          ))}
+          {upcoming.map((unit) => (
+            <li key={unit} data-testid="unit-item">
+              <div className="series-row is-upcoming">
+                <span className="series-row__num font-pixel">{pad(unit)}</span>
+                <span className="series-row__text"><strong>Próxima unidade</strong></span>
+                <span className="series-row__status" data-testid="unit-status">Em breve</span>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
     </div>
   );
