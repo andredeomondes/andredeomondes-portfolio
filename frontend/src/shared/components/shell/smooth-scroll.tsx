@@ -19,7 +19,8 @@ export function SmoothScroll() {
       const [{ default: Lenis }, { loadGsap }] = await Promise.all([import("lenis"), import("@/lib/gsap")]);
       const { gsap, ScrollTrigger } = await loadGsap();
       if (destroyed) return;
-      const lenis = new Lenis({ duration: 1.1, smoothWheel: true, touchMultiplier: 1.4 });
+      // allowNestedScroll: a wheel over an inner scroll area (exercise list, code, palette) scrolls that area.
+      const lenis = new Lenis({ duration: 1.1, smoothWheel: true, touchMultiplier: 1.4, allowNestedScroll: true });
       lenis.on("scroll", ScrollTrigger.update);
       const raf = (time: number) => lenis.raf(time * 1000);
       gsap.ticker.add(raf);

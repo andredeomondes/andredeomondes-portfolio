@@ -117,7 +117,7 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
             <p className="mt-2 text-sm leading-6 text-paper">{content.exercises.length} exercícios organizados por dificuldade.</p>
           </div>
 
-          <div className="max-h-[360px] overflow-y-auto p-2 sm:p-3 lg:max-h-[760px]">
+          <div className="scroll-region max-h-[360px] overflow-y-auto p-2 sm:p-3 lg:max-h-[760px]" data-lenis-prevent>
             {categories.map((category) => (
               <div key={category} className="mb-4 last:mb-0">
                 <p className="px-3 pb-2 pt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-dim">{category}</p>

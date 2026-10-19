@@ -360,3 +360,18 @@ kbd {
     scroll-behavior: auto !important;
   }
 }
+
+/* Inner scroll areas keep the wheel/touch to themselves instead of scrolling the page at their edges */
+.scroll-region,
+.palette__list,
+.contact-surface--sheet,
+[data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.doc__code pre,
+.contact-sheet__tabs,
+pre,
+code.overflow-x-auto {
+  overscroll-behavior-x: contain;
+}

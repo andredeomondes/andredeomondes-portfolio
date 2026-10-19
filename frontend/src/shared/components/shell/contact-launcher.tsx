@@ -189,6 +189,7 @@ export function ContactLauncher() {
             aria-modal="true"
             aria-labelledby="contact-title"
             className={cn("contact-surface", small && "contact-surface--sheet")}
+            data-lenis-prevent
             initial={reduce ? { opacity: 0 } : small ? { y: "100%" } : { opacity: 0, scale: 0.96, y: -12, filter: "blur(6px)" }}
             animate={reduce ? { opacity: 1 } : small ? { y: 0 } : { opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
             exit={reduce ? { opacity: 0 } : small ? { y: "100%" } : { opacity: 0, scale: 0.98, y: -6, filter: "blur(4px)" }}

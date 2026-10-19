@@ -60,7 +60,7 @@ export function PaletteBody({ inline = false, onDone }: { inline?: boolean; onDo
         <Command.Input ref={inputRef} value={query} onValueChange={setQuery} placeholder="Buscar projetos, unidades da série, ações…" />
         <kbd className="palette__kbd">{inline ? "⌘K" : "esc"}</kbd>
       </div>
-      <Command.List className="palette__list">
+      <Command.List className="palette__list" data-lenis-prevent>
         <Command.Empty className="palette__empty">Nada encontrado para “{query}”.</Command.Empty>
 
         <Command.Group heading="Projetos">
