@@ -87,10 +87,10 @@ export function ExerciseWorkbench({ content, unit }: { content: ExerciseContent;
   const progress = ((activeIndex + 1) / content.exercises.length) * 100;
 
   return (
-    <section className="exercise-workbench mt-20 border border-line bg-panel" data-testid="exercise-workbench" aria-labelledby="exercise-workbench-title">
-      <div className="live-ide__bar" aria-hidden="true">
-        <span className="live-ide__dots"><i /><i /><i /></span>
-        <span className="live-ide__tab is-active">exercises.js</span>
+    <section className="window exercise-workbench mt-8" data-testid="exercise-workbench" aria-labelledby="exercise-workbench-title">
+      <div className="window__bar" aria-hidden="true">
+        <span className="window__dots"><i /><i /><i /></span>
+        <span>exercises.js</span>
         <span>exercises.test.js</span>
       </div>
       <header className="border-b border-line">

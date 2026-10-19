@@ -4,6 +4,7 @@
 @import "../styles/shell.css";
 @import "../styles/home.css";
 @import "../styles/pages.css";
+@import "../styles/blog.css";
 
 @custom-variant dark (&:is(.dark *));
 

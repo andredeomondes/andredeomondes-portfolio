@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { publishedPublications, series } from "@/content/posts";
-import { PublicationCard } from "@/shared/components/editorial/publication-card";
+import { PageIntro } from "@/shared/components/editorial/page-intro";
+import { PostsExplorer } from "@/features/posts/posts-explorer";
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function PostsPage() {
   return (
-    <div className="page-shell">
+    <div className="page">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -41,21 +42,22 @@ export default function PostsPage() {
           })),
         }}
       />
-      <header className="site-shell page-intro">
-        <p className="page-intro__eyebrow"><b aria-hidden="true">●</b> PUBLICAÇÕES · ÍNDICE</p>
-        <h1>Notas de <span className="font-pixel">engenharia</span></h1>
-        <p>O carrossel é o mapa visual. Cada publicação aprofunda a ideia, registra o contexto e aponta para exercícios executáveis.</p>
-        <Link href={`/series/${series.slug}`} className="posts-series-link">
-          <span className="font-pixel">SÉRIE ATUAL</span>
-          <strong>{series.title}</strong>
-          <span>{series.publishedUnits}/{series.totalUnits} unidades <ArrowRight className="size-4" aria-hidden="true" /></span>
+      <PageIntro title="Publicações." muted="Notas de engenharia com carrossel, leitura e exercícios." lead="Cada unidade da série JavaScript Core vira uma publicação com resumo visual, código comentado e prática com testes.">
+        <Link href={`/series/${series.slug}`} className="btn">
+          Ver como curso <ArrowRight size={16} aria-hidden="true" />
         </Link>
-      </header>
-
-      <section className="site-shell posts-list" aria-label="Publicações">
-        {publishedPublications.slice().reverse().map((post) => (
-          <PublicationCard key={post.slug} post={post} />
-        ))}
+      </PageIntro>
+      <section className="rail-cell page-section" aria-label="Publicações">
+        <PostsExplorer
+          posts={publishedPublications.slice().reverse().map((post) => ({
+            slug: post.slug,
+            unit: post.unit,
+            title: post.title,
+            excerpt: post.excerpt,
+            readTime: post.readTime,
+            cover: post.images[0],
+          }))}
+        />
       </section>
     </div>
   );

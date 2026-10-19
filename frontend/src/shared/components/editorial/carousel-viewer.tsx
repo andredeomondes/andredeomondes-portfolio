@@ -42,7 +42,7 @@ export function CarouselViewer({ images, title }: { images: string[]; title: str
 
   return (
     <div
-      className="border border-line bg-panel"
+      className="window"
       tabIndex={0}
       role="region"
       aria-roledescription="carrossel"
@@ -62,7 +62,7 @@ export function CarouselViewer({ images, title }: { images: string[]; title: str
         setTouchStart(null);
       }}
     >
-      <div ref={imageStageRef} className="relative mx-auto aspect-[4/5] w-full max-w-[760px] overflow-hidden border-x border-line bg-ink">
+      <div ref={imageStageRef} className="relative mx-auto aspect-[4/5] w-full max-w-[760px] overflow-hidden bg-ink">
         <Image
           key={images[activeIndex]}
           src={images[activeIndex]}
@@ -70,23 +70,23 @@ export function CarouselViewer({ images, title }: { images: string[]; title: str
           fill
           priority={activeIndex === 0}
           sizes="(max-width: 1024px) 100vw, 760px"
-          className="object-contain grayscale"
+          className="object-contain"
         />
 
-        <button type="button" onClick={showPrevious} className="absolute left-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center border border-paper/30 bg-ink/88 text-paper backdrop-blur transition-colors hover:border-signal hover:text-signal" aria-label="Ver card anterior">
+        <button type="button" onClick={showPrevious} className="absolute left-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-paper/20 bg-ink/80 text-paper backdrop-blur transition-[color,border-color,transform] hover:border-signal hover:text-signal active:scale-95" aria-label="Ver card anterior">
           <ChevronLeft className="size-5" />
         </button>
-        <button type="button" onClick={showNext} className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center border border-paper/30 bg-ink/88 text-paper backdrop-blur transition-colors hover:border-signal hover:text-signal" aria-label="Ver próximo card">
+        <button type="button" onClick={showNext} className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-paper/20 bg-ink/80 text-paper backdrop-blur transition-[color,border-color,transform] hover:border-signal hover:text-signal active:scale-95" aria-label="Ver próximo card">
           <ChevronRight className="size-5" />
         </button>
 
-        <span className="absolute right-3 top-3 border border-paper/20 bg-ink/88 px-2 py-1 font-mono text-[10px] tracking-[0.14em] text-paper backdrop-blur" aria-live="polite">
+        <span className="absolute right-3 top-3 rounded-full border border-paper/20 bg-ink/80 px-2.5 py-1 font-mono text-[11px] tabular-nums text-paper backdrop-blur" aria-live="polite">
           {String(activeIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
         </span>
       </div>
 
       <div className="flex items-center justify-between gap-4 border-t border-line px-4 py-4 sm:px-6">
-        <p className="hidden font-mono text-[10px] uppercase tracking-[0.12em] text-dim sm:block">Use as setas ou deslize</p>
+        <p className="hidden text-sm text-dim sm:block">Use as setas do teclado ou deslize</p>
         <div className="flex flex-1 justify-center gap-2 sm:justify-end">
           {images.map((image, index) => (
             <button
@@ -95,7 +95,7 @@ export function CarouselViewer({ images, title }: { images: string[]; title: str
               onClick={() => setActiveIndex(index)}
               aria-label={`Ir para o card ${index + 1}`}
               aria-current={activeIndex === index ? "true" : undefined}
-              className={`h-8 min-w-8 border px-2 font-mono text-[10px] transition-colors ${activeIndex === index ? "border-signal bg-signal text-ink" : "border-line text-dim hover:border-paper/40 hover:text-paper"}`}
+              className={`h-8 min-w-8 rounded-full border px-2 font-mono text-[11px] tabular-nums transition-colors ${activeIndex === index ? "border-signal text-signal" : "border-line text-dim hover:border-paper/40 hover:text-paper"}`}
             >
               {String(index + 1).padStart(2, "0")}
             </button>
