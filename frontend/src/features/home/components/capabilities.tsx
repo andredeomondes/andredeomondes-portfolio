@@ -6,6 +6,7 @@ import { Spotlight } from "@/shared/components/fx/spotlight";
 import { cn } from "@/shared/lib/utils";
 import { Bot, Gauge, Globe2, Layers3, ServerCog } from "lucide-react";
 import { TechIcon } from "@/shared/components/brand/tech-icon";
+import { useLoopActive } from "@/shared/hooks/use-loop-active";
 
 // Illustrative, generic content — not metrics from any client project.
 const DEPLOY_LINES = [
@@ -21,23 +22,8 @@ const AGENT_STEPS = ["Entende a pergunta do cliente", "Consulta o estoque", "Cal
 
 const KEYS = ["Node.js", "TypeScript", "Python", "FastAPI", "PostgreSQL", "Redis", "LangChain", "AWS"];
 
-function useInViewOnce<T extends Element>() {
-  const ref = useRef<T>(null);
-  const [seen, setSeen] = useState(false);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setSeen(true);
-        observer.disconnect();
-      }
-    }, { threshold: 0.35 });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  return { ref, seen };
-}
+// Order the keycaps get "typed" in during the loop.
+const KEY_SEQUENCE = [0, 3, 1, 6, 4, 2, 7, 5];
 
 function DeployTerminal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -50,21 +36,26 @@ function DeployTerminal() {
       <div className="window__bar"><span className="window__dots"><i /><i /><i /></span><span>deploy</span></div>
       <ol className="terminal__lines mono">
         {DEPLOY_LINES.map((line, index) => (
-          <li key={line.text} className={cn(`is-${line.tone}`, index >= visible && "is-hidden")}>{line.text}</li>
+          <li key={line.text} className={cn(`is-${line.tone}`, index >= visible && "is-hidden", active && index === visible - 1 && "is-last")}>{line.text}</li>
         ))}
       </ol>
+      <div className="terminal__progress"><span style={{ transform: `scaleX(${visible / DEPLOY_LINES.length})` }} /></div>
     </div>
   );
 }
 
 function AgentTrace() {
-  const { ref, seen } = useInViewOnce<HTMLOListElement>();
+  const ref = useRef<HTMLOListElement>(null);
+  const [step, setStep] = useState(0);
+  const tick = useCallback(() => setStep((current) => (current >= AGENT_STEPS.length + 2 ? 0 : current + 1)), []);
+  const active = useActiveLoop(ref, tick, 750);
+  const reached = active ? step : AGENT_STEPS.length;
   return (
-    <ol ref={ref} className={cn("agent-trace", seen && "is-playing")} aria-hidden="true">
-      {AGENT_STEPS.map((step, index) => (
-        <li key={step} style={{ transitionDelay: `${index * 420}ms` }}>
+    <ol ref={ref} className="agent-trace" aria-hidden="true">
+      {AGENT_STEPS.map((label, index) => (
+        <li key={label} className={cn(index < reached && "is-done", active && index === reached && "is-running")}>
           <span className="agent-trace__check" />
-          {step}
+          {label}
         </li>
       ))}
     </ol>
@@ -72,31 +63,52 @@ function AgentTrace() {
 }
 
 function StackKeys() {
-  const { ref, seen } = useInViewOnce<HTMLUListElement>();
+  const ref = useRef<HTMLUListElement>(null);
+  const [cursor, setCursor] = useState(-1);
+  const tick = useCallback(() => setCursor((current) => (current + 1) % KEY_SEQUENCE.length), []);
+  const active = useActiveLoop(ref, tick, 650);
+  const pressed = active && cursor >= 0 ? KEY_SEQUENCE[cursor] : -1;
   return (
-    <ul ref={ref} className={cn("keys", seen && "is-playing")} aria-label="Tecnologias principais">
+    <ul ref={ref} className="keys" aria-label="Tecnologias principais">
       {KEYS.map((key, index) => (
-        <li key={key} className="key" style={{ animationDelay: `${index * 90}ms` }}>
-          <span className="key__cap mono"><TechIcon name={key} className="key__icon" />{key}</span>
+        <li key={key} className="key">
+          <span className={cn("key__cap mono", index === pressed && "is-pressed")}><TechIcon name={key} className="key__icon" /><span>{key}</span></span>
         </li>
       ))}
     </ul>
   );
 }
 
+// One period of the curve; starts and ends flat at the same height so two copies tile seamlessly.
+const WAVE = "M0 58 C25 58 40 30 70 34 S115 66 150 50 S205 20 235 32 S275 58 300 58";
+
 function LatencyLine() {
-  const { ref, seen } = useInViewOnce<SVGSVGElement>();
+  const ref = useLoopActive<HTMLDivElement>();
   return (
-    <svg ref={ref} className={cn("latency", seen && "is-drawn")} viewBox="0 0 300 90" aria-hidden="true" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="latency-fill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stopColor="#ffd43b" stopOpacity="0.28" />
-          <stop offset="1" stopColor="#ffd43b" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path className="latency__area" d="M0 70 C30 62 45 30 75 38 S120 70 150 48 S205 18 230 30 S275 52 300 22 V90 H0 Z" fill="url(#latency-fill)" />
-      <path className="latency__line" d="M0 70 C30 62 45 30 75 38 S120 70 150 48 S205 18 230 30 S275 52 300 22" pathLength={1} />
-    </svg>
+    <div ref={ref} className="latency" aria-hidden="true">
+      <svg viewBox="0 0 300 90" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="latency-fill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stopColor="#ffd43b" stopOpacity="0.28" />
+            <stop offset="1" stopColor="#ffd43b" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <g className="latency__grid">
+          <line x1="0" x2="300" y1="22.5" y2="22.5" />
+          <line x1="0" x2="300" y1="45" y2="45" />
+          <line x1="0" x2="300" y1="67.5" y2="67.5" />
+        </g>
+        <g className="latency__track">
+          {[0, 300].map((x) => (
+            <g key={x} transform={`translate(${x} 0)`}>
+              <path className="latency__area" d={`${WAVE} V90 H0 Z`} fill="url(#latency-fill)" />
+              <path className="latency__line" d={WAVE} />
+            </g>
+          ))}
+        </g>
+      </svg>
+      <span className="latency__scan" />
+    </div>
   );
 }
 
@@ -111,10 +123,16 @@ function LocalClock() {
       window.clearInterval(id);
     };
   }, []);
-  return <p className="clock mono tabular" aria-label="Horário em Salvador">{time ?? "--:--:--"}</p>;
+  return (
+    <div className="clock-wrap">
+      <span className="clock__live"><i />Horário de Salvador, UTC−3</span>
+      <p className="clock mono tabular" aria-label="Horário em Salvador">{time ?? "--:--:--"}</p>
+    </div>
+  );
 }
 
 export function Capabilities() {
+  const bentoRef = useLoopActive<HTMLDivElement>();
   return (
     <section className="capabilities rail-cell" aria-labelledby="capabilities-title">
       <h2 id="capabilities-title" className="section-title">
@@ -122,7 +140,7 @@ export function Capabilities() {
         <span className="muted">Sistemas que aguentam tráfego, dinheiro de verdade e mudança.</span>
       </h2>
 
-      <div className="bento">
+      <div ref={bentoRef} className="bento">
         <Spotlight className="bento__cell bento__cell--wide glow-border">
           <div className="bento__text">
             <span className="bento__icon" aria-hidden="true"><ServerCog /></span>
@@ -141,7 +159,7 @@ export function Capabilities() {
           <AgentTrace />
         </Spotlight>
 
-        <Spotlight className="bento__cell">
+        <Spotlight className="bento__cell bento__cell--chart">
           <div className="bento__text">
             <span className="bento__icon" aria-hidden="true"><Gauge /></span>
             <h3>Desempenho</h3>

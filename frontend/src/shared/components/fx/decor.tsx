@@ -1,21 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLoopActive } from "@/shared/hooks/use-loop-active";
 import { TechIcon } from "@/shared/components/brand/tech-icon";
 import { cn } from "@/shared/lib/utils";
-
-/** Toggles data-active while the element is on screen so CSS loops pause offscreen. */
-function useLoopActive<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => node.toggleAttribute("data-active", entry.isIntersecting), { rootMargin: "15% 0px" });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-  return ref;
-}
 
 /** Two counter-scrolling rows of technology logos. */
 export function TechMarquee({ items }: { items: string[] }) {

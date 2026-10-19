@@ -325,6 +325,38 @@
 .terminal__lines .is-info { color: var(--fog); }
 .terminal__lines .is-live { color: var(--sodium); }
 
+.terminal {
+  position: relative;
+}
+
+.terminal__lines li.is-last::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 0.35em;
+  vertical-align: -0.15em;
+  background: currentColor;
+  animation: cursor-blink 1s steps(1) infinite;
+}
+
+.terminal__progress {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.terminal__progress span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--sodium));
+  box-shadow: 0 0 10px rgba(255, 212, 59, 0.6);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease);
+}
+
+/* Agent trace: steps light up one by one, then the loop restarts */
 .agent-trace {
   display: grid;
   gap: 0.55rem;
@@ -333,15 +365,18 @@
 }
 
 .agent-trace li {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 0.6rem;
   padding: 0.6rem 0.75rem;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 12px;
   color: var(--fog);
+  text-wrap: pretty;
   transition-property: color, border-color, background-color;
-  transition-duration: 0.4s;
+  transition-duration: 0.35s;
 }
 
 .agent-trace__check {
@@ -351,7 +386,8 @@
   flex: none;
   border: 1px solid var(--line-strong);
   border-radius: 999px;
-  transition: background-color 0.4s, border-color 0.4s;
+  transition-property: background-color, border-color;
+  transition-duration: 0.3s;
 }
 
 .agent-trace__check::after {
@@ -367,60 +403,117 @@
   transition: transform 0.3s var(--ease);
 }
 
-.agent-trace.is-playing li {
+.agent-trace li.is-done {
   color: var(--paper);
   border-color: var(--line-strong);
 }
 
-.agent-trace.is-playing .agent-trace__check {
+.agent-trace li.is-done .agent-trace__check {
   border-color: var(--sodium);
   background: var(--sodium);
 }
 
-.agent-trace.is-playing .agent-trace__check::after {
+.agent-trace li.is-done .agent-trace__check::after {
   transform: rotate(45deg) scale(1);
 }
 
-.agent-trace li:nth-child(2) .agent-trace__check,
-.agent-trace li:nth-child(2) .agent-trace__check::after { transition-delay: 0.42s; }
-.agent-trace li:nth-child(3) .agent-trace__check,
-.agent-trace li:nth-child(3) .agent-trace__check::after { transition-delay: 0.84s; }
-.agent-trace li:nth-child(4) .agent-trace__check,
-.agent-trace li:nth-child(4) .agent-trace__check::after { transition-delay: 1.26s; }
+.agent-trace li.is-running {
+  color: var(--paper);
+  border-color: rgba(255, 212, 59, 0.35);
+  background: rgba(255, 212, 59, 0.04);
+}
 
+.agent-trace li.is-running .agent-trace__check {
+  border-color: rgba(255, 212, 59, 0.25);
+  border-top-color: var(--sodium);
+  animation: spin 0.7s linear infinite;
+}
+
+/* shimmer sweeping the running step */
+.agent-trace li.is-running::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 212, 59, 0.12) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: shimmer 0.9s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+/* Latency chart: a seamless waveform scrolling under a sweeping scan line */
 .latency {
-  width: 100%;
+  position: relative;
   height: 120px;
+  margin: 0 -1.5rem -1.5rem;
+  overflow: hidden;
+}
+
+.latency svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.latency__grid line {
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-dasharray: 2 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.latency__track {
+  animation: wave-scroll 9s linear infinite;
+  animation-play-state: paused;
+}
+
+.latency[data-active] .latency__track,
+.latency[data-active] .latency__scan {
+  animation-play-state: running;
 }
 
 .latency__line {
   fill: none;
   stroke: var(--sodium);
   stroke-width: 2;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
   filter: drop-shadow(0 0 6px rgba(255, 212, 59, 0.6));
   vector-effect: non-scaling-stroke;
 }
 
-.latency__area {
-  opacity: 0;
-  transition: opacity 0.8s 0.6s;
+.latency__scan {
+  position: absolute;
+  inset: 0 6%;
+  pointer-events: none;
+  animation: scan 4.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+  animation-play-state: paused;
 }
 
-.latency.is-drawn .latency__line {
-  stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1.6s var(--ease);
+.latency__scan::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(255, 212, 59, 0.7), transparent);
+  box-shadow: 0 0 12px 2px rgba(255, 212, 59, 0.35);
 }
 
-.latency.is-drawn .latency__area {
-  opacity: 1;
+@keyframes wave-scroll {
+  to { transform: translateX(-300px); }
 }
 
-/* Raycast-like 3D keycaps */
+@keyframes scan {
+  to { transform: translateX(100%); }
+}
+
+/* Raycast-like 3D keycaps, "typed" in a loop */
 .keys {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
   gap: 10px;
   list-style: none;
 }
@@ -430,38 +523,35 @@
 }
 
 .key__cap {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   height: 56px;
+  padding: 0 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   background: linear-gradient(180deg, #1d1e22, #121316);
   color: #d6d6da;
   font-size: 0.82rem;
+  line-height: 1;
+  white-space: nowrap;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 4px 0 #050506, 0 10px 18px -8px rgba(0, 0, 0, 0.9);
-  transition-property: transform, box-shadow, color;
+  transition-property: transform, box-shadow, color, border-color;
   transition-duration: 0.12s;
   transition-timing-function: ease-out;
 }
 
-.key__cap:hover {
+.key__cap:hover,
+.key__cap.is-pressed {
   color: var(--paper);
+  border-color: rgba(255, 212, 59, 0.35);
   transform: translateY(3px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 0 #050506, 0 0 24px -6px rgba(255, 212, 59, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 0 #050506, 0 0 24px -6px rgba(255, 212, 59, 0.55);
 }
 
-.keys.is-playing .key__cap {
-  animation: key-press 0.5s ease-out both;
-  animation-delay: inherit;
-}
-
-.keys.is-playing .key {
-  animation-delay: inherit;
-}
-
-@keyframes key-press {
-  0%, 100% { transform: translateY(0); }
-  40% { transform: translateY(3px); color: var(--sodium); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 0 #050506, 0 0 24px -6px rgba(255, 212, 59, 0.6); }
+.key__cap.is-pressed .key__icon {
+  color: var(--sodium);
 }
 
 @media (min-width: 900px) {
@@ -473,10 +563,98 @@
   }
 }
 
+.clock-wrap {
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
+}
+
+@media (min-width: 900px) {
+  .clock-wrap {
+    justify-items: end;
+  }
+}
+
+.clock__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--fog);
+  font-size: 0.8rem;
+}
+
+.clock__live i {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--ok);
+}
+
+.clock__live i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--ok);
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 .clock {
   font-size: clamp(2.4rem, 5vw, 3.4rem);
   font-weight: 500;
   letter-spacing: -0.04em;
+}
+
+/* Icon sonar: one ring at a time travels across the bento cards */
+.bento__icon {
+  position: relative;
+}
+
+.bento__icon::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--sodium);
+  border-radius: inherit;
+  opacity: 0;
+  animation: icon-sonar 6s ease-out infinite;
+  animation-play-state: paused;
+}
+
+.bento[data-active] .bento__icon::after {
+  animation-play-state: running;
+}
+
+.bento > :nth-child(2) .bento__icon::after { animation-delay: 1.2s; }
+.bento > :nth-child(3) .bento__icon::after { animation-delay: 2.4s; }
+.bento > :nth-child(4) .bento__icon::after { animation-delay: 3.6s; }
+.bento > :nth-child(5) .bento__icon::after { animation-delay: 4.8s; }
+
+@keyframes icon-sonar {
+  0% { opacity: 0.8; transform: scale(1); }
+  20%, 100% { opacity: 0; transform: scale(1.6); }
+}
+
+@keyframes ping {
+  75%, 100% { opacity: 0; transform: scale(2.6); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .latency__track,
+  .latency__scan,
+  .bento__icon::after,
+  .clock__live i::after,
+  .agent-trace li::before,
+  .agent-trace__check,
+  .terminal__lines li::after {
+    animation: none !important;
+  }
+
+  .latency__scan,
+  .bento__icon::after {
+    display: none;
+  }
 }
 
 /* ── Course strip ── */

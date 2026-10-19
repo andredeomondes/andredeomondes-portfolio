@@ -339,14 +339,10 @@ a:hover .logo-mark__chevron {
   }
 }
 
-.key__cap {
-  gap: 0.45rem;
-  grid-auto-flow: column;
-}
-
 .key__icon {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
+  flex: none;
   color: var(--fog);
   transition: color 0.15s;
 }
