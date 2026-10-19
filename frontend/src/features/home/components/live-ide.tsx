@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import { registerGsap } from "@/lib/gsap";
+import { onFirstScroll } from "@/lib/gsap";
 import { useActiveLoop } from "@/shared/hooks/use-active-loop";
 import { ideScript } from "@/features/home/content/ide-script";
 import { cn } from "@/shared/lib/utils";
@@ -48,22 +48,27 @@ export function LiveIde() {
   useEffect(() => {
     const node = rootRef.current;
     if (!node || reduceMotion !== false) return;
-    const { gsap } = registerGsap();
-    const tween = gsap.fromTo(
-      node,
-      { rotateX: 18, scale: 0.94 },
-      {
-        rotateX: 0,
-        scale: 1,
-        ease: "none",
-        scrollTrigger: { start: 0, end: 420, scrub: 0.4 },
-        onComplete: () => gsap.set(node, { clearProps: "transform" }),
-      },
-    );
+    let cleanup = () => {};
+    const stop = onFirstScroll(({ gsap }) => {
+      const tween = gsap.fromTo(
+        node,
+        { rotateX: 18, scale: 0.94 },
+        {
+          rotateX: 0,
+          scale: 1,
+          ease: "none",
+          scrollTrigger: { start: 0, end: 420, scrub: 0.4 },
+        },
+      );
+      cleanup = () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+        gsap.set(node, { clearProps: "transform" });
+      };
+    });
     return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-      gsap.set(node, { clearProps: "transform" });
+      stop();
+      cleanup();
     };
   }, [reduceMotion]);
 

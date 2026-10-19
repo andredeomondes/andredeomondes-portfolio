@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
-import { registerGsap } from "@/lib/gsap";
+import { onFirstScroll } from "@/lib/gsap";
 import { cn } from "@/shared/lib/utils";
 
 export function Manifesto({ text, highlights }: { text: string; highlights: string[] }) {
@@ -18,15 +18,21 @@ export function Manifesto({ text, highlights }: { text: string; highlights: stri
       const id = window.setTimeout(() => setLit(words.length), 0);
       return () => window.clearTimeout(id);
     }
-    const { ScrollTrigger } = registerGsap();
-    const trigger = ScrollTrigger.create({
-      trigger: node,
-      start: "top 85%",
-      end: "bottom 45%",
-      scrub: true,
-      onUpdate: (self) => setLit(Math.round(self.progress * words.length)),
+    let kill = () => {};
+    const stop = onFirstScroll(({ ScrollTrigger }) => {
+      const trigger = ScrollTrigger.create({
+        trigger: node,
+        start: "top 85%",
+        end: "bottom 45%",
+        scrub: true,
+        onUpdate: (self) => setLit(Math.round(self.progress * words.length)),
+      });
+      kill = () => trigger.kill();
     });
-    return () => trigger.kill();
+    return () => {
+      stop();
+      kill();
+    };
   }, [reduceMotion, words.length]);
 
   return (
