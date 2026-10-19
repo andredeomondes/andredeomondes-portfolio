@@ -418,7 +418,7 @@ a:hover .logo-mark__chevron {
 }
 
 /* Projects: system map */
-.intro-art--system svg {
+.intro-art--system > svg {
   width: 100%;
   overflow: visible;
 }
@@ -446,24 +446,32 @@ a:hover .logo-mark__chevron {
   stroke: rgba(255, 255, 255, 0.14);
 }
 
-.system__node circle {
-  fill: var(--sodium);
+.system__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 100%;
+  color: #d6d6da;
+  font: 500 12px/1 var(--font-mono-code), monospace;
+}
+
+.system__icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--sodium);
   animation: node-blink 2.75s ease-in-out infinite;
 }
 
-.system__node--api circle { animation-delay: 0.3s; }
-.system__node--db circle { animation-delay: 0.9s; }
-.system__node--cache circle { animation-delay: 1.4s; }
-.system__node--agent circle { animation-delay: 1.9s; }
-.system__node--llm circle { animation-delay: 2.4s; }
-
-.system__node text {
-  fill: #d6d6da;
-  font: 500 12px var(--font-mono-code), monospace;
-}
+.system__node--api .system__icon { animation-delay: 0.3s; }
+.system__node--db .system__icon { animation-delay: 0.9s; }
+.system__node--cache .system__icon { animation-delay: 1.4s; }
+.system__node--agent .system__icon { animation-delay: 1.9s; }
+.system__node--llm .system__icon { animation-delay: 2.4s; }
 
 @keyframes node-blink {
-  0%, 100% { opacity: 0.35; }
+  0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
 

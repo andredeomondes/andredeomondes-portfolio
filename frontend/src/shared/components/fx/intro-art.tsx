@@ -1,19 +1,22 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { createElement, type CSSProperties } from "react";
+import { Bot, Globe, ServerCog, Sparkles, type LucideIcon } from "lucide-react";
+import type { IconType } from "react-icons";
+import { SiPostgresql, SiRedis } from "react-icons/si";
 import { useLoopActive } from "@/shared/hooks/use-loop-active";
 import { cn } from "@/shared/lib/utils";
 
 /* Decorative loops for the inner-page intros. All aria-hidden; CSS pauses them offscreen. */
 
-const SYSTEM_NODES = [
-  { id: "web", x: 10, y: 70, label: "web" },
-  { id: "api", x: 170, y: 70, label: "api" },
-  { id: "db", x: 320, y: 20, label: "postgres" },
-  { id: "cache", x: 320, y: 120, label: "redis" },
-  { id: "agent", x: 170, y: 210, label: "agente" },
-  { id: "llm", x: 320, y: 230, label: "llm" },
-] as const;
+const SYSTEM_NODES: ReadonlyArray<{ id: string; x: number; y: number; label: string; icon: LucideIcon | IconType }> = [
+  { id: "web", x: 10, y: 70, label: "web", icon: Globe },
+  { id: "api", x: 170, y: 70, label: "api", icon: ServerCog },
+  { id: "db", x: 320, y: 20, label: "postgres", icon: SiPostgresql },
+  { id: "cache", x: 320, y: 120, label: "redis", icon: SiRedis },
+  { id: "agent", x: 170, y: 210, label: "agente", icon: Bot },
+  { id: "llm", x: 320, y: 230, label: "llm", icon: Sparkles },
+];
 
 const SYSTEM_LINKS = [
   "M106 90 H170",
@@ -36,8 +39,12 @@ export function SystemArt() {
         {SYSTEM_NODES.map((node) => (
           <g key={node.id} transform={`translate(${node.x} ${node.y})`} className={cn("system__node", `system__node--${node.id}`)}>
             <rect width="96" height="40" rx="10" />
-            <circle cx="14" cy="20" r="3" />
-            <text x="24" y="24">{node.label}</text>
+            <foreignObject width="96" height="40">
+              <div className="system__label">
+                {createElement(node.icon, { className: "system__icon", "aria-hidden": true })}
+                <span>{node.label}</span>
+              </div>
+            </foreignObject>
           </g>
         ))}
       </svg>
