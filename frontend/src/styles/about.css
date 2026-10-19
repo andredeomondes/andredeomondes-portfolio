@@ -1,0 +1,206 @@
+/* ── About ── */
+.about-hero {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  padding: clamp(3rem, 7vw, 5rem) clamp(0px, 3vw, 40px) clamp(3rem, 7vw, 5rem);
+  border-top: 0;
+}
+
+.about-hero::before,
+.about-hero::after {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .about-hero {
+    grid-template-columns: minmax(0, 1fr) 440px;
+    gap: 4rem;
+  }
+}
+
+.about-hero__bio {
+  max-width: 56ch;
+  margin-top: 1.5rem;
+  color: #c9c9ce;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.about-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 2rem;
+}
+
+.about-hero__portrait {
+  position: relative;
+  isolation: isolate;
+}
+
+.about-hero__light {
+  position: absolute;
+  inset: -10%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 212, 59, 0.22), transparent 70%);
+  filter: blur(30px);
+}
+
+.about-hero__window {
+  transform: rotate(1.5deg);
+  transition: transform 0.6s var(--ease);
+}
+
+.about-hero__window:hover {
+  transform: rotate(0deg) scale(1.01);
+}
+
+.about-hero__frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 2.5rem;
+  padding-left: 2rem;
+  list-style: none;
+}
+
+.timeline__rail {
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--line-strong);
+}
+
+.timeline__fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--sodium), var(--amber));
+  box-shadow: 0 0 12px rgba(255, 212, 59, 0.7);
+  transform: scaleY(1);
+  transform-origin: top;
+}
+
+html.js .timeline__fill {
+  transform: scaleY(0);
+}
+
+.timeline__item {
+  position: relative;
+}
+
+.timeline__item::before {
+  content: "";
+  position: absolute;
+  left: calc(-2rem - 1px);
+  top: 0.45rem;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--graphite);
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+.timeline__item.is-reached::before {
+  border-color: var(--sodium);
+  box-shadow: 0 0 12px rgba(255, 212, 59, 0.7);
+}
+
+.timeline__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+}
+
+.timeline__head h3 {
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+}
+
+.timeline__period {
+  color: var(--fog);
+  font-size: 0.8rem;
+}
+
+.timeline__role {
+  margin: 0.3rem 0 0.9rem;
+  color: var(--sodium);
+  font-size: 0.92rem;
+}
+
+.about-edu {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--fog);
+  font-size: 0.9rem;
+}
+
+/* ── Resume ── */
+.resume-grid {
+  display: grid;
+  gap: 16px;
+  padding: clamp(2rem, 5vw, 3rem) clamp(0px, 3vw, 40px);
+}
+
+@media (min-width: 860px) {
+  .resume-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.resume-card {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(18, 19, 22, 0.85), rgba(10, 11, 13, 0.85));
+}
+
+.resume-card__doc {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  color: var(--fog);
+  font-size: 0.8rem;
+}
+
+.resume-card__doc svg {
+  width: 18px;
+  height: 18px;
+  color: var(--sodium);
+}
+
+.resume-card__lang {
+  color: var(--sodium);
+  font-size: 0.85rem;
+}
+
+.resume-card__title {
+  font-size: 1.6rem;
+}
+
+.resume-card__desc {
+  color: var(--fog);
+}
+
+.resume-card__cta {
+  justify-self: start;
+  margin-top: 1rem;
+}
