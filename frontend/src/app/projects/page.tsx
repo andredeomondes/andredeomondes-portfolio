@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fallbackProjects } from "@/content/projects";
-import { PixelRevealCard } from "@/shared/components/editorial/pixel-reveal-card";
+import { PageIntro } from "@/shared/components/editorial/page-intro";
+import { HoverPreviewList } from "@/shared/components/editorial/hover-preview-list";
 
 export const metadata: Metadata = {
   title: "Projetos de backend, IA e produtos digitais",
@@ -13,25 +14,24 @@ export default function ProjectsPage() {
   const projects = fallbackProjects.filter((project) => project.published);
 
   return (
-    <div className="page-shell">
-      <header className="site-shell page-intro">
-        <p className="page-intro__eyebrow"><b aria-hidden="true">●</b> PROJETOS · CASOS REAIS</p>
-        <h1>Projetos em <span className="font-pixel">produção</span></h1>
-        <p>Produtos apresentados pelo problema, pelas decisões técnicas e pelo que foi possível entregar, não por uma lista solta de tecnologias.</p>
-      </header>
-
-      <section className="site-shell projects-grid" aria-label="Estudos de caso">
-        {projects.map((project, index) => (
-          <PixelRevealCard
-            key={project.id}
-            href={`/projects/${project.slug}`}
-            image={project.image_url || "/clubeprogramacao.webp"}
-            title={project.title}
-            summary={project.description}
-            index={index + 1}
-            priority={index === 0}
-          />
-        ))}
+    <div className="page">
+      <PageIntro
+        title="Projetos."
+        muted="Produtos em produção, contados pelo problema e pelas decisões."
+        lead="Cada case separa o que eu fiz do escopo total do produto, com telas reais, arquitetura e o que ficou de aprendizado."
+      />
+      <section className="rail-cell page-section">
+        <HoverPreviewList
+          label="Estudos de caso"
+          rows={projects.map((project, index) => ({
+            href: `/projects/${project.slug}`,
+            index: String(index + 1).padStart(2, "0"),
+            title: project.title,
+            meta: project.case_study.kicker,
+            detail: project.description,
+            image: project.image_url || "/clubeprogramacao.webp",
+          }))}
+        />
       </section>
     </div>
   );

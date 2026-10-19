@@ -1,26 +1,25 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import { fallbackProjects, getFallbackProject } from "@/content/projects";
 import { ProjectImageLightbox } from "@/shared/components/editorial/project-image-lightbox";
+import { SplitSection } from "@/shared/components/editorial/page-intro";
+import { ArchitectureMap } from "@/features/projects/architecture-map";
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return fallbackProjects
-    .filter((project) => project.published)
-    .map((project) => ({ slug: project.slug }));
+  return fallbackProjects.filter((project) => project.published).map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = getFallbackProject(slug);
-
   if (!project) return {};
-
   return {
     title: `${project.title} — Estudo de caso`,
     description: project.description,
@@ -35,24 +34,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-function pad(value: number) {
-  return String(value).padStart(2, "0");
-}
-
-function SquareList({ items, muted = false }: { items: string[]; muted?: boolean }) {
+function List({ items, muted = false }: { items: string[]; muted?: boolean }) {
   return (
-    <ul className={muted ? "square-list square-list--muted" : "square-list"}>
+    <ul className={muted ? "line-list line-list--muted" : "line-list"}>
       {items.map((item) => <li key={item}>{item}</li>)}
     </ul>
-  );
-}
-
-function SectionHead({ title, accent, note, id }: { title?: string; accent: string; note: string; id?: string }) {
-  return (
-    <div className="section-head case-head">
-      <h2 id={id}>{title ? <>{title} </> : null}<span className="font-pixel">{accent}</span></h2>
-      <small className="font-pixel">{note}</small>
-    </div>
   );
 }
 
@@ -65,16 +51,10 @@ export default async function ProjectCasePage({ params }: PageProps) {
   const position = published.findIndex((item) => item.slug === project.slug);
   const next = published[(position + 1) % published.length];
   const caseStudy = project.case_study;
-  const words = project.title.split(" ");
-  const accentWord = words.length > 1 ? words.pop() : null;
-  const overview = [
-    { label: "Problema", text: project.overview_problema },
-    { label: "Solução", text: project.overview_solucao },
-    { label: "Entrega", text: project.overview_resultado },
-  ];
+  const [lead, ...gallery] = caseStudy.screenshots;
 
   return (
-    <article className="page-shell case">
+    <article className="page case">
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -102,127 +82,121 @@ export default async function ProjectCasePage({ params }: PageProps) {
           ],
         }}
       />
-      <header className="site-shell case-hero">
-        <p className="case-hero__crumb"><Link href="/projects">Projetos</Link> / <b>{pad(position + 1)}</b></p>
-        <span className="case-hero__kicker"><i aria-hidden="true" />{caseStudy.kicker}</span>
-        <h1>
-          <span className="case-hero__num font-pixel" aria-hidden="true">{pad(position + 1)}</span>
-          {words.join(" ")}
-          {accentWord ? <> <span className="font-pixel case-hero__accent">{accentWord}</span></> : null}
-        </h1>
-        <p className="case-hero__lead">{project.description} {caseStudy.role_summary}</p>
-        <dl className="case-facts" data-testid="project-facts">
-          {caseStudy.facts.map((fact) => (
-            <div key={fact.label}>
-              <dt className="font-pixel">{fact.label.toUpperCase()}</dt>
-              <dd>{fact.value}</dd>
-            </div>
-          ))}
-        </dl>
+
+      <header className="case-hero rail-cell">
+        <nav className="case-hero__crumb" aria-label="Trilha">
+          <Link href="/projects">Projetos</Link>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">{project.title}</span>
+        </nav>
+        <p className="case-hero__kicker">{caseStudy.kicker}</p>
+        <h1 className="case-hero__title">{project.title}</h1>
+        <p className="case-hero__lead">{project.description}</p>
+        <p className="case-hero__role">{caseStudy.role_summary}</p>
         <div className="case-hero__actions">
           {project.live_url ? (
-            <a href={project.live_url} target="_blank" rel="noreferrer" className="hero__button hero__button--primary">Ver site no ar ↗</a>
+            <a href={project.live_url} target="_blank" rel="noreferrer" className="btn btn--primary">
+              Abrir o produto <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
           ) : null}
-          <a href="#arquitetura" className="hero__button">Arquitetura ↓</a>
+          <a href="#arquitetura" className="btn">Ver a arquitetura</a>
         </div>
       </header>
 
-      <section className="site-shell case-section" aria-labelledby="contexto">
-        <SectionHead id="contexto" title="Do problema à" accent="entrega" note="CONTEXTO" />
-        <div className="case-triple">
-          {overview.map((item, index) => (
-            <div key={item.label} className="case-card">
-              <h3><span className="font-pixel">{pad(index + 1)}</span>{item.label}</h3>
-              <p>{item.text}</p>
+      <dl className="case-facts rail-cell" data-testid="project-facts">
+        {caseStudy.facts.map((fact) => (
+          <div key={fact.label}>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      {lead ? (
+        <div className="case-cover rail-cell">
+          <div className="case-cover__light" aria-hidden="true" />
+          <div className="window case-cover__window">
+            <div className="window__bar">
+              <span className="window__dots"><i /><i /><i /></span>
+              <span>{project.live_url?.replace(/^https?:\/\//, "") ?? project.slug}</span>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="site-shell case-section" aria-labelledby="telas">
-        <SectionHead id="telas" title="As" accent="telas" note={`${pad(caseStudy.screenshots.length)} CAPTURAS · CLIQUE PARA AMPLIAR`} />
-        <div className="case-screens">
-          {caseStudy.screenshots.map((screenshot, index) => (
-            <ProjectImageLightbox key={screenshot.src} screenshot={screenshot} priority={index === 0} />
-          ))}
-        </div>
-      </section>
-
-      <section className="site-shell case-section" aria-labelledby="minha-contribuicao">
-        <SectionHead id="minha-contribuicao" title="O que eu" accent="fiz" note="CONTRIBUIÇÃO PESSOAL" />
-        <div className="case-split">
-          <div className="case-split__intro">
-            <strong>{caseStudy.contribution_intro}</strong>
-            <p>Abaixo, a minha contribuição separada do escopo total do produto.</p>
-            <h3 className="font-pixel">ESCOPO DO PRODUTO</h3>
-            <SquareList items={caseStudy.product_scope} muted />
-          </div>
-          <SquareList items={caseStudy.contributions} />
-        </div>
-      </section>
-
-      <section className="site-shell case-section" aria-labelledby="arquitetura">
-        <SectionHead id="arquitetura" accent="Arquitetura" note={`${pad(caseStudy.architecture_lanes.length)} CAMADAS`} />
-        <div className="case-arch" data-testid="architecture-panel">
-          <div className="live-ide__bar">
-            <span className="live-ide__dots" aria-hidden="true"><i /><i /><i /></span>
-            <span className="live-ide__tab is-active">architecture.map</span>
-            <span>{project.slug}</span>
-            <span className="live-ide__meta"><span className="live-ide__live">● em produção</span></span>
-          </div>
-          <div className="case-arch__lanes" style={{ gridTemplateColumns: `repeat(${caseStudy.architecture_lanes.length}, minmax(0, 1fr))` }}>
-            {caseStudy.architecture_lanes.map((lane, laneIndex) => (
-              <div key={lane.label} className="case-arch__lane">
-                <h3 className="font-pixel">{lane.label.toUpperCase()} <b>{pad(laneIndex + 1)}</b></h3>
-                {lane.nodes.map((node) => (
-                  <div key={node.title} className="case-arch__node">
-                    <strong>{node.title}</strong>
-                    <span>{node.detail}</span>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="site-shell case-section" aria-labelledby="tecnologias">
-        <SectionHead id="tecnologias" accent="Stack" note={`${pad(caseStudy.technology_groups.length)} GRUPOS`} />
-        <div className="case-groups">
-          {caseStudy.technology_groups.map((group) => (
-            <div key={group.label} className="case-group">
-              <h3 className="font-pixel">{group.label.toUpperCase()}</h3>
-              <div>{group.items.map((item) => <span key={item}>{item}</span>)}</div>
+            <div className="case-cover__frame" style={{ aspectRatio: `${lead.width} / ${lead.height}` }}>
+              <Image src={lead.src} alt={lead.alt} fill priority sizes="(max-width: 1200px) 100vw, 1200px" className="object-cover object-top" />
             </div>
-          ))}
+          </div>
         </div>
+      ) : null}
+
+      <SplitSection id="contexto" title="Do problema" muted="à entrega.">
+        <dl className="case-story">
+          <div><dt>Problema</dt><dd>{project.overview_problema}</dd></div>
+          <div><dt>Solução</dt><dd>{project.overview_solucao}</dd></div>
+          <div><dt>Entrega</dt><dd>{project.overview_resultado}</dd></div>
+        </dl>
+      </SplitSection>
+
+      <SplitSection id="minha-contribuicao" title="O que eu fiz." muted={caseStudy.contribution_intro}>
+        <List items={caseStudy.contributions} />
+        <h3 className="case-subtitle">Escopo do produto</h3>
+        <List items={caseStudy.product_scope} muted />
+      </SplitSection>
+
+      <section className="case-arch-section rail-cell" aria-labelledby="arquitetura">
+        <h2 id="arquitetura" className="section-title">
+          Arquitetura.
+          <span className="muted">Uma visão em alto nível das partes confirmadas do sistema.</span>
+        </h2>
+        <ArchitectureMap lanes={caseStudy.architecture_lanes} slug={project.slug} />
       </section>
 
-      <section className="site-shell case-section" aria-label="Integrações, qualidade e operação">
-        <div className="case-triple">
-          <div className="case-card"><h3><span className="font-pixel">01</span>Integrações</h3><SquareList items={caseStudy.integrations} muted /></div>
-          <div className="case-card"><h3><span className="font-pixel">02</span>Qualidade</h3><SquareList items={caseStudy.quality} muted /></div>
-          <div className="case-card"><h3><span className="font-pixel">03</span>Operação</h3><SquareList items={caseStudy.operations} muted /></div>
-        </div>
-      </section>
-
-      {project.aprendizados.length > 0 ? (
-        <section className="site-shell case-section" aria-labelledby="aprendizados">
-          <SectionHead id="aprendizados" title="O que este projeto" accent="evidencia" note="APRENDIZADOS" />
-          <SquareList items={project.aprendizados} />
+      {gallery.length > 0 || lead ? (
+        <section className="case-gallery rail-cell" aria-labelledby="telas">
+          <h2 id="telas" className="section-title">
+            Telas reais.
+            <span className="muted">Clique para ampliar.</span>
+          </h2>
+          <div className="case-gallery__grid">
+            {caseStudy.screenshots.map((screenshot) => <ProjectImageLightbox key={screenshot.src} screenshot={screenshot} />)}
+          </div>
         </section>
       ) : null}
 
-      {next && next.slug !== project.slug ? (
-        <div className="site-shell">
-          <Link href={`/projects/${next.slug}`} className="case-next">
-            <span>
-              <small className="font-pixel">Próximo case · {pad(published.indexOf(next) + 1)}</small>
-              <strong>{next.title}</strong>
-            </span>
-            <ArrowUpRight className="case-next__arrow" aria-hidden="true" />
-          </Link>
+      <SplitSection id="tecnologias" title="Stack" muted="e integrações.">
+        <div className="case-stack">
+          {caseStudy.technology_groups.map((group) => (
+            <div key={group.label}>
+              <h3>{group.label}</h3>
+              <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
+            </div>
+          ))}
+          <div>
+            <h3>Integrações</h3>
+            <ul>{caseStudy.integrations.map((item) => <li key={item}>{item}</li>)}</ul>
+          </div>
         </div>
+      </SplitSection>
+
+      <SplitSection id="qualidade" title="Qualidade" muted="e operação.">
+        <List items={caseStudy.quality} />
+        <h3 className="case-subtitle">Em produção</h3>
+        <List items={caseStudy.operations} muted />
+      </SplitSection>
+
+      {project.aprendizados.length > 0 ? (
+        <SplitSection id="aprendizados" title="O que este projeto" muted="evidencia.">
+          <List items={project.aprendizados} />
+        </SplitSection>
+      ) : null}
+
+      {next && next.slug !== project.slug ? (
+        <Link href={`/projects/${next.slug}`} className="case-next rail-cell" aria-label={`Próximo case: ${next.title}`}>
+          <span className="case-next__label">Próximo case</span>
+          <span className="case-next__title">{next.title}</span>
+          <span className="case-next__image" aria-hidden="true">
+            <Image src={next.image_url || "/clubeprogramacao.webp"} alt="" fill sizes="(max-width: 860px) 100vw, 50vw" className="object-cover object-top" />
+          </span>
+          <ArrowUpRight className="case-next__arrow" aria-hidden="true" />
+        </Link>
       ) : null}
     </article>
   );
