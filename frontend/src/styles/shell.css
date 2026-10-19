@@ -132,6 +132,7 @@
 
 .nav__cta {
   display: none;
+  align-items: center;
   height: 36px;
   padding: 0 1rem;
   border-radius: 999px;
@@ -400,7 +401,21 @@
   70%, 100% { box-shadow: 0 0 0 9px rgba(61, 220, 132, 0); }
 }
 
+.launcher-trigger {
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+
+.launcher-trigger.is-tucked {
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+}
+
 @media (max-width: 640px) {
+  .launcher-trigger.is-tucked {
+    transform: translate(50%, 16px);
+  }
+
   .launcher-trigger {
     right: 50%;
     bottom: max(16px, env(safe-area-inset-bottom));

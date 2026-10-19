@@ -128,6 +128,16 @@ export function ContactLauncher() {
   const small = useIsSmallScreen();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const wasOpen = useRef(false);
+  const [tucked, setTucked] = useState(false);
+
+  // Hide the floating trigger while the footer's inline contact panel is on screen.
+  useEffect(() => {
+    const target = document.getElementById("contato");
+    if (!target) return;
+    const observer = new IntersectionObserver(([entry]) => setTucked(entry.isIntersecting), { threshold: 0.2 });
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [pathname]);
 
   useEffect(() => {
     if (contactOpen) {
@@ -153,7 +163,9 @@ export function ContactLauncher() {
       <motion.button
         ref={triggerRef}
         type="button"
-        className="launcher-trigger"
+        className={cn("launcher-trigger", tucked && !contactOpen && "is-tucked")}
+        aria-hidden={tucked && !contactOpen ? true : undefined}
+        tabIndex={tucked && !contactOpen ? -1 : 0}
         aria-expanded={contactOpen}
         aria-controls="contact-launcher"
         onClick={() => setContactOpen(!contactOpen)}
