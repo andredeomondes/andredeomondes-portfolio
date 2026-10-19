@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { publishedPublications } from "@/content/posts";
 import { fallbackProjects } from "@/content/projects";
+import { tagCounts } from "@/features/posts/taxonomy";
 import { absoluteUrl } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -31,5 +32,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       images: project.image_url ? [absoluteUrl(project.image_url)] : undefined,
     }));
 
-  return [...staticRoutes, ...postRoutes, ...projectRoutes];
+  const tagRoutes: MetadataRoute.Sitemap = tagCounts(publishedPublications).map((tag) => ({
+    url: absoluteUrl(`/posts/tag/${tag.slug}`),
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...postRoutes, ...tagRoutes, ...projectRoutes];
 }

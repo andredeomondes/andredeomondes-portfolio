@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { publishedPublications, series } from "@/content/posts";
 import { PageIntro } from "@/shared/components/editorial/page-intro";
 import { PostsExplorer } from "@/features/posts/posts-explorer";
+import { SERIES, tagCounts, tagsOf, toExplorerPost } from "@/features/posts/taxonomy";
 import { DeckArt } from "@/shared/components/fx/intro-art";
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default function PostsPage() {
+  const explorerPosts = publishedPublications.map(toExplorerPost);
   return (
     <div className="page">
       <JsonLd
@@ -40,6 +42,7 @@ export default function PostsPage() {
             url: absoluteUrl(`/posts/${post.slug}`),
             datePublished: post.publishedAt,
             image: absoluteUrl(post.images[0]),
+            keywords: tagsOf(post).map((tag) => tag.label).join(", "),
           })),
         }}
       />
@@ -51,16 +54,7 @@ export default function PostsPage() {
         </Link>
       </PageIntro>
       <section className="rail-cell page-section" aria-label="Publicações">
-        <PostsExplorer
-          posts={publishedPublications.slice().reverse().map((post) => ({
-            slug: post.slug,
-            unit: post.unit,
-            title: post.title,
-            excerpt: post.excerpt,
-            readTime: post.readTime,
-            cover: post.images[0],
-          }))}
-        />
+        <PostsExplorer posts={explorerPosts} series={SERIES} tags={tagCounts(publishedPublications)} />
       </section>
     </div>
   );

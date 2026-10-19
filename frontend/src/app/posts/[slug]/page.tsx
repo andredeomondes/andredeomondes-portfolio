@@ -9,6 +9,7 @@ import { ExerciseWorkbench } from "@/shared/components/editorial/exercise-workbe
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { DocToc, ReadingProgress } from "@/features/posts/doc-chrome";
 import { moduleOf } from "@/features/posts/modules";
+import { tagsOf } from "@/features/posts/taxonomy";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -21,11 +22,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const post = getPublication(slug);
   if (!post) return {};
+  const tagLabels = tagsOf(post).map((tag) => tag.label);
 
   return {
     title: post.title,
     description: post.excerpt,
-    keywords: ["JavaScript", "backend", "tutorial", post.title, "exercícios de programação"],
+    keywords: [...tagLabels, post.title, "tutorial", "exercícios de programação"],
     alternates: { canonical: `/posts/${post.slug}` },
     openGraph: {
       type: "article",
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: post.excerpt,
       publishedTime: post.publishedAt,
       authors: [SITE_NAME],
-      tags: ["JavaScript", "Backend", "Engenharia de software"],
+      tags: tagLabels,
       images: [{ url: post.images[0], alt: `Capa: ${post.title}` }],
     },
     twitter: {
@@ -52,6 +54,7 @@ export default async function PublicationPage({ params }: PageProps) {
   if (!post) notFound();
   const neighbors = getPublicationNeighbors(post.unit);
   const exerciseContent = await getExerciseContent(post.exercisePath);
+  const tags = tagsOf(post);
 
   return (
     <article className="page post">
@@ -73,7 +76,7 @@ export default async function PublicationPage({ params }: PageProps) {
               publisher: { "@type": "Person", "@id": `${absoluteUrl("/")}#andre-deomondes`, name: SITE_NAME },
               isPartOf: { "@type": "Blog", "@id": `${absoluteUrl("/posts")}#blog` },
               articleSection: "JavaScript",
-              keywords: ["JavaScript", "Backend", "Engenharia de software", post.title],
+              keywords: tags.map((tag) => tag.label),
             },
             {
               "@type": "BreadcrumbList",
@@ -97,6 +100,11 @@ export default async function PublicationPage({ params }: PageProps) {
         <h1 className="doc-hero__title">{post.title}</h1>
         <p className="doc-hero__statement">{post.statement}</p>
         <p className="doc-hero__meta mono">{post.readTime} de leitura · {post.images.length} cards · {exerciseContent.exercises.length} exercícios</p>
+        <ul className="tag-list" aria-label="Tags">
+          {tags.map((tag) => (
+            <li key={tag.slug}><Link href={`/posts/tag/${tag.slug}`}>#{tag.label}</Link></li>
+          ))}
+        </ul>
       </header>
 
       <div className="doc rail-cell">
