@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Download, FileText } from "lucide-react";
 import { PageIntro, SplitSection } from "@/shared/components/editorial/page-intro";
 import { Spotlight } from "@/shared/components/fx/spotlight";
+import { SheetArt } from "@/shared/components/fx/intro-art";
 
 export const metadata: Metadata = {
   title: "Currículo",
@@ -41,6 +42,7 @@ export default function ResumePage() {
         title="Currículo."
         muted="Atualizado em outubro de 2026."
         lead="Experiência profissional, projetos em produção, arquitetura, dados, cloud, qualidade e IA aplicada, numa apresentação direta e verificável."
+        art={<SheetArt />}
       />
 
       <section className="resume-grid rail-cell" aria-label="Downloads">

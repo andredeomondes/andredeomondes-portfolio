@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BookOpen, Bookmark, Code2 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getPublication, getPublicationNeighbors, publishedPublications, series } from "@/content/posts";
 import { getExerciseContent } from "@/lib/exercise-content";
@@ -102,11 +103,11 @@ export default async function PublicationPage({ params }: PageProps) {
         <aside className="doc__aside">
           <DocToc
             items={[
-              { id: "resumo", label: "Resumo visual" },
-              { id: "leitura", label: "Leitura" },
-              { id: "codigo", label: "Código" },
-              { id: "o-que-fica", label: "O que fica" },
-              { id: "exercicios", label: "Exercícios" },
+              { id: "resumo", label: "Resumo visual", icon: "slides" },
+              { id: "leitura", label: "Leitura", icon: "read" },
+              { id: "codigo", label: "Código", icon: "code" },
+              { id: "o-que-fica", label: "O que fica", icon: "keep" },
+              { id: "exercicios", label: "Exercícios", icon: "practice" },
             ]}
           />
         </aside>
@@ -117,7 +118,7 @@ export default async function PublicationPage({ params }: PageProps) {
           </section>
 
           <section id="leitura" className="doc__section doc__prose">
-            <h2>Leitura</h2>
+            <h2 className="doc__h2"><span className="doc__h2-icon" aria-hidden="true"><BookOpen /></span>Leitura</h2>
             <p className="doc__lede">{post.excerpt}</p>
             <p>
               No backend, esse fundamento aparece quando o código transforma entrada em decisão. O detalhe de linguagem deixa de ser acadêmico no momento em que altera um payload, uma regra de negócio ou a forma como uma falha chega à camada seguinte.
@@ -128,7 +129,7 @@ export default async function PublicationPage({ params }: PageProps) {
           </section>
 
           <section id="codigo" className="doc__section">
-            <h2 className="doc__h2">Código</h2>
+            <h2 className="doc__h2"><span className="doc__h2-icon" aria-hidden="true"><Code2 /></span>Código</h2>
             <div className="window doc__code">
               <div className="window__bar">
                 <span className="window__dots"><i /><i /><i /></span>
@@ -139,7 +140,7 @@ export default async function PublicationPage({ params }: PageProps) {
           </section>
 
           <section id="o-que-fica" className="doc__section">
-            <h2 className="doc__h2">O que fica</h2>
+            <h2 className="doc__h2"><span className="doc__h2-icon" aria-hidden="true"><Bookmark /></span>O que fica</h2>
             <ul className="line-list">
               {post.takeaways.map((takeaway) => <li key={takeaway}>{takeaway}</li>)}
             </ul>

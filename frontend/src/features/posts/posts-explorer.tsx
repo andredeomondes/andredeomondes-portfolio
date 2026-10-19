@@ -64,7 +64,7 @@ export function PostsExplorer({ posts }: { posts: ExplorerPost[] }) {
             >
               <Spotlight as={Link} href={`/posts/${post.slug}`} className="post-card">
                 <span className="post-card__cover">
-                  <Image src={post.cover} alt="" fill sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" className="object-cover" />
+                  <Image src={post.cover} alt="" fill sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" className="object-cover" style={{ objectPosition: "center 32%" }} />
                 </span>
                 <span className="post-card__body">
                   <span className="post-card__meta mono tabular">{String(post.unit).padStart(2, "0")} · {moduleOf(post.unit).title}<span className="post-card__time"><Clock3 className="icon-inline" aria-hidden="true" />{post.readTime}</span></span>

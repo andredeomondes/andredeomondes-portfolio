@@ -9,7 +9,9 @@ import {
   SiFastapi,
   SiFastify,
   SiGit,
+  SiGithubactions,
   SiGooglegemini,
+  SiGooglesearchconsole,
   SiJavascript,
   SiLangchain,
   SiMongodb,
@@ -17,11 +19,13 @@ import {
   SiNextdotjs,
   SiNodedotjs,
   SiOpenai,
+  SiOpenjdk,
   SiPagseguro,
   SiPostgresql,
   SiPython,
   SiReact,
   SiRedis,
+  SiSpring,
   SiSupabase,
   SiTailwindcss,
   SiTypescript,
@@ -29,7 +33,7 @@ import {
   SiVitest,
   SiWix,
 } from "react-icons/si";
-import { Boxes, FlaskConical, Truck, type LucideIcon } from "lucide-react";
+import { AudioLines, Boxes, Cpu, FlaskConical, Server, Truck, type LucideIcon } from "lucide-react";
 
 // Ordered matchers: first hit wins, so specific names come before generic ones.
 const MATCHERS: Array<[RegExp, IconType | LucideIcon]> = [
@@ -53,7 +57,14 @@ const MATCHERS: Array<[RegExp, IconType | LucideIcon]> = [
   [/tailwind/i, SiTailwindcss],
   [/wix/i, SiWix],
   [/mongo/i, SiMongodb],
+  [/spring/i, SiSpring],
+  [/\bjava\b/i, SiOpenjdk],
+  [/ci\/cd|github actions/i, SiGithubactions],
   [/\bgit\b/i, SiGit],
+  [/search console/i, SiGooglesearchconsole],
+  [/whisper/i, AudioLines],
+  [/groq/i, Cpu],
+  [/\bvps\b|server|servidor/i, Server],
   [/expo/i, SiExpo],
   [/supabase/i, SiSupabase],
   [/gemini/i, SiGooglegemini],

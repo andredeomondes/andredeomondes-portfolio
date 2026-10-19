@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { fallbackProjects } from "@/content/projects";
 import { PageIntro } from "@/shared/components/editorial/page-intro";
 import { HoverPreviewList } from "@/shared/components/editorial/hover-preview-list";
+import { SystemArt } from "@/shared/components/fx/intro-art";
 
 export const metadata: Metadata = {
   title: "Projetos de backend, IA e produtos digitais",
@@ -19,6 +20,7 @@ export default function ProjectsPage() {
         title="Projetos."
         muted="Produtos em produção, contados pelo problema e pelas decisões."
         lead="Cada case separa o que eu fiz do escopo total do produto, com telas reais, arquitetura e o que ficou de aprendizado."
+        art={<SystemArt />}
       />
       <section className="rail-cell page-section">
         <HoverPreviewList

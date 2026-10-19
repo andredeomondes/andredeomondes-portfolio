@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { publishedPublications, series } from "@/content/posts";
 import { PageIntro } from "@/shared/components/editorial/page-intro";
 import { PostsExplorer } from "@/features/posts/posts-explorer";
+import { DeckArt } from "@/shared/components/fx/intro-art";
 import { JsonLd } from "@/shared/components/seo/json-ld";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 
@@ -42,7 +43,9 @@ export default function PostsPage() {
           })),
         }}
       />
-      <PageIntro title="Publicações." muted="Notas de engenharia com carrossel, leitura e exercícios." lead="Cada unidade da série JavaScript Core vira uma publicação com resumo visual, código comentado e prática com testes.">
+      <PageIntro title="Publicações." muted="Notas de engenharia com carrossel, leitura e exercícios." lead="Cada unidade da série JavaScript Core vira uma publicação com resumo visual, código comentado e prática com testes."
+        art={<DeckArt items={[...publishedPublications].sort((a, b) => b.unit - a.unit).map((post) => ({ unit: post.unit, title: post.title }))} />}
+      >
         <Link href={`/series/${series.slug}`} className="btn">
           Ver como curso <ArrowRight size={16} aria-hidden="true" />
         </Link>

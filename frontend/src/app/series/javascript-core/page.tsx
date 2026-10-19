@@ -6,6 +6,7 @@ import { publishedPublications, series } from "@/content/posts";
 import { PageIntro } from "@/shared/components/editorial/page-intro";
 import { HoverPreviewList } from "@/shared/components/editorial/hover-preview-list";
 import { COURSE_MODULES } from "@/features/posts/modules";
+import { UnitsArt } from "@/shared/components/fx/intro-art";
 
 const MODULE_ICONS: Record<string, LucideIcon> = { blocks: Blocks, function: SquareFunction, braces: Braces, sparkles: Sparkles, timer: Hourglass };
 
@@ -26,7 +27,12 @@ export default function JavaScriptCoreSeriesPage() {
 
   return (
     <div className="page">
-      <PageIntro title="JavaScript Core." muted="Do fundamento ao backend, uma unidade por vez." lead={series.description}>
+      <PageIntro
+        title="JavaScript Core."
+        muted="Do fundamento ao backend, uma unidade por vez."
+        lead={series.description}
+        art={<UnitsArt total={series.totalUnits} published={series.publishedUnits} />}
+      >
         <div className="series-progress">
           <p className="mono tabular"><strong>{series.publishedUnits}</strong> de {series.totalUnits} unidades publicadas</p>
           <div className="course__bar" role="progressbar" aria-valuemin={0} aria-valuemax={series.totalUnits} aria-valuenow={series.publishedUnits} aria-label="Progresso da série">

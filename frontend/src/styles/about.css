@@ -204,3 +204,64 @@ html.js .timeline__fill {
   justify-self: start;
   margin-top: 1rem;
 }
+
+/* ── Ambient loops ── */
+.about-hero__frame {
+  overflow: hidden;
+}
+
+/* light band sweeping across the portrait */
+.about-hero__frame::after {
+  content: "";
+  position: absolute;
+  inset: -20% auto -20% -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: skewX(-12deg);
+  animation: portrait-sheen 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes portrait-sheen {
+  0%, 60% { left: -60%; }
+  85%, 100% { left: 130%; }
+}
+
+/* spark travelling down the career rail */
+.timeline__rail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -60px;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(180deg, transparent, #fff3c4);
+  box-shadow: 0 0 10px rgba(255, 212, 59, 0.9);
+  animation: rail-spark 5s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes rail-spark {
+  to { top: 100%; }
+}
+
+/* current role keeps pinging */
+.timeline__item:first-of-type::after {
+  content: "";
+  position: absolute;
+  left: calc(-2rem - 1px);
+  top: 0.45rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid var(--sodium);
+  animation: ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-hero__frame::after,
+  .timeline__rail::after,
+  .timeline__item:first-of-type::after {
+    display: none;
+  }
+}

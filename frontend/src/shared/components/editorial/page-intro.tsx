@@ -4,26 +4,46 @@ export function PageIntro({
   muted,
   lead,
   children,
+  art,
 }: {
   title: string;
   muted?: string;
   lead?: string;
   children?: React.ReactNode;
+  /** Decorative loop shown beside the heading on wide screens. */
+  art?: React.ReactNode;
 }) {
   return (
-    <header className="page-intro rail-cell">
-      <h1 className="page-intro__title">
-        {title}
-        {muted ? <span className="muted">{muted}</span> : null}
-      </h1>
-      {lead ? <p className="page-intro__lead">{lead}</p> : null}
-      {children ? <div className="page-intro__extra">{children}</div> : null}
+    <header
+      className={
+        art ? "page-intro page-intro--art rail-cell" : "page-intro rail-cell"
+      }
+    >
+      <div className="page-intro__copy">
+        <h1 className="page-intro__title">
+          {title}
+          {muted ? <span className="muted">{muted}</span> : null}
+        </h1>
+        {lead ? <p className="page-intro__lead">{lead}</p> : null}
+        {children ? <div className="page-intro__extra">{children}</div> : null}
+      </div>
+      {art}
     </header>
   );
 }
 
 /** Two-column section: sticky heading on the left, content scrolling on the right. */
-export function SplitSection({ id, title, muted, children }: { id?: string; title: string; muted?: string; children: React.ReactNode }) {
+export function SplitSection({
+  id,
+  title,
+  muted,
+  children,
+}: {
+  id?: string;
+  title: string;
+  muted?: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="split rail-cell" aria-labelledby={id}>
       <div className="split__aside">
