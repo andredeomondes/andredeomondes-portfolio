@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSite } from "@/shared/components/shell/site-provider";
+import { LogoMark } from "@/shared/components/brand/logo";
 
 const columns = [
   {
@@ -35,7 +36,7 @@ export function SiteFooter() {
     <footer className="footer">
       <div className="footer__base rail-cell">
         <div className="footer__brand">
-          <span className="nav__mark" aria-hidden="true" />
+          <LogoMark />
           <div>
             <strong>{index.contact.name}</strong>
             <p>Backend &amp; Applied AI Engineer · {index.contact.location}</p>

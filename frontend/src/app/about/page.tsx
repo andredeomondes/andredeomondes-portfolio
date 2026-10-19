@@ -6,6 +6,7 @@ import { normalizeSiteContent } from "@/lib/site-content";
 import { getCachedPublicSettings } from "@/server/services/settings";
 import { SplitSection } from "@/shared/components/editorial/page-intro";
 import { Timeline } from "@/features/about/timeline";
+import { TechChip } from "@/shared/components/brand/tech-icon";
 
 export const revalidate = 300;
 
@@ -58,7 +59,7 @@ export default async function AboutPage() {
           {about.techStack.map((section) => (
             <div key={section.label}>
               <h3>{section.label}</h3>
-              <ul>{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
+              <ul>{section.items.map((item) => <TechChip key={item} name={item} />)}</ul>
             </div>
           ))}
         </div>

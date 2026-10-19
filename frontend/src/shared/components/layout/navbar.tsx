@@ -9,6 +9,7 @@ import { motionTokens, springs } from "@/lib/motion";
 import { cn } from "@/shared/lib/utils";
 import { ScrambleText } from "@/shared/components/fx/scramble";
 import { useSite } from "@/shared/components/shell/site-provider";
+import { Logo } from "@/shared/components/brand/logo";
 
 const navLinks = [
   { href: "/projects", label: "Projetos" },
@@ -68,8 +69,7 @@ export function Navbar() {
     <header className={cn("nav", compact && "nav--compact", open && "nav--open")}>
       <nav className="nav__bar" aria-label="Navegação principal">
         <Link href="/" className="nav__brand" onClick={() => setOpen(false)} aria-label="Andre Deomondes, início">
-          <span className="nav__mark" aria-hidden="true" />
-          <span className="nav__name">Andre Deomondes</span>
+          <Logo />
         </Link>
 
         <ul className="nav__links">

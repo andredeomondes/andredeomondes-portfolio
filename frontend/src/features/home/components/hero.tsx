@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from "react";
 import { DecodeText } from "@/shared/components/fx/scramble";
 import { PaletteBody } from "@/shared/components/shell/command-palette";
 import { prefersReducedMotion } from "@/lib/motion";
+import { HeroSignals } from "@/shared/components/fx/decor";
 
 /** Hero: the real command palette floating in sodium light. Pins and opens up on scroll. */
 export function Hero() {
@@ -48,6 +49,7 @@ export function Hero() {
         <span className="hero__beam hero__beam--right" />
         <span className="hero__core" />
       </div>
+      <HeroSignals />
 
       <div className="hero__copy">
         <p className="hero__status">

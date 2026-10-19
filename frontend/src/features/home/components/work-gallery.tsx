@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { prefersReducedMotion } from "@/lib/motion";
 import { Spotlight } from "@/shared/components/fx/spotlight";
+import { TechChip } from "@/shared/components/brand/tech-icon";
 
 export type WorkItem = {
   slug: string;
@@ -94,7 +95,7 @@ export function WorkGallery({ items }: { items: WorkItem[] }) {
               <p className="work-card__summary">{item.summary}</p>
               <p className="work-card__role">{item.role}</p>
               <ul className="work-card__stack" aria-label="Tecnologias">
-                {item.stack.slice(0, 6).map((tech) => <li key={tech}>{tech}</li>)}
+                {item.stack.slice(0, 6).map((tech) => <TechChip key={tech} name={tech} />)}
               </ul>
               <Link href={`/projects/${item.slug}`} className="btn work-card__link">
                 Ver o case <ArrowUpRight aria-hidden="true" size={16} />

@@ -3,6 +3,7 @@
 import { ArrowUpRight } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { LightSweep } from "@/shared/components/layout/light-sweep";
+import { TechOrbit } from "@/shared/components/fx/decor";
 import { Magnetic } from "@/shared/components/fx/magnetic";
 import { useSite } from "@/shared/components/shell/site-provider";
 import { useSalvadorTime } from "@/shared/components/shell/contact-launcher";
@@ -16,6 +17,7 @@ export function Finale() {
   return (
     <section id="contato" className="finale rail-cell" aria-labelledby="finale-title">
       <LightSweep />
+      <TechOrbit inner={["Node.js", "TypeScript", "Python", "PostgreSQL", "Redis"]} outer={["FastAPI", "LangChain", "React", "Docker", "AWS", "Next.js", "OpenAI", "Astro"]} />
       <p className="finale__status">
         <span className="contact-sheet__dot" aria-hidden="true" />
         {index.contact.availability}

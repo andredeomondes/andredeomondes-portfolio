@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Search } from "lucide-react";
+import { Clock3, Search } from "lucide-react";
 import { springs } from "@/lib/motion";
 import { Spotlight } from "@/shared/components/fx/spotlight";
 import { COURSE_MODULES, moduleOf, type CourseModuleId } from "@/features/posts/modules";
@@ -67,7 +67,7 @@ export function PostsExplorer({ posts }: { posts: ExplorerPost[] }) {
                   <Image src={post.cover} alt="" fill sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw" className="object-cover" />
                 </span>
                 <span className="post-card__body">
-                  <span className="post-card__meta mono tabular">{String(post.unit).padStart(2, "0")} · {moduleOf(post.unit).title} · {post.readTime}</span>
+                  <span className="post-card__meta mono tabular">{String(post.unit).padStart(2, "0")} · {moduleOf(post.unit).title}<span className="post-card__time"><Clock3 className="icon-inline" aria-hidden="true" />{post.readTime}</span></span>
                   <span className="post-card__title">{post.title}</span>
                   <span className="post-card__excerpt">{post.excerpt}</span>
                 </span>

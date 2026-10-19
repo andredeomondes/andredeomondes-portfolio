@@ -5,6 +5,9 @@ import { WorkGallery } from "@/features/home/components/work-gallery";
 import { Capabilities } from "@/features/home/components/capabilities";
 import { CourseStrip } from "@/features/home/components/course-strip";
 import { Finale } from "@/features/home/components/finale";
+import { TechMarquee } from "@/shared/components/fx/decor";
+
+const STACK = ["Node.js", "TypeScript", "Python", "FastAPI", "LangChain", "PostgreSQL", "Redis", "Docker", "AWS", "React", "Next.js", "Astro", "NestJS", "Angular", "Tailwind CSS", "Vitest", "Playwright", "OpenAI", "Gemini", "Supabase"];
 
 export const revalidate = 300;
 
@@ -29,6 +32,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <TechMarquee items={STACK} />
       <WorkGallery items={work} />
       <Capabilities />
       <CourseStrip units={units} published={series.publishedUnits} total={series.totalUnits} />

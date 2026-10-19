@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useActiveLoop } from "@/shared/hooks/use-active-loop";
 import { Spotlight } from "@/shared/components/fx/spotlight";
 import { cn } from "@/shared/lib/utils";
+import { Bot, Gauge, Globe2, Layers3, ServerCog } from "lucide-react";
+import { TechIcon } from "@/shared/components/brand/tech-icon";
 
 // Illustrative, generic content — not metrics from any client project.
 const DEPLOY_LINES = [
@@ -75,7 +77,7 @@ function StackKeys() {
     <ul ref={ref} className={cn("keys", seen && "is-playing")} aria-label="Tecnologias principais">
       {KEYS.map((key, index) => (
         <li key={key} className="key" style={{ animationDelay: `${index * 90}ms` }}>
-          <span className="key__cap mono">{key}</span>
+          <span className="key__cap mono"><TechIcon name={key} className="key__icon" />{key}</span>
         </li>
       ))}
     </ul>
@@ -121,8 +123,9 @@ export function Capabilities() {
       </h2>
 
       <div className="bento">
-        <Spotlight className="bento__cell bento__cell--wide">
+        <Spotlight className="bento__cell bento__cell--wide glow-border">
           <div className="bento__text">
+            <span className="bento__icon" aria-hidden="true"><ServerCog /></span>
             <h3>Backend e APIs</h3>
             <p>Contratos claros, regras de negócio testadas e integrações de pagamento e frete que não quebram na sexta à noite.</p>
           </div>
@@ -131,6 +134,7 @@ export function Capabilities() {
 
         <Spotlight className="bento__cell">
           <div className="bento__text">
+            <span className="bento__icon" aria-hidden="true"><Bot /></span>
             <h3>IA aplicada</h3>
             <p>Agentes que consultam dados reais e agem: estoque, atendimento e automação.</p>
           </div>
@@ -139,6 +143,7 @@ export function Capabilities() {
 
         <Spotlight className="bento__cell">
           <div className="bento__text">
+            <span className="bento__icon" aria-hidden="true"><Gauge /></span>
             <h3>Desempenho</h3>
             <p>Cache, filas e consultas medidas antes de otimizar.</p>
           </div>
@@ -147,6 +152,7 @@ export function Capabilities() {
 
         <Spotlight className="bento__cell bento__cell--wide">
           <div className="bento__text">
+            <span className="bento__icon" aria-hidden="true"><Layers3 /></span>
             <h3>Stack do dia a dia</h3>
             <p>Ferramentas que uso em produção, escolhidas pelo problema e não pela moda.</p>
           </div>
@@ -155,6 +161,7 @@ export function Capabilities() {
 
         <Spotlight className="bento__cell bento__cell--clock">
           <div className="bento__text">
+            <span className="bento__icon" aria-hidden="true"><Globe2 /></span>
             <h3>Trabalho remoto</h3>
             <p>De Salvador para projetos no Brasil e fora.</p>
           </div>

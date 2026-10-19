@@ -1,10 +1,13 @@
+import { createElement } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Blocks, Braces, Hourglass, Sparkles, SquareFunction, type LucideIcon } from "lucide-react";
 import { publishedPublications, series } from "@/content/posts";
 import { PageIntro } from "@/shared/components/editorial/page-intro";
 import { HoverPreviewList } from "@/shared/components/editorial/hover-preview-list";
 import { COURSE_MODULES } from "@/features/posts/modules";
+
+const MODULE_ICONS: Record<string, LucideIcon> = { blocks: Blocks, function: SquareFunction, braces: Braces, sparkles: Sparkles, timer: Hourglass };
 
 export const metadata: Metadata = {
   title: "Série JavaScript Core",
@@ -43,6 +46,7 @@ export default function JavaScriptCoreSeriesPage() {
         return (
           <section key={module.id} className="series-module rail-cell" aria-labelledby={`module-${module.id}`}>
             <div className="series-module__head">
+              <span className="bento__icon" aria-hidden="true">{createElement(MODULE_ICONS[module.icon] ?? Blocks)}</span>
               <p className="series-module__index mono">Módulo {pad(moduleIndex + 1)}</p>
               <h2 id={`module-${module.id}`} className="series-module__title">{module.title}</h2>
               <p className="series-module__count mono tabular">{units.length} unidades</p>

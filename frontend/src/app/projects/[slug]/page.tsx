@@ -1,8 +1,12 @@
+import { createElement } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight } from "lucide-react";
+import { Activity, AlertTriangle, ArrowUpRight, BriefcaseBusiness, Clock3, Cloud, Handshake, Layers3, Lightbulb, Rocket, Users, type LucideIcon } from "lucide-react";
+import { TechChip } from "@/shared/components/brand/tech-icon";
+
+const FACT_ICONS: Record<string, LucideIcon> = { Papel: BriefcaseBusiness, Modelo: Handshake, Equipe: Users, "Duração": Clock3, Status: Activity, Produto: Layers3, Infraestrutura: Cloud };
 import { fallbackProjects, getFallbackProject } from "@/content/projects";
 import { ProjectImageLightbox } from "@/shared/components/editorial/project-image-lightbox";
 import { SplitSection } from "@/shared/components/editorial/page-intro";
@@ -106,7 +110,7 @@ export default async function ProjectCasePage({ params }: PageProps) {
       <dl className="case-facts rail-cell" data-testid="project-facts">
         {caseStudy.facts.map((fact) => (
           <div key={fact.label}>
-            <dt>{fact.label}</dt>
+            <dt>{createElement(FACT_ICONS[fact.label] ?? Layers3, { className: "icon-inline", "aria-hidden": true })}{fact.label}</dt>
             <dd>{fact.value}</dd>
           </div>
         ))}
@@ -129,9 +133,9 @@ export default async function ProjectCasePage({ params }: PageProps) {
 
       <SplitSection id="contexto" title="Do problema" muted="à entrega.">
         <dl className="case-story">
-          <div><dt>Problema</dt><dd>{project.overview_problema}</dd></div>
-          <div><dt>Solução</dt><dd>{project.overview_solucao}</dd></div>
-          <div><dt>Entrega</dt><dd>{project.overview_resultado}</dd></div>
+          <div><dt><AlertTriangle className="icon-inline" aria-hidden="true" />Problema</dt><dd>{project.overview_problema}</dd></div>
+          <div><dt><Lightbulb className="icon-inline" aria-hidden="true" />Solução</dt><dd>{project.overview_solucao}</dd></div>
+          <div><dt><Rocket className="icon-inline" aria-hidden="true" />Entrega</dt><dd>{project.overview_resultado}</dd></div>
         </dl>
       </SplitSection>
 
@@ -166,12 +170,12 @@ export default async function ProjectCasePage({ params }: PageProps) {
           {caseStudy.technology_groups.map((group) => (
             <div key={group.label}>
               <h3>{group.label}</h3>
-              <ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul>
+              <ul>{group.items.map((item) => <TechChip key={item} name={item} />)}</ul>
             </div>
           ))}
           <div>
             <h3>Integrações</h3>
-            <ul>{caseStudy.integrations.map((item) => <li key={item}>{item}</li>)}</ul>
+            <ul>{caseStudy.integrations.map((item) => <TechChip key={item} name={item} />)}</ul>
           </div>
         </div>
       </SplitSection>
