@@ -51,12 +51,12 @@ test("publicações: busca acha termos citados dentro do conteúdo e mostra o tr
   const search = page.getByRole("searchbox", { name: "Buscar publicações" });
   await search.focus();
   await page.waitForResponse((response) => response.url().includes("/posts/search-index.json"));
-  // setTimeout só aparece nos exercícios da unidade de callbacks, não no título nem no resumo
+  // setTimeout não está no título nem no resumo de Callbacks, só nos exercícios
   await search.fill("setTimeout");
-  const card = page.locator(".explorer__item").first();
-  await expect(page.locator(".post-card")).toHaveCount(1);
-  await expect(card.locator(".post-card__match mark")).toHaveText(/setTimeout/i);
-  await expect(card.locator(".post-card")).toHaveAttribute("href", /\/posts\/18-javascript-callbacks#exercicios/);
+  const callbacks = page.locator('.post-card[href^="/posts/18-javascript-callbacks"]');
+  await expect(callbacks).toHaveAttribute("href", "/posts/18-javascript-callbacks#exercicios");
+  await expect(callbacks.locator(".post-card__match mark")).toHaveText(/setTimeout/i);
+  for (const mark of await page.locator(".post-card__match mark").allTextContents()) expect(mark.toLowerCase()).toBe("settimeout");
 });
 
 test("publicações: paginação de 9 em 9 com a página no link", async ({ page }) => {

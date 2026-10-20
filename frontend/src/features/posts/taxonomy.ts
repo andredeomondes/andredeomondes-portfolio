@@ -37,6 +37,8 @@ export const TAGS: Tag[] = [
   { slug: "async-await", label: "Async/await", description: "Sintaxe async/await sobre Promises, com tratamento de erros.", synonyms: ["async", "await"] },
   { slug: "event-loop", label: "Event loop", description: "Call stack, microtasks, timers e a ordem real de execução.", synonyms: ["microtask", "macrotask", "settimeout", "nexttick", "call stack"] },
   { slug: "performance", label: "Performance", description: "Cache, lazy evaluation e decisões que afetam tempo e memória.", synonyms: ["desempenho", "otimizacao", "cache"] },
+  { slug: "json", label: "JSON", description: "Serializar, validar e transportar dados com JSON sem surpresas.", synonyms: ["stringify", "parse", "ndjson", "serializacao", "payload"] },
+  { slug: "big-o", label: "Big O", description: "Complexidade de tempo e espaço aplicada a buscas, loops e índices.", synonyms: ["complexidade", "o(n)", "algoritmo", "notacao assintotica"] },
   { slug: "clean-code", label: "Código limpo", description: "Contratos claros, responsabilidades pequenas e leitura previsível.", synonyms: ["boas praticas", "legibilidade", "refatoracao"] },
 ];
 
@@ -67,6 +69,10 @@ const UNIT_TAGS: Record<number, string[]> = {
   21: ["assincrono", "promises", "performance"],
   22: ["assincrono", "erros", "async-await"],
   23: ["assincrono", "event-loop", "node-js", "performance"],
+  24: ["json", "arrays-e-objetos"],
+  25: ["imutabilidade", "arrays-e-objetos"],
+  26: ["clean-code", "funcoes"],
+  27: ["big-o", "performance"],
 };
 
 export const SERIES = [{ slug: series.slug, title: series.title }];

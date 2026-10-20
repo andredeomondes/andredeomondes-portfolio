@@ -32,7 +32,7 @@ function prefersSmooth() {
   return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-const SUGGESTIONS = ["closures", "callback", "reduce", "this", "regex", "setTimeout"];
+const SUGGESTIONS = ["closures", "promises", "event loop", "this", "reduce", "json"];
 const VISIBLE_TAGS = 12;
 const PAGE_SIZE = 9;
 
