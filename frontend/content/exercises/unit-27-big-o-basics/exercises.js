@@ -14,64 +14,144 @@
 
 // test: node --test --test-name-pattern="sumWithSingleLoop" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function sumWithSingleLoop(arr) {
-  throw new Error("not implemented: sumWithSingleLoop");
+  let total = 0;
+  for (const value of arr) total += value;
+  return total;
 }
 
 // test: node --test --test-name-pattern="countAllPairsNested" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function countAllPairsNested(arr) {
-  throw new Error("not implemented: countAllPairsNested");
+  let pairs = 0;
+
+  for (let first = 0; first < arr.length; first += 1) {
+    for (let second = first + 1; second < arr.length; second += 1) {
+      pairs += 1;
+    }
+  }
+
+  return pairs;
 }
 
 // test: node --test --test-name-pattern="hasDuplicateNestedLoop" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function hasDuplicateNestedLoop(arr) {
-  throw new Error("not implemented: hasDuplicateNestedLoop");
+  for (let first = 0; first < arr.length; first += 1) {
+    for (let second = first + 1; second < arr.length; second += 1) {
+      if (Object.is(arr[first], arr[second])) return true;
+    }
+  }
+
+  return false;
 }
 
 // test: node --test --test-name-pattern="getElementAtIndex" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function getElementAtIndex(arr, index) {
-  throw new Error("not implemented: getElementAtIndex");
+  return arr[index];
 }
 
 // test: node --test --test-name-pattern="countHalvingSteps" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function countHalvingSteps(n) {
-  throw new Error("not implemented: countHalvingSteps");
+  let value = Math.floor(n);
+  let steps = 0;
+
+  while (value > 1) {
+    value = Math.floor(value / 2);
+    steps += 1;
+  }
+
+  return steps;
 }
 
 // test: node --test --test-name-pattern="estimateOperations" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function estimateOperations(patternName, n) {
-  throw new Error("not implemented: estimateOperations");
+  const estimators = {
+    "single-loop": () => n,
+    "nested-loop": () => n * n,
+    halving: () => countHalvingSteps(n),
+    "two-sequential-loops": () => 2 * n,
+  };
+
+  const estimate = estimators[patternName];
+  if (!estimate) throw new Error(`padrão desconhecido: ${patternName}`);
+  return estimate();
 }
 
 // test: node --test --test-name-pattern="sumTwoSeparateLoops" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function sumTwoSeparateLoops(arrA, arrB) {
-  throw new Error("not implemented: sumTwoSeparateLoops");
+  let total = 0;
+  for (const value of arrA) total += value;
+  for (const value of arrB) total += value;
+  return total;
 }
 
 // test: node --test --test-name-pattern="sumMatrixNestedLoop" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function sumMatrixNestedLoop(matrix) {
-  throw new Error("not implemented: sumMatrixNestedLoop");
+  let total = 0;
+  for (const row of matrix) {
+    for (const value of row) total += value;
+  }
+  return total;
 }
 
 // --- Intermediários --------------------------------------------------------
 
 // test: node --test --test-name-pattern="hasDuplicateWithSet" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function hasDuplicateWithSet(arr) {
-  throw new Error("not implemented: hasDuplicateWithSet");
+  const seen = new Set();
+
+  for (const value of arr) {
+    if (seen.has(value)) return true;
+    seen.add(value);
+  }
+
+  return false;
 }
 
 // test: node --test --test-name-pattern="classifyGrowthFromSamples" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function classifyGrowthFromSamples(samples) {
-  throw new Error("not implemented: classifyGrowthFromSamples");
+  if (samples.length < 2) {
+    throw new Error("são necessárias ao menos duas amostras");
+  }
+
+  const first = samples[0];
+  const last = samples.at(-1);
+  const observedRatio = last.operations / first.operations;
+  const inputRatio = last.n / first.n;
+  const expectedRatios = {
+    constant: 1,
+    logarithmic: Math.log2(last.n) / Math.log2(first.n),
+    linear: inputRatio,
+    quadratic: inputRatio ** 2,
+  };
+
+  return Object.entries(expectedRatios).reduce(
+    (best, [label, expectedRatio]) => {
+      const error = Math.abs(Math.log(observedRatio / expectedRatio));
+      return error < best.error ? { label, error } : best;
+    },
+    { label: "constant", error: Number.POSITIVE_INFINITY },
+  ).label;
 }
 
 // test: node --test --test-name-pattern="countNestedLoopIterations" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function countNestedLoopIterations(n, m) {
-  throw new Error("not implemented: countNestedLoopIterations");
+  let iterations = 0;
+  for (let row = 0; row < n; row += 1) {
+    for (let column = 0; column < m; column += 1) iterations += 1;
+  }
+  return iterations;
 }
 
 // test: node --test --test-name-pattern="compareComplexityLabels" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function compareComplexityLabels(a, b) {
-  throw new Error("not implemented: compareComplexityLabels");
+  const order = ["O(1)", "O(log n)", "O(n)", "O(n log n)", "O(n^2)"];
+  const rankA = order.indexOf(a);
+  const rankB = order.indexOf(b);
+
+  if (rankA === -1 || rankB === -1) {
+    throw new Error("rótulo de complexidade desconhecido");
+  }
+
+  return Math.sign(rankA - rankB);
 }
 
 // --- Debugging --------------------------------------------------------------
@@ -87,14 +167,11 @@ export function fixAccidentalQuadraticLookup(users, ids) {
   // quantidade de trabalho que ela faz: para cada id, ela varre a lista
   // inteira de usuários de novo com `.find()`, tornando o custo total
   // proporcional a `users.length * ids.length`.
-  const result = [];
-  for (const id of ids) {
-    const found = users.find((u) => u.id === id);
-    if (found) {
-      result.push(found);
-    }
-  }
-  return result;
+  const usersById = new Map(users.map((user) => [user.id, user]));
+  return ids.flatMap((id) => {
+    const user = usersById.get(id);
+    return user ? [user] : [];
+  });
 }
 
 // test: node --test --test-name-pattern="fixRedundantDoublePass" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
@@ -102,15 +179,11 @@ export function fixRedundantDoublePass(scores) {
   // Sintoma relatado: para uma lista de uma única nota, a função deveria
   // retornar a própria nota como média, mas retorna 0. Para listas
   // maiores, a média também vem sistematicamente menor do que deveria.
+  if (scores.length === 0) return 0;
+
   let sum = 0;
-  for (let i = 0; i < scores.length; i++) {
-    sum += scores[i];
-  }
-  let verifySum = 0;
-  for (let i = 0; i < scores.length - 1; i++) {
-    verifySum += scores[i];
-  }
-  return verifySum / scores.length;
+  for (const score of scores) sum += score;
+  return sum / scores.length;
 }
 
 // --- Refatoração -------------------------------------------------------------
@@ -122,21 +195,27 @@ export function fixRedundantDoublePass(scores) {
 
 // test: node --test --test-name-pattern="refactorQuadraticToLinear" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function refactorQuadraticToLinear(orders, customerIds) {
-  const totals = [];
-  for (const id of customerIds) {
-    const customerOrders = orders.filter((order) => order.customerId === id);
-    let total = 0;
-    for (const order of customerOrders) {
-      total += order.amount;
-    }
-    totals.push(total);
+  const totalsByCustomer = new Map();
+
+  for (const order of orders) {
+    const currentTotal = totalsByCustomer.get(order.customerId) ?? 0;
+    totalsByCustomer.set(order.customerId, currentTotal + order.amount);
   }
-  return totals;
+
+  return customerIds.map((id) => totalsByCustomer.get(id) ?? 0);
 }
 
 // --- Desafio integrador -------------------------------------------------------
 
 // test: node --test --test-name-pattern="analyzeFunctionComplexity" exercises/01-javascript-core/unit-27-big-o-basics/exercises.test.js
 export function analyzeFunctionComplexity(fn, sizes) {
-  throw new Error("not implemented: analyzeFunctionComplexity");
+  const samples = sizes.map((n) => {
+    let operations = 0;
+    fn(n, () => {
+      operations += 1;
+    });
+    return { n, operations };
+  });
+
+  return classifyGrowthFromSamples(samples);
 }

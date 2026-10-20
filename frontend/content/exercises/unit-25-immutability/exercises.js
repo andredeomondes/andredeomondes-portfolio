@@ -7,64 +7,99 @@
 
 // test: node --test --test-name-pattern="freezeConfig" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function freezeConfig(config) {
-  throw new Error("not implemented: freezeConfig");
+  return Object.freeze(config);
 }
 
 // test: node --test --test-name-pattern="safeAssign" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function safeAssign(frozenObj, key, value) {
-  throw new Error("not implemented: safeAssign");
+  try {
+    frozenObj[key] = value;
+    return { success: true, value: frozenObj[key], error: null };
+  } catch (error) {
+    return {
+      success: false,
+      value: frozenObj[key],
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 // test: node --test --test-name-pattern="updateImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function updateImmutable(obj, key, value) {
-  throw new Error("not implemented: updateImmutable");
+  return { ...obj, [key]: value };
 }
 
 // test: node --test --test-name-pattern="addItemImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function addItemImmutable(arr, item) {
-  throw new Error("not implemented: addItemImmutable");
+  return [...arr, item];
 }
 
 // test: node --test --test-name-pattern="removeItemImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function removeItemImmutable(arr, index) {
-  throw new Error("not implemented: removeItemImmutable");
+  return arr.filter((_item, itemIndex) => itemIndex !== index);
 }
 
 // test: node --test --test-name-pattern="updateItemImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function updateItemImmutable(arr, index, updater) {
-  throw new Error("not implemented: updateItemImmutable");
+  return arr.map((item, itemIndex) =>
+    itemIndex === index ? updater(item) : item,
+  );
 }
 
 // test: node --test --test-name-pattern="sortImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function sortImmutable(arr, compareFn) {
-  throw new Error("not implemented: sortImmutable");
+  return [...arr].sort(compareFn);
 }
 
 // test: node --test --test-name-pattern="mergeObjectsImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function mergeObjectsImmutable(base, overrides) {
-  throw new Error("not implemented: mergeObjectsImmutable");
+  return { ...base, ...overrides };
 }
 
 // --- Intermediários --------------------------------------------------------
 
 // test: node --test --test-name-pattern="deepFreeze" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function deepFreeze(obj) {
-  throw new Error("not implemented: deepFreeze");
+  const visited = new WeakSet();
+
+  function freeze(value) {
+    if (value === null || typeof value !== "object" || visited.has(value)) {
+      return value;
+    }
+
+    visited.add(value);
+    for (const nestedValue of Object.values(value)) freeze(nestedValue);
+    return Object.freeze(value);
+  }
+
+  return freeze(obj);
 }
 
 // test: node --test --test-name-pattern="updateNestedImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function updateNestedImmutable(obj, path, value) {
-  throw new Error("not implemented: updateNestedImmutable");
+  if (path.length === 0) return value;
+
+  const [key, ...remainingPath] = path;
+  const current = obj ?? {};
+  const copy = Array.isArray(current) ? [...current] : { ...current };
+  copy[key] = updateNestedImmutable(current[key], remainingPath, value);
+  return copy;
 }
 
 // test: node --test --test-name-pattern="toggleSetImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function toggleSetImmutable(set, value) {
-  throw new Error("not implemented: toggleSetImmutable");
+  const next = new Set(set);
+  if (next.has(value)) next.delete(value);
+  else next.add(value);
+  return next;
 }
 
 // test: node --test --test-name-pattern="withoutKeysImmutable" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function withoutKeysImmutable(obj, keys) {
-  throw new Error("not implemented: withoutKeysImmutable");
+  const excluded = new Set(keys);
+  return Object.fromEntries(
+    Object.entries(obj).filter(([key]) => !excluded.has(key)),
+  );
 }
 
 // --- Debugging --------------------------------------------------------------
@@ -78,8 +113,7 @@ export function fixMutatingSort(products) {
   // lista original passada pela tela de estoque aparece fora de ordem em
   // outras partes da aplicação — como se algo tivesse embaralhado o array
   // original só de ordená-lo para exibição.
-  products.sort((a, b) => a.price - b.price);
-  return products;
+  return [...products].sort((a, b) => a.price - b.price);
 }
 
 // test: node --test --test-name-pattern="fixFrozenIgnoredMutation" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
@@ -89,12 +123,7 @@ export function fixFrozenIgnoredMutation(state, key, value) {
   // nunca muda visivelmente — e o valor retornado também não reflete a
   // atualização, porque o erro de atribuição em modo estrito é engolido
   // silenciosamente pelo try/catch, escondendo a falha.
-  try {
-    state[key] = value;
-  } catch {
-    // erro ignorado silenciosamente
-  }
-  return state;
+  return { ...state, [key]: value };
 }
 
 // --- Refatoração -------------------------------------------------------------
@@ -105,22 +134,28 @@ export function fixFrozenIgnoredMutation(state, key, value) {
 // test: node --test --test-name-pattern="refactorMutatingCartOperations" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function refactorMutatingCartOperations(cart, action) {
   if (action.type === "add") {
-    cart.items.push({ sku: action.sku, quantity: action.quantity });
-    cart.itemCount = cart.itemCount + action.quantity;
-    return cart;
+    return {
+      ...cart,
+      items: [...cart.items, { sku: action.sku, quantity: action.quantity }],
+      itemCount: cart.itemCount + action.quantity,
+    };
   }
+
   if (action.type === "removeLast") {
-    const removed = cart.items.pop();
-    if (removed) {
-      cart.itemCount = cart.itemCount - removed.quantity;
-    }
-    return cart;
+    const removed = cart.items.at(-1);
+    if (!removed) return cart;
+
+    return {
+      ...cart,
+      items: cart.items.slice(0, -1),
+      itemCount: cart.itemCount - removed.quantity,
+    };
   }
+
   if (action.type === "clear") {
-    cart.items.length = 0;
-    cart.itemCount = 0;
-    return cart;
+    return { ...cart, items: [], itemCount: 0 };
   }
+
   return cart;
 }
 
@@ -128,5 +163,12 @@ export function refactorMutatingCartOperations(cart, action) {
 
 // test: node --test --test-name-pattern="applyImmutablePatch" exercises/01-javascript-core/unit-25-immutability/exercises.test.js
 export function applyImmutablePatch(state, patches) {
-  throw new Error("not implemented: applyImmutablePatch");
+  const history = [deepFreeze(structuredClone(state))];
+
+  for (const patch of patches) {
+    const nextState = updateNestedImmutable(history.at(-1), patch.path, patch.value);
+    history.push(deepFreeze(nextState));
+  }
+
+  return history;
 }
