@@ -149,7 +149,7 @@ export const defaultSiteContent: SiteContent = {
         period: "Jun 2026 – atual",
         active: true,
         bullets: [
-          "Desenvolvo APIs REST e fluxos de automação para o ecossistema MausOS.",
+          "Desenvolvo APIs REST e fluxos de automação para o ecossistema MavisOS.",
           "Estruturo soluções com bancos de dados relacionais, estratégias de cache e contratos claros entre serviços.",
           "Contribuo para decisões de arquitetura, confiabilidade e evolução segura do backend.",
         ],

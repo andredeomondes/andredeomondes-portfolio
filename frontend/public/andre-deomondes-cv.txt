@@ -18,7 +18,7 @@ Email: contato@andredeomondes.dev
 
 Experiencias:
 - AEX — Backend Software Engineer — Jun 2026 ate o momento
-  APIs REST, automacoes, bancos relacionais, cache e evolucao do ecossistema MausOS.
+  APIs REST, automacoes, bancos relacionais, cache e evolucao do ecossistema MavisOS.
 
 - AMR Mobile — Software Engineer, freelance e consultoria — 2 anos ate o momento
   Plataforma B2B desenvolvida individualmente com Angular, NestJS, Python, web scraping, FastAPI, LangChain, PostgreSQL e Redis.
